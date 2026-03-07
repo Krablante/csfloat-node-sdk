@@ -24,7 +24,15 @@ const schema: CsfloatSchemaResponse = {
   keychains: {},
   collectibles: {},
   containers: {},
-  agents: {},
+  agents: {
+    "4613": {
+      market_hash_name: "Agent Ava",
+      image: "agent.png",
+      rarity: 4,
+      price: 1234,
+      faction: "t",
+    },
+  },
   custom_stickers: {},
   music_kits: {
     "3": {
@@ -39,6 +47,7 @@ const schema: CsfloatSchemaResponse = {
     "7": {
       name: "AK-47",
       type: "Rifle",
+      faction: "t",
       sticker_amount: 4,
       paints: {
         "282": {
@@ -70,10 +79,12 @@ describe("schema helpers", () => {
       "The Cobblestone Collection",
     );
     expect(getSchemaRarityByValue(schema, 6)?.name).toBe("Covert");
+    expect(schema.agents["4613"]?.faction).toBe("t");
   });
 
   it("resolves weapons and paints by live API keys", () => {
     expect(getSchemaWeapon(schema, 7)?.name).toBe("AK-47");
+    expect(getSchemaWeapon(schema, 7)?.faction).toBe("t");
     expect(getSchemaPaint(schema, 7, 282)?.name).toBe("Redline");
   });
 

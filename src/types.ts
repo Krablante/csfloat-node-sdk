@@ -52,6 +52,7 @@ export interface CsfloatAuthenticatedUserStatistics
 export interface CsfloatUserPreferences {
   offers_enabled?: boolean;
   max_offer_discount?: number;
+  localize_item_names?: boolean;
 }
 
 export interface CsfloatPaymentAccounts {
@@ -103,6 +104,7 @@ export interface CsfloatAuthenticatedUser extends CsfloatUser {
   stripe_connect?: Record<string, boolean>;
   has_api_key?: boolean;
   statistics?: CsfloatAuthenticatedUserStatistics;
+  notification_topic_opt_out?: number | boolean;
 }
 
 export interface CsfloatReferencePrice {
@@ -292,6 +294,7 @@ export interface CsfloatSchemaAgent {
   image: string;
   rarity: number;
   price: number;
+  faction?: string;
 }
 
 export interface CsfloatSchemaCustomSticker {
@@ -335,6 +338,7 @@ export interface CsfloatSchemaPaint {
 export interface CsfloatSchemaWeapon {
   name: string;
   type: string;
+  faction?: string;
   sticker_amount: number;
   paints: Record<string, CsfloatSchemaPaint>;
 }
