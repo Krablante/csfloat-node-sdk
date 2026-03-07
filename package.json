@@ -1,0 +1,60 @@
+{
+  "name": "csfloat-node-sdk",
+  "version": "0.1.0",
+  "description": "Unofficial Node.js / TypeScript SDK for the CSFloat API.",
+  "homepage": "https://github.com/Krablante/csfloat-node-sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Krablante/csfloat-node-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Krablante/csfloat-node-sdk/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "API_COVERAGE.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "example:basic": "node --env-file=.env examples/basic.mjs"
+  },
+  "keywords": [
+    "csfloat",
+    "cs2",
+    "sdk",
+    "typescript",
+    "nodejs"
+  ],
+  "author": "bloob",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
