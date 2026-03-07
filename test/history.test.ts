@@ -16,4 +16,16 @@ describe("HistoryResource", () => {
       { paint_index: 77 },
     );
   });
+
+  it("requests graph history without paint index (aggregate mode)", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => []);
+    const resource = new HistoryResource({ get } as never);
+
+    await resource.getGraph("AK-47 | Redline (Field-Tested)");
+
+    expect(get).toHaveBeenCalledWith(
+      "history/AK-47%20%7C%20Redline%20(Field-Tested)/graph",
+      {},
+    );
+  });
 });

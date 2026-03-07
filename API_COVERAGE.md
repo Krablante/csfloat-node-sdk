@@ -82,6 +82,31 @@ These routes appeared in public wrappers, but live probing on 2026-03-07 did not
 | `/listings/{id}/sales` | `GET` | `404` | wrapper surface not confirmed live |
 | `/account-standing` | `GET` | `400 invalid resource` | stale path; live route is `/me/account-standing` |
 
+## Confirmed Silently-Ignored Query Params
+
+These params return `200 OK` on `/listings` but produce **no filtering effect** — probed on 2026-03-07 with targeted item comparisons:
+
+| Param | Probed Value | Evidence |
+|---|---|---|
+| `has_stickers` | `true` | IDs identical to unfiltered result; sticker-less items appear |
+| `has_keychains` | `true` | IDs identical to unfiltered result |
+| `has_fade` | `true` | IDs identical to unfiltered result |
+| `phase` | `1`, `2`, `3`, `4`, `sapphire` | All values return identical IDs; Doppler items unaffected |
+| `is_stattrak` | `true`/`false` | IDs identical; items mix StatTrak and non-StatTrak — use `category=2` instead |
+| `is_souvenir` | `true`/`false` | IDs identical; use `category=3` instead |
+| `wear_name` | `Factory New`, etc. | IDs identical regardless of value — use `min_float`/`max_float` instead |
+| `num_stickers` | `1`–`4` | IDs identical; items have different sticker counts |
+| `sticker_count` | `1`–`4` | Alias for `num_stickers`; same silently-ignored behavior |
+| `min_paint_seed` | `700` | Items with seed `<700` still returned |
+| `max_paint_seed` | `50` | Items with seed `>50` still returned |
+| `badges` | `hot`, `new`, `rare` | 200 OK but no badge-based filtering; items have no matching badge field |
+| `low_rank` | `true` | IDs identical to unfiltered; not a filter |
+| `has_low_rank` | `true` | IDs identical to unfiltered; same as `low_rank` |
+| `quality` | `4`, `9` | IDs identical; quality values unaffected |
+
+> **Note:** Items DO have `low_rank` as a field (e.g. low_rank: 41, low_rank: 4). The param does not filter on it.
+> **Note:** For stattrak/souvenir/category filtering use `category` (1=normal, 2=stattrak, 3=souvenir, 4=highlight) — that IS a confirmed real filter.
+
 ## Query/Behavior Surface Covered
 
 Currently covered or typed:
@@ -129,7 +154,7 @@ Live-confirmed search behaviors:
    - `float_rank`
    - `num_bids`
 2. invalid `sort_by` returns `404`
-3. `filter=sticker_combos` and `filter=unique` are both live
+3. `filter=sticker_combos` and `filter=unique` are both live; any other `filter` value returns `400 invalid filter value`
 4. `filter` values are derived from browser UI labels:
    - `Sticker Combos` -> `sticker_combos`
    - `Unique Items` -> `unique`
@@ -144,22 +169,25 @@ Live-confirmed search behaviors:
 8. `max_float` alone works
 9. reversed ranges such as `min_float=0.8&max_float=0.2` return an empty result set
 10. invalid ranges such as `min_float < 0` or `max_float > 1` do not hard-fail; they appear to be ignored/fallbacked by the backend
-11. `source` is live and affects result ordering / inclusion, but its exact enum semantics are not yet fully mapped
+11. `source` is live as both string and numeric forms: `source=csfloat`, `source=p2p`, `source=1`–`5` all return `200`; exact semantic mapping between string/numeric forms and result sets is not fully differentiated on standard accounts
 12. `category` is live and maps like this:
    - `1` -> Normal
    - `2` -> StatTrak
    - `3` -> Souvenir
    - `4` -> Highlight
-13. `def_index` + `paint_index` is live and can target a specific skin family
-14. `paint_seed` is live and can narrow family results to an exact seed
-15. `collection` is live; schema keys like `set_cobblestone` work
-16. `rarity` is live; schema rarity values like `6` work
-17. `min_price` and `max_price` are both live
-18. `music_kit_index` is live and can target music kit listings directly
-19. `keychain_highlight_reel` is live and can target highlight charm listings directly
-20. `min_fade` / `max_fade` are live for fade-capable finishes
-21. `min_blue` / `max_blue` are live for blue-percentage filtered searches
-22. `sticker_index` and `keychain_index` are accepted by the API; they currently behave as index filters for sticker/charm listings themselves, not yet a documented helper for applied attachments
+13. `category` is the **confirmed correct filter** for stattrak/souvenir; `is_stattrak` and `is_souvenir` params exist but are silently ignored (see Confirmed Silently-Ignored section)
+14. `def_index` + `paint_index` is live and can target a specific skin family
+15. `paint_seed` (exact value) is live and can narrow family results to an exact seed
+16. `collection` is live; schema keys like `set_cobblestone` work
+17. `rarity` is live; schema rarity values like `6` work
+18. `min_price` and `max_price` are both live
+19. `music_kit_index` is live and can target music kit listings directly
+20. `keychain_highlight_reel` is live and can target highlight charm listings directly
+21. `min_fade` / `max_fade` are live for fade-capable finishes
+22. `min_blue` / `max_blue` are live for blue-percentage filtered searches
+23. `sticker_index` and `keychain_index` are accepted by the API; they currently behave as index filters for sticker/charm listings themselves, not yet a documented helper for applied attachments
+24. `GET /me/buy-orders` accepts `market_hash_name` as a filter param and `sort_by` without hard-failing on unknown sort values (live-confirmed 2026-03-07)
+25. `GET /history/{name}/graph` works **without** `paint_index` — returns aggregate price data across all paint variants for the skin (live-confirmed 2026-03-07, returns breadth of historical points)
 
 ## Listing Creation Surface
 

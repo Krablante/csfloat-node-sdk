@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.4.0] - 2026-03-07
+
+### Added
+
+1. `CsfloatSource` type alias (`"csfloat" | "p2p" | number | string`) for the `source` param — surface live-re-confirmed in string and numeric forms
+2. `CsfloatBuyOrdersParams` interface: `GET /me/buy-orders` now accepts typed `market_hash_name` and `sort_by` params (live-confirmed 2026-03-07)
+3. `account.getBuyOrders()` upgraded to use `CsfloatBuyOrdersParams` signature
+4. `API_COVERAGE.md` expanded with a new **Confirmed Silently-Ignored Query Params** table listing 15 params that return `200` but produce no filtering effect (verified against real results)
+5. `API_COVERAGE.md` note that `filter` only accepts `sticker_combos` or `unique`; any other value returns `400 invalid filter value`
+6. `API_COVERAGE.md` note that `category` is the correct way to filter stattrak/souvenir — not `is_stattrak`/`is_souvenir`
+7. `API_COVERAGE.md` note that `history/{name}/graph` works **without** `paint_index` (returns aggregate across all paint variants)
+8. Live audit script expanded: `filter=sticker_combos/unique`, `source=csfloat/p2p`, `category` as stattrak/normal filter, `me/buy-orders?market_hash_name`, and `history/graph` without `paint_index` added to repeatable checks
+
+### Changed
+
+1. Source param type in `CsfloatListParams.source` narrowed from `string | number` to `CsfloatSource` for better IDE discoverability
+
 ## [0.3.1] - 2026-03-07
 
 ### Fixed

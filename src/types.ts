@@ -1,4 +1,5 @@
 export type ListingType = "buy_now" | "auction" | string;
+export type CsfloatSource = "csfloat" | "p2p" | number | string;
 export type Category = "normal" | "stattrak" | "souvenir";
 export type CsfloatListingCategoryFilter = 1 | 2 | 3 | 4 | number;
 export type SortBy =
@@ -510,7 +511,7 @@ export interface CsfloatListParams {
   limit?: number;
   min_ref_qty?: number;
   filter?: CsfloatListingsFilter;
-  source?: string | number;
+  source?: CsfloatSource;
   type?: ListingType;
   market_hash_name?: string;
   def_index?: number;
@@ -535,6 +536,12 @@ export interface CsfloatListParams {
   max_fade?: number;
   sort_by?: SortBy;
   user_id?: string;
+}
+
+/** Params for GET /me/buy-orders — live-confirmed: market_hash_name and sort_by are both accepted */
+export interface CsfloatBuyOrdersParams extends CsfloatPageParams {
+  market_hash_name?: string;
+  sort_by?: SortBy | string;
 }
 
 export interface CreateBuyNowListingRequest {

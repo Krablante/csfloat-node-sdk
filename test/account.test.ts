@@ -91,6 +91,41 @@ describe("AccountResource", () => {
     });
   });
 
+  it("requests buy orders filtered by market_hash_name", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getBuyOrders({
+      market_hash_name: "AK-47 | Redline (Field-Tested)",
+      limit: 10,
+    });
+
+    expect(get).toHaveBeenCalledWith("me/buy-orders", {
+      market_hash_name: "AK-47 | Redline (Field-Tested)",
+      limit: 10,
+    });
+  });
+
+  it("requests buy orders with sort_by", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getBuyOrders({ sort_by: "lowest_price" });
+
+    expect(get).toHaveBeenCalledWith("me/buy-orders", {
+      sort_by: "lowest_price",
+    });
+  });
+
+  it("requests buy orders with no params (default)", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getBuyOrders();
+
+    expect(get).toHaveBeenCalledWith("me/buy-orders", {});
+  });
+
   it("creates a buy order with explicit quantity", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);

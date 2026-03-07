@@ -3,6 +3,7 @@ import type {
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
   CsfloatBuyOrder,
+  CsfloatBuyOrdersParams,
   CsfloatBuyOrdersResponse,
   CsfloatCursorParams,
   CsfloatListingsResponse,
@@ -20,7 +21,7 @@ import type {
 } from "../types.js";
 
 export class AccountResource {
-  constructor(private readonly client: CsfloatHttpClient) {}
+  constructor(private readonly client: CsfloatHttpClient) { }
 
   getMe(): Promise<CsfloatMeResponse> {
     return this.client.get<CsfloatMeResponse>("me");
@@ -56,7 +57,7 @@ export class AccountResource {
     return this.client.get<CsfloatAccountStandingResponse>("me/account-standing");
   }
 
-  getBuyOrders(params: CsfloatPageParams = {}): Promise<CsfloatBuyOrdersResponse> {
+  getBuyOrders(params: CsfloatBuyOrdersParams = {}): Promise<CsfloatBuyOrdersResponse> {
     return this.client.get<CsfloatBuyOrdersResponse>("me/buy-orders", params as QueryParams);
   }
 

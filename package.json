@@ -1,6 +1,6 @@
 {
   "name": "csfloat-node-sdk",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Unofficial Node.js / TypeScript SDK for the CSFloat API.",
   "homepage": "https://github.com/Krablante/csfloat-node-sdk",
   "repository": {
