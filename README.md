@@ -207,6 +207,22 @@ const scopedSearch = await sdk.listings.getListings(
 
 `history.getGraph()` also accepts the currently observed `category` query param in addition to `paint_index`, but its exact semantics are still intentionally documented as only partially mapped.
 
+Use the schema helpers when you want to turn `/schema` into practical keyed lookups:
+
+```ts
+import {
+  findSchemaPaintsByIndex,
+  getSchemaCollection,
+  getSchemaPaint,
+} from "csfloat-node-sdk";
+
+const schema = await sdk.meta.getSchema();
+
+const cobble = getSchemaCollection(schema, "set_cobblestone");
+const redline = getSchemaPaint(schema, 7, 282);
+const allRedlineMatches = findSchemaPaintsByIndex(schema, 282);
+```
+
 For the full, route-by-route support picture, see [API_COVERAGE.md](./API_COVERAGE.md).
 
 ## Safety Note For Mutations

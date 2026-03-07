@@ -13,6 +13,17 @@ export {
   withWearPreset,
 } from "./market.js";
 export { paginateCursor } from "./pagination.js";
+export {
+  findSchemaPaintsByIndex,
+  getSchemaCollection,
+  getSchemaPaint,
+  getSchemaRarityByValue,
+  getSchemaWeapon,
+  listSchemaHighlightReels,
+  listSchemaMusicKits,
+  listSchemaPaints,
+  listSchemaWeapons,
+} from "./schema.js";
 export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
 export type { CsfloatClientOptions } from "./client.js";
@@ -22,6 +33,10 @@ export type {
   CsfloatFadeRangeParams,
   CsfloatPriceRangeParams,
 } from "./market.js";
+export type {
+  CsfloatSchemaPaintMatch,
+  CsfloatSchemaRecordEntry,
+} from "./schema.js";
 export type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 export type {
   Category,
