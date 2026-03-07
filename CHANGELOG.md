@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.5.0] - 2026-03-07
+
+### Added
+
+1. first-class market query helpers via `market.ts`, including `getCategoryParams()`, `withWearPreset()`, `buildFloatRange()`, `buildPriceRange()`, `buildFadeRange()`, and `buildBlueRange()`
+2. schema lookup helpers via `schema.ts`, including collection, rarity, weapon, paint, music kit, and highlight reel helpers
+3. built-in retry/backoff support for safe requests in `CsfloatHttpClient`, with bounded retries for transient `GET` failures such as `429`, `502`, `503`, and `504`
+4. deep live response-shape audit tooling via `audit:shapes`, including optional reversible buy-order sampling for non-empty `buy_orders` inspection
+5. `account.getOffer(id)` and `account.getOfferHistory(id)` for direct offer fetches and historical offer-chain inspection
+
+### Changed
+
+1. hardened response parsing so non-JSON error bodies no longer lose status/detail context
+2. expanded supported live shape coverage for authenticated account data, transaction details, offer variants, schema faction fields, and temporary buy-order create responses
+3. strengthened public README examples around market helpers, schema helpers, retry behavior, and shape-audit workflows
+
+### Notes
+
+1. `GET /offers/{id}/history` is now confirmed live and returns the historical offer chain for a thread
+2. `offers` may be empty when there are no active offers; type coverage for offer history was finalized using live buyer-offer and seller counter-offer samples
+
 ## [0.4.5] - 2026-03-07
 
 ### Added
