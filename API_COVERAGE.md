@@ -67,6 +67,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
 | `/trades/bulk/accept` | `POST` | discovered | live + public wrapper source | invalid ids returned validation error |
+| `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted empty `sent_offers` update and returned success |
@@ -216,9 +217,10 @@ Live-confirmed search behaviors:
 35. `GET /offers/{id}` returns the current offer snapshot, while `GET /offers/{id}/history` returns the historical chain for that offer thread; this was confirmed live on 2026-03-07 with a declined buyer offer and a declined seller counter-offer
 36. `POST /offers` happy-path is confirmed with body `{ contract_id, price }` on a buyer account; using `listing_id` instead of `contract_id` falls back to `failed to find contract with id '0'`
 37. `POST /offers/{id}/counter-offer` happy-path is confirmed with body `{ price }` on a seller account
-38. `DELETE /offers/{id}` can cancel an active offer thread and returns `{ "message": "offer canceled" }`; exact semantics are confirmed for cancellation, but buyer-vs-seller decline permutations are still not fully mapped
+38. `DELETE /offers/{id}` is the confirmed close route for both buyer-side cancel and seller-side decline flows; the server still returns the generic message `{ "message": "offer canceled" }` in both cases, while the historical offer state becomes `declined`
 39. `POST /listings/buy` happy-path is confirmed with body `{ contract_ids: string[], total_price }` and returns `{ "message": "all listings purchased" }`
 40. `PATCH /buy-orders/{id}` happy-path is confirmed with body `{ max_price }`; `PUT` and `POST` on the same route return `405`
+41. `POST /offers/{id}/accept` exists and returns `code 91: failed to accept offer` for an invalid offer id; the route is discovered, but the happy-path is intentionally not executed yet because that would complete a real purchase
 
 ## Listing Creation Surface
 

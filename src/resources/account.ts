@@ -58,6 +58,10 @@ export class AccountResource {
     return this.client.delete<CsfloatMessageResponse>(`offers/${offerId}`);
   }
 
+  declineOffer(offerId: string): Promise<CsfloatMessageResponse> {
+    return this.cancelOffer(offerId);
+  }
+
   getWatchlist(
     params: Pick<CsfloatCursorParams, "cursor" | "limit"> = {},
   ): Promise<CsfloatListingsResponse> {

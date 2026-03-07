@@ -79,6 +79,15 @@ describe("AccountResource", () => {
     expect(del).toHaveBeenCalledWith("offers/950527619626041456");
   });
 
+  it("declines an offer through the same delete route", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ delete: del } as never);
+
+    await resource.declineOffer("950531563567843184");
+
+    expect(del).toHaveBeenCalledWith("offers/950531563567843184");
+  });
+
   it("requests authenticated watchlist with params", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);

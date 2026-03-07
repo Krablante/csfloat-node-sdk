@@ -14,11 +14,13 @@ The format is based on Keep a Changelog.
 4. `listings.buyNow()` and `listings.buyListing()` for direct `buy_now` purchases via `POST /listings/buy`
 5. `fetch` injection and optional `dispatcher` support in `CsfloatHttpClient` for proxy/custom transport scenarios without adding runtime dependency bloat
 6. `account.updateBuyOrder()` for direct `PATCH /buy-orders/{id}` updates using the live-confirmed `{ max_price }` contract
+7. `account.declineOffer()` as an ergonomic alias for the live-confirmed `DELETE /offers/{id}` close route used by seller-side declines
 
 ### Changed
 
 1. expanded `API_COVERAGE.md` with live-confirmed happy-path offer and purchase contracts
 2. updated `.env.example` to document optional `CSFLOAT_API_KEY_2` for controlled cross-account live testing
+3. clarified that `DELETE /offers/{id}` is the confirmed close route for both buyer cancel and seller decline flows, while `POST /offers/{id}/accept` is only discovered so far
 
 ## [0.5.0] - 2026-03-07
 
