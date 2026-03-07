@@ -2,6 +2,29 @@ import { CsfloatSdkError } from "./errors.js";
 import type { QueryParams } from "./types.js";
 import { cleanParams } from "./utils.js";
 
+const DEFAULT_USER_AGENT = "csfloat-node-sdk/0.4.5";
+
+function parseResponseBody(text: string): unknown {
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text;
+  }
+}
+
+function extractErrorCode(details: unknown): string | undefined {
+  if (!details || typeof details !== "object" || !("code" in details)) {
+    return undefined;
+  }
+
+  const code = details.code;
+  return code === undefined || code === null ? undefined : String(code);
+}
+
 export interface CsfloatClientOptions {
   apiKey: string;
   baseUrl?: string;
@@ -23,7 +46,7 @@ export class CsfloatHttpClient {
     this.apiKey = options.apiKey;
     this.baseUrl = options.baseUrl ?? "https://csfloat.com/api/v1";
     this.timeoutMs = options.timeoutMs ?? 15_000;
-    this.userAgent = options.userAgent ?? "csfloat-node-sdk/0.3.1";
+    this.userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
   }
 
   async get<T>(
@@ -83,14 +106,16 @@ export class CsfloatHttpClient {
       const response = await fetch(url, init);
 
       const text = await response.text();
-      const data = text ? JSON.parse(text) : null;
+      const data = parseResponseBody(text);
 
       if (!response.ok) {
+        const code = extractErrorCode(data);
         throw new CsfloatSdkError(
           `CSFloat API request failed with status ${response.status}`,
           {
             status: response.status,
             details: data,
+            ...(code === undefined ? {} : { code }),
           },
         );
       }
