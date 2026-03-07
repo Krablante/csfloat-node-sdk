@@ -40,6 +40,7 @@ Status legend:
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
+| `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path accept on a real queued `$0.05` sale with body `{ trade_ids: string[] }` |
 | `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, `away`, `trade_url`; **also confirmed for `background_url` and `username` (2026-03-07 research pass 2)** |
 | `/me/notifications/read-receipt` | `POST` | implemented | live + public wrapper source | mark notifications read via `last_read_id` |
 | `/me/mobile/status` | `POST` | implemented | live + public wrapper source | confirmed live with payload `{ "version": "8.0.0" }` |
@@ -66,7 +67,6 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/buy-orders` | `POST` | discovered | live + public wrapper source | invalid payload returned validation error, confirming route existence |
 | `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
-| `/trades/bulk/accept` | `POST` | discovered | live + public wrapper source | invalid ids returned validation error |
 | `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
@@ -221,6 +221,7 @@ Live-confirmed search behaviors:
 39. `POST /listings/buy` happy-path is confirmed with body `{ contract_ids: string[], total_price }` and returns `{ "message": "all listings purchased" }`
 40. `PATCH /buy-orders/{id}` happy-path is confirmed with body `{ max_price }`; `PUT` and `POST` on the same route return `405`
 41. `POST /offers/{id}/accept` exists and returns `code 91: failed to accept offer` for an invalid offer id; the route is discovered, but the happy-path is intentionally not executed yet because that would complete a real purchase
+42. `POST /trades/bulk/accept` is the confirmed `accept sale` route for queued seller trades; on a real `$0.05` queued sale it returned `{ data: [trade] }`, transitioned the trade from `queued` to `pending`, and populated `accepted_at`, `trade_url`, `trade_token`, and `steam_offer` timing fields
 
 ## Listing Creation Surface
 

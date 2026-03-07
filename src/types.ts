@@ -399,6 +399,10 @@ export interface CsfloatTradesResponse {
   count?: number;
 }
 
+export interface CsfloatTradeBatchResponse {
+  data: CsfloatTrade[];
+}
+
 export interface CsfloatTransaction {
   id?: string;
   created_at?: string;
@@ -487,6 +491,10 @@ export interface CreateBuyOrderRequest {
 
 export interface UpdateBuyOrderRequest {
   max_price: number;
+}
+
+export interface AcceptTradesRequest {
+  trade_ids: string[];
 }
 
 export interface CreateOfferRequest {

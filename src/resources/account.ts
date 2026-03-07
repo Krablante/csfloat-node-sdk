@@ -1,5 +1,6 @@
 import type { CsfloatHttpClient } from "../client.js";
 import type {
+  AcceptTradesRequest,
   CounterOfferRequest,
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
@@ -15,6 +16,7 @@ import type {
   CsfloatOffer,
   CsfloatOffersResponse,
   CsfloatPageParams,
+  CsfloatTradeBatchResponse,
   CsfloatTradesResponse,
   CsfloatTransactionsResponse,
   CsfloatUpdateMeRequest,
@@ -32,6 +34,22 @@ export class AccountResource {
 
   getTrades(params: CsfloatCursorParams = {}): Promise<CsfloatTradesResponse> {
     return this.client.get<CsfloatTradesResponse>("me/trades", params as QueryParams);
+  }
+
+  acceptTrades(tradeIds: string[] | AcceptTradesRequest): Promise<CsfloatTradeBatchResponse> {
+    const body = Array.isArray(tradeIds)
+      ? { trade_ids: tradeIds }
+      : tradeIds;
+
+    return this.client.post<CsfloatTradeBatchResponse>("trades/bulk/accept", body);
+  }
+
+  acceptTrade(tradeId: string): Promise<CsfloatTradeBatchResponse> {
+    return this.acceptTrades([tradeId]);
+  }
+
+  acceptSale(tradeId: string): Promise<CsfloatTradeBatchResponse> {
+    return this.acceptTrade(tradeId);
   }
 
   getOffers(params: CsfloatCursorParams = {}): Promise<CsfloatOffersResponse> {

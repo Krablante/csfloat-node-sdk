@@ -39,6 +39,7 @@ export type {
 } from "./schema.js";
 export type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 export type {
+  AcceptTradesRequest,
   Category,
   BuyNowRequest,
   CounterOfferRequest,
@@ -98,6 +99,7 @@ export type {
   CsfloatSchemaWeapon,
   CsfloatTopBid,
   CsfloatTrade,
+  CsfloatTradeBatchResponse,
   CsfloatTradesResponse,
   CsfloatTradeSteamOffer,
   CsfloatTransaction,

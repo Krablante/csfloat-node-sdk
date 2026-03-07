@@ -26,6 +26,39 @@ describe("AccountResource", () => {
     });
   });
 
+  it("accepts trades in bulk", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.acceptTrades(["950524496987687389"]);
+
+    expect(post).toHaveBeenCalledWith("trades/bulk/accept", {
+      trade_ids: ["950524496987687389"],
+    });
+  });
+
+  it("accepts a single trade", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.acceptTrade("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/bulk/accept", {
+      trade_ids: ["950524496987687389"],
+    });
+  });
+
+  it("accepts a sale through the single-trade alias", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.acceptSale("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/bulk/accept", {
+      trade_ids: ["950524496987687389"],
+    });
+  });
+
   it("creates an offer", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);
