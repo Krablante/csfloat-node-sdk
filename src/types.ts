@@ -494,6 +494,10 @@ export interface CsfloatUpdateMeRequest {
   stall_public?: boolean;
   away?: boolean;
   trade_url?: string;
+  /** Live-confirmed accepted by PATCH /me (2026-03-07). Updates profile background image. */
+  background_url?: string;
+  /** Live-confirmed accepted by PATCH /me (2026-03-07). Note: exact validation rules unknown; empty string returns 200. */
+  username?: string;
 }
 
 export interface CsfloatHistoryGraphPoint {

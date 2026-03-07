@@ -4,7 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.5.0] - 2026-03-07
+
+### Added
+
+1. `background_url` and `username` fields to `CsfloatUpdateMeRequest` — both live-confirmed accepted by `PATCH /me` (2026-03-07 research pass 2, returns `200 "user updated!"`)
+2. `account.updateBackground(url)` and `account.updateUsername(name)` convenience helpers wrapping `PATCH /me`
+3. `API_COVERAGE.md` expanded with new silently-ignored params: `sticker` (all forms: `ID`, `ID|slot`, `ID1,ID2`), `page`, `user_id` (standalone), `source` (all string and numeric forms on standard accounts), `is_commodity`
+4. `API_COVERAGE.md` new "Confirmed Hard-Rejected Query Params" section: `type=any/normal/stattrak/souvenir` returns `400` (only `buy_now`/`auction` are valid)
+5. `API_COVERAGE.md` live audit findings notes 27–34: history/graph `category` param semantics, `filter=` auth requirement (403), confirmed-dead listing subroutes, confirmed-dead `/me/*` hidden routes, confirmed-dead `/users/{id}/*` extensions, `/offers` GET method not allowed (405), dead top-level routes
+
+### Notes on Negative Findings
+
+The following routes and params were probed and confirmed **dead or silently-ignored** in this pass:
+
+1. listing subroutes `offers`, `trades`, `history`, `price-history`, `buyer`, `seller`, `item` — all `404`
+2. `/me/*` hidden routes (balance, preferences, settings, referrals, kyc, payment, payout, stall, bids, listings, cart, disputes, 2fa, extension, rate-limit, limits) — all `404`
+3. `/users/{id}/*` extensions (offers, trades, buy-orders, statistics, reviews, reputation, watchlist, inventory) — all `404`
+4. top-level routes (announcements, referrals, promotions, leaderboard, search, items, market, prices, trending, stats, buy-now) — all `400 "invalid resource"`
+5. `sticker` / `sticker|slot` / multi-sticker filter — silently ignored; items returned do not have the specified sticker
+
 ## [0.4.0] - 2026-03-07
+
 
 ### Added
 

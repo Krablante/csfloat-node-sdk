@@ -34,7 +34,7 @@ Status legend:
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
-| `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, and `away` |
+| `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, `away`, `trade_url`; **also confirmed for `background_url` and `username` (2026-03-07 research pass 2)** |
 | `/me/notifications/read-receipt` | `POST` | implemented | live + public wrapper source | mark notifications read via `last_read_id` |
 | `/me/mobile/status` | `POST` | implemented | live + public wrapper source | confirmed live with payload `{ "version": "8.0.0" }` |
 | `/listings/{id}/buy-orders` | `GET` | implemented | live + public wrapper source | public without extra query params; authenticated callers can also use `limit` |
@@ -103,9 +103,23 @@ These params return `200 OK` on `/listings` but produce **no filtering effect** 
 | `low_rank` | `true` | IDs identical to unfiltered; not a filter |
 | `has_low_rank` | `true` | IDs identical to unfiltered; same as `low_rank` |
 | `quality` | `4`, `9` | IDs identical; quality values unaffected |
+| `sticker` | `55`, `55\|0`, `55,73`, `9999999` | **All forms silently ignored** (2026-03-07 research pass 2): `sticker=55` returns identical IDs to baseline; items in result do NOT have sticker 55; even `sticker=9999999` returns same result set. Official docs show `ID\|POSITION?[,ID\|POSITION?...]` format but the param does not filter in practice on the API |
+| `page` | `0`, `1`, `2` | All page values return identical IDs — pagination uses `cursor` exclusively |
+| `user_id` | authenticated steam_id | 200 OK but seller IDs in result do not match the specified `user_id`; silently ignored |
+| `source` | `1`–`5`, `csfloat`, `p2p` | All values return identical IDs; no `source` field in listing response; silently ignored on standard accounts (2026-03-07 research pass 2) |
+| `is_commodity` | `true` | 200 OK but no filtering observed |
 
 > **Note:** Items DO have `low_rank` as a field (e.g. low_rank: 41, low_rank: 4). The param does not filter on it.
 > **Note:** For stattrak/souvenir/category filtering use `category` (1=normal, 2=stattrak, 3=souvenir, 4=highlight) — that IS a confirmed real filter.
+> **Note:** The `sticker` param format `ID|POSITION?[,ID|POSITION?...]` appears in official docs but the endpoint silently ignores it on the live API as of 2026-03-07.
+
+## Confirmed Hard-Rejected Query Params
+
+These params return a non-200 error (not silently ignored):
+
+| Param | Probed Value | Status | Notes |
+|---|---|---|---|
+| `type` | `any`, `normal`, `stattrak`, `souvenir` | `400` | Only `buy_now` and `auction` are valid `type` values; other strings hard-fail |
 
 ## Query/Behavior Surface Covered
 
@@ -189,6 +203,14 @@ Live-confirmed search behaviors:
 24. only `category=1..4` have confirmed semantics; `category=5` returned a mixed, effectively unfiltered result set on 2026-03-07 and should be treated as unsupported
 25. `GET /me/buy-orders` accepts `market_hash_name` and `sort_by` without hard-failing on the current account, but temporary live orders did not show any filtering or sorting effect; these params should be treated as unconfirmed/ignored for now
 26. `GET /history/{name}/graph` works **without** `paint_index`; it returns a broader series than an explicit `paint_index` query, but the exact server-side aggregation semantics are not fully mapped yet
+27. `GET /history/{name}/graph` accepts a `category` query param (1=Normal, 2=StatTrak, 3=Souvenir); live probe on 2026-03-07 returned `total_count=1747` for all values of `category` but with slightly different `avg_price` values per day — this behavior suggests `category` may influence averaging, but it does not change the set of days returned; treat as weakly mappable, not a confirmed hard filter
+28. `PATCH /me` accepts `background_url` and `username` as undocumented fields — both return `200 "user updated!"` (confirmed 2026-03-07 research pass 2); exact validation rules for `username` are unknown; SDK adds these as optional typed fields in `CsfloatUpdateMeRequest` with helpers `updateBackground()` and `updateUsername()`
+29. `filter=sticker_combos` and `filter=unique` require authentication — unauthenticated requests return `403` (not 401); these are actively blocked, not silently ignored
+30. listing subroutes `/listings/{id}/offers`, `/listings/{id}/trades`, `/listings/{id}/history`, `/listings/{id}/price-history`, `/listings/{id}/buyer`, `/listings/{id}/seller`, `/listings/{id}/item` all return `404` — none confirmed live
+31. `/me/*` hidden routes probed and all return `404`: balance, preferences, settings, referrals, subscriptions, kyc, payment, payout, stall, bids, listings, cart, disputes, 2fa, extension, rate-limit, limits, offers/sent, offers/received, fees
+32. all tested `/users/{id}/*` extensions return `404`: offers, trades, buy-orders, statistics, reviews, reputation, watchlist, inventory
+33. `GET /offers` returns `405 Method Not Allowed` — GET is not valid on this route; `POST /offers` is the only supported method
+34. top-level routes probed and all return `400 "invalid resource"`: announcements, referrals, promotions, leaderboard, search (with q=), items, market, prices, trending, stats, buy-now
 
 ## Listing Creation Surface
 

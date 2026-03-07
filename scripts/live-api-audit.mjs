@@ -234,15 +234,18 @@ async function main() {
     ["GET", "/listings?limit=1&keychain_highlight_reel=1"],
     ["GET", "/listings?limit=1&def_index=507&paint_index=38&min_fade=99&max_fade=100"],
     ["GET", "/listings?limit=1&min_blue=90&max_blue=100"],
-    // filter enum values — live-confirmed
+    // filter enum values — live-confirmed; unauthenticated requests return 403 (not 401)
     ["GET", "/listings?limit=1&filter=sticker_combos"],
     ["GET", "/listings?limit=1&filter=unique"],
-    // source string forms — live-confirmed (csfloat|p2p strings accepted alongside numeric values)
+    // source string forms — return 200 but all source values are silently ignored on standard accounts (confirmed 2026-03-07 pass 2)
     ["GET", "/listings?limit=1&source=csfloat"],
     ["GET", "/listings?limit=1&source=p2p"],
     // category as real filter (confirmed 2026-03-07)
     ["GET", "/listings?limit=1&def_index=7&paint_index=282&category=2"],
     ["GET", "/listings?limit=1&def_index=7&paint_index=282&category=1"],
+    // history/graph category param — accepted (200), slightly different avg_price per day but not a confirmed hard filter
+    ["GET", `/history/${encodeURIComponent("AK-47 | Redline (Field-Tested)")}/graph?category=2`],
+    ["GET", `/history/${encodeURIComponent("AK-47 | Redline (Field-Tested)")}/graph?category=1`],
   ];
 
   for (const [method, route] of marketQueryRoutes) {
@@ -270,12 +273,14 @@ async function main() {
   }
 
   const candidateRoutes = [
+    // confirmed-dead routes (404) from 2026-03-07 pass 2 kept for regression tracking:
     ["GET", "/me/stall"],
     ["GET", "/me/listings"],
     ["GET", "/account-standing"],
     ["GET", "/notifications?limit=1"],
     ["GET", "/watchlist?limit=1"],
     ["GET", "/bids?limit=1"],
+    // /offers GET returns 405 (Method Not Allowed) — POST-only route
     ["GET", "/offers?limit=1"],
     ...(listingId ? [["GET", `/listings/${listingId}/bids`]] : []),
     ["GET", "/listings/950170960026273280/sales"],
@@ -285,6 +290,11 @@ async function main() {
     ["GET", "/me/notification"],
     ["GET", "/me/offer-history?limit=1"],
     ["GET", "/offers/history?limit=1"],
+    // listing subroutes — all 404 as of 2026-03-07 pass 2
+    ...(listingId ? [
+      ["GET", `/listings/${listingId}/offers`],
+      ["GET", `/listings/${listingId}/history`],
+    ] : []),
   ];
 
   for (const [method, route, body] of candidateRoutes) {

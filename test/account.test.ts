@@ -226,6 +226,29 @@ describe("AccountResource", () => {
     });
   });
 
+  it("patches background_url", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.updateBackground("https://example.com/bg.jpg");
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      background_url: "https://example.com/bg.jpg",
+    });
+  });
+
+  it("patches username", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.updateUsername("newname");
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      username: "newname",
+    });
+  });
+
+
   it("posts notification read receipt", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);

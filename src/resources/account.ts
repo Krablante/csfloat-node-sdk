@@ -104,6 +104,23 @@ export class AccountResource {
     return this.updateMe({ trade_url: tradeUrl });
   }
 
+  /**
+   * Update the profile background image URL.
+   * Live-confirmed accepted by PATCH /me (2026-03-07 research pass).
+   */
+  updateBackground(backgroundUrl: string): Promise<CsfloatMessageResponse> {
+    return this.updateMe({ background_url: backgroundUrl });
+  }
+
+  /**
+   * Update the display username.
+   * Live-confirmed accepted by PATCH /me (2026-03-07 research pass).
+   * Note: exact validation rules not fully documented; handle errors from the API accordingly.
+   */
+  updateUsername(username: string): Promise<CsfloatMessageResponse> {
+    return this.updateMe({ username });
+  }
+
   markNotificationsRead(lastReadId: string): Promise<CsfloatMessageResponse> {
     return this.client.post<CsfloatMessageResponse>("me/notifications/read-receipt", {
       last_read_id: lastReadId,
