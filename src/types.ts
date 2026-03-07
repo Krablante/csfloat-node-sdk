@@ -247,6 +247,9 @@ export interface CsfloatMeResponse {
   user: CsfloatAuthenticatedUser & {
     steam_id: string;
   };
+  pending_offers?: number;
+  actionable_trades?: number;
+  has_unread_notifications?: boolean;
 }
 
 export interface CsfloatExchangeRatesResponse {
@@ -399,9 +402,21 @@ export interface CsfloatTransaction {
   created_at?: string;
   user_id?: string;
   type?: string;
-  details?: Record<string, unknown>;
+  details?: CsfloatTransactionDetails;
   balance_offset?: number;
   pending_offset?: number;
+}
+
+export interface CsfloatTransactionDetails {
+  bid_id?: string;
+  contract_id?: string;
+  fee_amount?: number;
+  listing_id?: string;
+  original_tx?: string | number;
+  reason?: string;
+  trade_id?: string;
+  type?: string;
+  [key: string]: unknown;
 }
 
 export interface CsfloatTransactionsResponse {
