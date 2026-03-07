@@ -155,4 +155,37 @@ describe("ListingsResource", () => {
 
     expect(del).toHaveBeenCalledWith("listings/950170960026273280/watchlist");
   });
+
+  it("purchases multiple listings with buyNow", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => ({ message: "all listings purchased" }));
+    const resource = new ListingsResource({
+      ...client,
+      post,
+    } as never);
+
+    await resource.buyNow({
+      contract_ids: ["807440137469430127", "807440137519761776"],
+      total_price: 6,
+    });
+
+    expect(post).toHaveBeenCalledWith("listings/buy", {
+      contract_ids: ["807440137469430127", "807440137519761776"],
+      total_price: 6,
+    });
+  });
+
+  it("purchases a single listing with buyListing", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => ({ message: "all listings purchased" }));
+    const resource = new ListingsResource({
+      ...client,
+      post,
+    } as never);
+
+    await resource.buyListing("807440137469430127", 3);
+
+    expect(post).toHaveBeenCalledWith("listings/buy", {
+      contract_ids: ["807440137469430127"],
+      total_price: 3,
+    });
+  });
 });

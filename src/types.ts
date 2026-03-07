@@ -485,6 +485,20 @@ export interface CreateBuyOrderRequest {
   quantity?: number;
 }
 
+export interface CreateOfferRequest {
+  contract_id: string;
+  price: number;
+}
+
+export interface CounterOfferRequest {
+  price: number;
+}
+
+export interface BuyNowRequest {
+  contract_ids: string[];
+  total_price: number;
+}
+
 export interface CsfloatAutoBid {
   id?: string;
   created_at?: string;

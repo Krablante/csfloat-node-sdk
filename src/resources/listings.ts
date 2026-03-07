@@ -2,6 +2,7 @@ import type { CsfloatHttpClient } from "../client.js";
 import { CsfloatSdkError } from "../errors.js";
 import { paginateCursor } from "../pagination.js";
 import type {
+  BuyNowRequest,
   CsfloatBid,
   CsfloatBuyOrder,
   CreateListingRequest,
@@ -57,6 +58,17 @@ export class ListingsResource {
 
   removeFromWatchlist(listingId: string): Promise<CsfloatMessageResponse> {
     return this.client.delete<CsfloatMessageResponse>(`listings/${listingId}/watchlist`);
+  }
+
+  buyNow(request: BuyNowRequest): Promise<CsfloatMessageResponse> {
+    return this.client.post<CsfloatMessageResponse>("listings/buy", request);
+  }
+
+  buyListing(contractId: string, totalPrice: number): Promise<CsfloatMessageResponse> {
+    return this.buyNow({
+      contract_ids: [contractId],
+      total_price: totalPrice,
+    });
   }
 
   createListing(request: CreateListingRequest): Promise<CsfloatListing> {

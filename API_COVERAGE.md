@@ -28,8 +28,11 @@ Status legend:
 | `/me/account-standing` | `GET` | implemented | live + public wrapper source | authenticated account standing |
 | `/me/transactions` | `GET` | implemented | live + public wrapper source | returns `{ transactions, count }` |
 | `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
+| `/offers` | `POST` | implemented | live | confirmed happy-path create on buyer account with body `{ contract_id, price }` |
 | `/offers/{id}` | `GET` | implemented | live | single offer fetch by valid offer id |
 | `/offers/{id}/history` | `GET` | implemented | live + public wrapper source | historical thread for the offer chain; confirmed with valid declined/counter-offer ids |
+| `/offers/{id}/counter-offer` | `POST` | implemented | live | confirmed happy-path on seller account with body `{ price }` |
+| `/offers/{id}` | `DELETE` | implemented | live | confirmed happy-path cancellation with response `offer canceled`; exact actor/state semantics may vary by thread state |
 | `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline |
 | `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
 | `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
@@ -43,6 +46,7 @@ Status legend:
 | `/listings/{id}/similar` | `GET` | implemented | live + public wrapper source | returns similar live listings |
 | `/listings/{id}/watchlist` | `POST` | implemented | live | confirmed happy-path add with `added to watchlist` |
 | `/listings/{id}/watchlist` | `DELETE` | implemented | live | confirmed happy-path remove with `removed from watchlist` |
+| `/listings/buy` | `POST` | implemented | live + public wrapper source | confirmed happy-path with body `{ contract_ids: string[], total_price }` and response `all listings purchased` |
 | `/history/{market_hash_name}/graph` | `GET` | implemented | live + public wrapper source | supports explicit `paint_index`; also responds when `paint_index` is omitted |
 
 ## Expanded Live Endpoint Surface
@@ -58,18 +62,14 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/listings?filter=sticker_combos` | `GET` | discovered | live + browser UI + auth API | UI label `Sticker Combos`; requires auth |
 | `/listings?filter=unique` | `GET` | discovered | live + browser UI + auth API | UI label `Unique Items`; requires auth |
 | `/listings/{auction_id}/bids` | `GET` | implemented | live | returns bid array for auction listings; empty array when no bids |
-| `/offers` | `POST` | discovered | live | route exists; seller account received `403 sellers can only use the counter-offers endpoint` |
 | `/buy-orders` | `POST` | discovered | live + public wrapper source | invalid payload returned validation error, confirming route existence |
 | `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
-| `/listings/buy` | `POST` | discovered | live + public wrapper source | invalid contract ids returned existence-confirming error |
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
 | `/trades/bulk/accept` | `POST` | discovered | live + public wrapper source | invalid ids returned validation error |
-| `/offers/{id}` | `DELETE` | discovered | live | invalid offer id still reached cancel flow and returned `failed to cancel offer` |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted empty `sent_offers` update and returned success |
 | `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
-| `/offers/{id}/counter-offer` | `POST` | discovered | live | invalid offer id returned `failed to counter offer`, confirming route existence |
 
 ## Likely Stale Or Wrapper-Only Routes
 
@@ -213,6 +213,10 @@ Live-confirmed search behaviors:
 33. `GET /offers` returns `405 Method Not Allowed` — GET is not valid on this route; `POST /offers` is the only supported method
 34. top-level routes probed and all return `400 "invalid resource"`: announcements, referrals, promotions, leaderboard, search (with q=), items, market, prices, trending, stats, buy-now
 35. `GET /offers/{id}` returns the current offer snapshot, while `GET /offers/{id}/history` returns the historical chain for that offer thread; this was confirmed live on 2026-03-07 with a declined buyer offer and a declined seller counter-offer
+36. `POST /offers` happy-path is confirmed with body `{ contract_id, price }` on a buyer account; using `listing_id` instead of `contract_id` falls back to `failed to find contract with id '0'`
+37. `POST /offers/{id}/counter-offer` happy-path is confirmed with body `{ price }` on a seller account
+38. `DELETE /offers/{id}` can cancel an active offer thread and returns `{ "message": "offer canceled" }`; exact semantics are confirmed for cancellation, but buyer-vs-seller decline permutations are still not fully mapped
+39. `POST /listings/buy` happy-path is confirmed with body `{ contract_ids: string[], total_price }` and returns `{ "message": "all listings purchased" }`
 
 ## Listing Creation Surface
 

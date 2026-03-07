@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Added
+
+1. `account.createOffer()` for buyer-side offer creation via `POST /offers`
+2. `account.counterOffer()` for seller-side counter offers via `POST /offers/{id}/counter-offer`
+3. `account.cancelOffer()` for offer-thread cancellation via `DELETE /offers/{id}`
+4. `listings.buyNow()` and `listings.buyListing()` for direct `buy_now` purchases via `POST /listings/buy`
+
+### Changed
+
+1. expanded `API_COVERAGE.md` with live-confirmed happy-path offer and purchase contracts
+2. updated `.env.example` to document optional `CSFLOAT_API_KEY_2` for controlled cross-account live testing
+
 ## [0.5.0] - 2026-03-07
 
 ### Added

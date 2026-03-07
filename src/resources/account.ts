@@ -1,5 +1,6 @@
 import type { CsfloatHttpClient } from "../client.js";
 import type {
+  CounterOfferRequest,
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
   CsfloatBuyOrder,
@@ -17,6 +18,7 @@ import type {
   CsfloatTradesResponse,
   CsfloatTransactionsResponse,
   CsfloatUpdateMeRequest,
+  CreateOfferRequest,
   QueryParams,
 } from "../types.js";
 
@@ -35,12 +37,24 @@ export class AccountResource {
     return this.client.get<CsfloatOffersResponse>("me/offers", params as QueryParams);
   }
 
+  createOffer(request: CreateOfferRequest): Promise<CsfloatOffer> {
+    return this.client.post<CsfloatOffer>("offers", request);
+  }
+
   getOffer(offerId: string): Promise<CsfloatOffer> {
     return this.client.get<CsfloatOffer>(`offers/${offerId}`);
   }
 
   getOfferHistory(offerId: string): Promise<CsfloatOffer[]> {
     return this.client.get<CsfloatOffer[]>(`offers/${offerId}/history`);
+  }
+
+  counterOffer(offerId: string, request: CounterOfferRequest): Promise<CsfloatOffer> {
+    return this.client.post<CsfloatOffer>(`offers/${offerId}/counter-offer`, request);
+  }
+
+  cancelOffer(offerId: string): Promise<CsfloatMessageResponse> {
+    return this.client.delete<CsfloatMessageResponse>(`offers/${offerId}`);
   }
 
   getWatchlist(

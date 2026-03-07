@@ -40,6 +40,8 @@ export type {
 export type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 export type {
   Category,
+  BuyNowRequest,
+  CounterOfferRequest,
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
   CsfloatBid,
@@ -52,6 +54,7 @@ export type {
   CreateAuctionListingRequest,
   CreateBuyOrderRequest,
   CreateBuyNowListingRequest,
+  CreateOfferRequest,
   CsfloatAuctionDetails,
   CsfloatAuthenticatedUser,
   CsfloatAuthenticatedUserStatistics,

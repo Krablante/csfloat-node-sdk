@@ -83,12 +83,12 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Area | Status | Methods |
 |---|---|---|
 | Meta | implemented | `meta.getSchema()`, `meta.getExchangeRates()`, `meta.getLocation()` |
-| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getOffers()`, `account.getOffer()`, `account.getOfferHistory()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.createBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.createBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.getBuyOrders()`, `listings.getSimilar()` |
-| Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
+| Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
@@ -206,6 +206,23 @@ const scopedSearch = await sdk.listings.getListings(
 ```
 
 `history.getGraph()` also accepts the currently observed `category` query param in addition to `paint_index`, but its exact semantics are still intentionally documented as only partially mapped.
+
+Offer and purchase happy-paths are also live-confirmed:
+
+```ts
+const offer = await sdk.account.createOffer({
+  contract_id: "947853172867730629",
+  price: 2970,
+});
+
+const counter = await sdk.account.counterOffer(offer.id!, {
+  price: 3000,
+});
+
+await sdk.account.cancelOffer(counter.id!);
+
+await sdk.listings.buyListing("807440137469430127", 3);
+```
 
 Use the schema helpers when you want to turn `/schema` into practical keyed lookups:
 

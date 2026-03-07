@@ -26,6 +26,21 @@ describe("AccountResource", () => {
     });
   });
 
+  it("creates an offer", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.createOffer({
+      contract_id: "947853172867730629",
+      price: 2970,
+    });
+
+    expect(post).toHaveBeenCalledWith("offers", {
+      contract_id: "947853172867730629",
+      price: 2970,
+    });
+  });
+
   it("requests a single offer by id", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ get } as never);
@@ -42,6 +57,26 @@ describe("AccountResource", () => {
     await resource.getOfferHistory("950518288876703091");
 
     expect(get).toHaveBeenCalledWith("offers/950518288876703091/history");
+  });
+
+  it("creates a counter-offer", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.counterOffer("950527459638512595", { price: 3000 });
+
+    expect(post).toHaveBeenCalledWith("offers/950527459638512595/counter-offer", {
+      price: 3000,
+    });
+  });
+
+  it("cancels an offer", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ delete: del } as never);
+
+    await resource.cancelOffer("950527619626041456");
+
+    expect(del).toHaveBeenCalledWith("offers/950527619626041456");
   });
 
   it("requests authenticated watchlist with params", async () => {
