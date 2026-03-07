@@ -2,9 +2,11 @@ import type { CsfloatHttpClient } from "../client.js";
 import type {
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
+  CsfloatBuyOrder,
   CsfloatBuyOrdersResponse,
   CsfloatCursorParams,
   CsfloatListingsResponse,
+  CreateBuyOrderRequest,
   CsfloatMessageResponse,
   CsfloatMeResponse,
   CsfloatMobileStatusResponse,
@@ -56,6 +58,18 @@ export class AccountResource {
 
   getBuyOrders(params: CsfloatPageParams = {}): Promise<CsfloatBuyOrdersResponse> {
     return this.client.get<CsfloatBuyOrdersResponse>("me/buy-orders", params as QueryParams);
+  }
+
+  createBuyOrder(request: CreateBuyOrderRequest): Promise<CsfloatBuyOrder> {
+    return this.client.post<CsfloatBuyOrder>("buy-orders", {
+      market_hash_name: request.market_hash_name,
+      max_price: request.max_price,
+      ...(request.quantity === undefined ? {} : { quantity: request.quantity }),
+    });
+  }
+
+  deleteBuyOrder(orderId: string): Promise<CsfloatMessageResponse> {
+    return this.client.delete<CsfloatMessageResponse>(`buy-orders/${orderId}`);
   }
 
   getAutoBids(): Promise<CsfloatAutoBid[]> {

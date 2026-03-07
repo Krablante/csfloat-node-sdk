@@ -91,6 +91,47 @@ describe("AccountResource", () => {
     });
   });
 
+  it("creates a buy order with explicit quantity", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.createBuyOrder({
+      market_hash_name: "AWP | Dragon Lore (Factory New)",
+      max_price: 1,
+      quantity: 1,
+    });
+
+    expect(post).toHaveBeenCalledWith("buy-orders", {
+      market_hash_name: "AWP | Dragon Lore (Factory New)",
+      max_price: 1,
+      quantity: 1,
+    });
+  });
+
+  it("creates a buy order without quantity when omitted", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.createBuyOrder({
+      market_hash_name: "AWP | Dragon Lore (Factory New)",
+      max_price: 1,
+    });
+
+    expect(post).toHaveBeenCalledWith("buy-orders", {
+      market_hash_name: "AWP | Dragon Lore (Factory New)",
+      max_price: 1,
+    });
+  });
+
+  it("deletes a buy order", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ delete: del } as never);
+
+    await resource.deleteBuyOrder("123");
+
+    expect(del).toHaveBeenCalledWith("buy-orders/123");
+  });
+
   it("requests auto bids", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ get } as never);

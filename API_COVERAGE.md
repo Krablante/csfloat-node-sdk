@@ -30,6 +30,8 @@ Status legend:
 | `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
 | `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline |
 | `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
+| `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
+| `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
 | `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, and `away` |
@@ -49,6 +51,8 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; supports `limit` |
 | `/me/watchlist` | `GET` | implemented | live | returns `{ data, cursor }`; supports `limit` |
 | `/listings?limit=40&min_ref_qty=20` | `GET` | discovered | live + frontend network | special unauthenticated public feed shape used by public pages; general search params still require auth |
+| `/listings?filter=sticker_combos` | `GET` | discovered | live + browser UI + auth API | UI label `Sticker Combos`; requires auth |
+| `/listings?filter=unique` | `GET` | discovered | live + browser UI + auth API | UI label `Unique Items`; requires auth |
 | `/listings/{auction_id}/bids` | `GET` | implemented | live | returns bid array for auction listings; empty array when no bids |
 | `/offers` | `POST` | discovered | live | route exists; seller account received `403 sellers can only use the counter-offers endpoint` |
 | `/buy-orders` | `POST` | discovered | live + public wrapper source | invalid payload returned validation error, confirming route existence |
@@ -82,14 +86,36 @@ Currently covered or typed:
 1. `limit`
 2. `cursor`
 3. `type`
-4. `market_hash_name`
-5. `def_index`
-6. `paint_index`
-7. `category`
-8. `min_float`
-9. `max_float`
-10. `sort_by`
-11. `user_id`
+4. `filter`
+5. `source`
+6. `market_hash_name`
+7. `def_index`
+8. `paint_index`
+9. `category`
+10. `min_float`
+11. `max_float`
+12. `sort_by`
+13. `user_id`
+
+Live-confirmed search behaviors:
+
+1. `sort_by` accepts:
+   - `lowest_price`
+   - `highest_price`
+   - `most_recent`
+   - `expires_soon`
+   - `lowest_float`
+   - `highest_float`
+   - `best_deal`
+   - `highest_discount`
+   - `float_rank`
+   - `num_bids`
+2. invalid `sort_by` returns `404`
+3. `filter=sticker_combos` and `filter=unique` are both live
+4. `filter` values are derived from browser UI labels:
+   - `Sticker Combos` -> `sticker_combos`
+   - `Unique Items` -> `unique`
+5. `source` is live and affects result ordering / inclusion, but its exact enum semantics are not yet fully mapped
 
 ## Listing Creation Surface
 

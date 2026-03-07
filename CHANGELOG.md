@@ -24,3 +24,5 @@ The format is based on Keep a Changelog.
 14. public schema endpoint support and additional discovery notes for hidden routes
 15. account write helpers for `PATCH /me`, notification read receipts, and mobile status updates
 16. discovery notes for the special unauthenticated public listings feed shape
+17. buy-order create/delete helpers based on live happy-path validation
+18. market `filter` and raw `source` query support based on browser and API recon

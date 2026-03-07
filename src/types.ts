@@ -18,6 +18,8 @@ export type QueryParams = Record<
   string | number | boolean | undefined | null
 >;
 
+export type CsfloatListingsFilter = "sticker_combos" | "unique" | string;
+
 export interface CsfloatCursorParams {
   cursor?: string;
   limit?: number;
@@ -430,6 +432,12 @@ export interface CsfloatBuyOrdersResponse {
   count?: number;
 }
 
+export interface CreateBuyOrderRequest {
+  market_hash_name: string;
+  max_price: number;
+  quantity?: number;
+}
+
 export interface CsfloatAutoBid {
   id?: string;
   created_at?: string;
@@ -482,6 +490,8 @@ export interface CsfloatListParams {
   cursor?: string;
   limit?: number;
   min_ref_qty?: number;
+  filter?: CsfloatListingsFilter;
+  source?: string | number;
   type?: ListingType;
   market_hash_name?: string;
   def_index?: number;

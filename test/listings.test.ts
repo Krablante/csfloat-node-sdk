@@ -50,6 +50,30 @@ describe("ListingsResource", () => {
     expect(get).toHaveBeenCalledWith("listings/949824804901487637/bids");
   });
 
+  it("passes discovered market params through getListings", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => ({ data: [] }));
+    const resource = new ListingsResource({
+      ...client,
+      get,
+    } as never);
+
+    await resource.getListings({
+      limit: 40,
+      sort_by: "most_recent",
+      filter: "unique",
+      source: 3,
+      min_ref_qty: 20,
+    });
+
+    expect(get).toHaveBeenCalledWith("listings", {
+      limit: 40,
+      sort_by: "most_recent",
+      filter: "unique",
+      source: 3,
+      min_ref_qty: 20,
+    });
+  });
+
   it("requests listing buy orders", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => []);
     const resource = new ListingsResource({
