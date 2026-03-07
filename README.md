@@ -24,7 +24,7 @@ There are community wrappers around the CSFloat API, but the ecosystem still ben
 
 1. TypeScript-first SDK surface
 2. `fetch`-based transport with no runtime dependency bloat
-3. account, inventory, user, stall, listing, and sales-history resources
+3. schema, meta, account, inventory, user, stall, listing, and history resources
 4. mutation helpers for create/update/delete listing flows
 5. generic cursor pagination helper
 6. GitHub Actions CI
@@ -45,13 +45,14 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 
 | Area | Status | Methods |
 |---|---|---|
-| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getOffers()`, `account.getWatchlist()` |
+| Meta | implemented | `meta.getSchema()`, `meta.getExchangeRates()`, `meta.getLocation()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getOffers()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getAutoBids()`, `account.getMobileStatus()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |
-| Listings | implemented | `listings.getListings()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()` |
+| Listings | implemented | `listings.getListings()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.getBuyOrders()`, `listings.getSimilar()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()` |
-| History | implemented | `history.getSales()` |
+| History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
 
@@ -98,6 +99,7 @@ const sdk = new CsfloatSdk({
   apiKey: process.env.CSFLOAT_API_KEY!,
 });
 
+const rates = await sdk.meta.getExchangeRates();
 const me = await sdk.account.getMe();
 const trades = await sdk.account.getTrades({ limit: 5 });
 const inventory = await sdk.inventory.getInventory();
@@ -106,7 +108,7 @@ const listings = await sdk.listings.getListings({
   type: "buy_now",
 });
 
-console.log(me.user.steam_id, trades.count, inventory.length, listings.data.length);
+console.log(rates.data.usd, me.user.steam_id, trades.count, inventory.length, listings.data.length);
 ```
 
 ## Safety Note For Mutations

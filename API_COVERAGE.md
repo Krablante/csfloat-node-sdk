@@ -22,10 +22,23 @@ Status legend:
 | `/me` | `GET` | implemented | live + python clone | authenticated account |
 | `/me/inventory` | `GET` | implemented | live + python clone | authenticated inventory |
 | `/history/{market_hash_name}/sales` | `GET` | implemented | live | sales history |
+| `/schema` | `GET` | implemented | live + public wrapper source | public item schema; both `/schema` and `/schema/` resolve |
+| `/meta/exchange-rates` | `GET` | implemented | live + public wrapper source | public exchange rate map |
+| `/meta/location` | `GET` | implemented | live + public wrapper source | public inferred location data |
+| `/me/account-standing` | `GET` | implemented | live + public wrapper source | authenticated account standing |
+| `/me/transactions` | `GET` | implemented | live + public wrapper source | returns `{ transactions, count }` |
+| `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
+| `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline |
+| `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
+| `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
+| `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
+| `/listings/{id}/buy-orders` | `GET` | implemented | live + public wrapper source | returns buy-order matches for a listing; auth required |
+| `/listings/{id}/similar` | `GET` | implemented | live + public wrapper source | returns similar live listings |
+| `/history/{market_hash_name}/graph` | `GET` | implemented | live + public wrapper source | requires `paint_index` query param |
 
-## Newly Discovered Live Endpoints
+## Expanded Live Endpoint Surface
 
-These routes are confirmed live as of 2026-03-07, but are not yet implemented in the SDK:
+These routes were confirmed live during the 2026-03-07 recon sweep:
 
 | Endpoint | Method | SDK Status | Validation Source | Notes |
 |---|---|---|---|---|
@@ -34,6 +47,29 @@ These routes are confirmed live as of 2026-03-07, but are not yet implemented in
 | `/me/watchlist` | `GET` | implemented | live | returns `{ data, cursor }`; supports `limit` |
 | `/listings/{auction_id}/bids` | `GET` | implemented | live | returns bid array for auction listings; empty array when no bids |
 | `/offers` | `POST` | discovered | live | route exists; seller account received `403 sellers can only use the counter-offers endpoint` |
+| `/buy-orders` | `POST` | discovered | live + public wrapper source | invalid payload returned validation error, confirming route existence |
+| `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
+| `/listings/buy` | `POST` | discovered | live + public wrapper source | invalid contract ids returned existence-confirming error |
+| `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
+| `/trades/bulk/accept` | `POST` | discovered | live + public wrapper source | invalid ids returned validation error |
+| `/offers/{id}` | `DELETE` | discovered | live | invalid offer id still reached cancel flow and returned `failed to cancel offer` |
+| `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
+| `/offers/{offerId}/history` | `GET` | discovered | live + public wrapper source | invalid offer id returned existence-confirming error |
+| `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
+| `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted empty `sent_offers` update and returned success |
+| `/me/mobile/status` | `POST` | discovered | live | invalid body returned `invalid version format`, confirming a write route distinct from the read route |
+
+## Likely Stale Or Wrapper-Only Routes
+
+These routes appeared in public wrappers, but live probing on 2026-03-07 did not confirm them:
+
+| Endpoint | Method | Live Result | Notes |
+|---|---|---|---|
+| `/listings/sell` | `POST` | `404` | likely stale wrapper surface |
+| `/listings/{id}/bit` | `POST` | `404` | likely stale wrapper surface |
+| `/me/trades/bulk/cancel` | `POST` | `404` | likely outdated path |
+| `/listings/{id}/sales` | `GET` | `404` | wrapper surface not confirmed live |
+| `/account-standing` | `GET` | `400 invalid resource` | stale path; live route is `/me/account-standing` |
 
 ## Query/Behavior Surface Covered
 
@@ -86,6 +122,26 @@ Live retesting on 2026-03-07 confirmed:
    - endpoint existence
    - live behavior on a specific account
    - unconditional public availability
+
+## Auth Notes
+
+Current live probing indicates:
+
+1. public routes include:
+   - `/schema`
+   - `/listings/{id}`
+   - `/users/{id}`
+   - `/users/{id}/stall`
+   - `/history/.../sales`
+   - `/history/.../graph`
+   - `/meta/exchange-rates`
+   - `/meta/location`
+   - `/listings/{auction_id}/bids`
+   - `/listings/{id}/similar`
+2. authenticated routes include:
+   - `/me*`
+   - `/listings/{id}/buy-orders`
+   - mutation routes such as `/buy-orders`, `/offers`, `/listings/buy`
 
 ## Repeatable Live Audit
 

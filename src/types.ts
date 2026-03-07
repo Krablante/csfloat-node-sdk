@@ -23,6 +23,11 @@ export interface CsfloatCursorParams {
   limit?: number;
 }
 
+export interface CsfloatPageParams {
+  page?: number;
+  limit?: number;
+}
+
 export interface CsfloatUserStatistics {
   median_trade_time?: number;
   total_avoided_trades?: number;
@@ -50,6 +55,12 @@ export interface CsfloatPaymentAccounts {
 export interface CsfloatFirebaseMessaging {
   platform?: string;
   last_updated?: string;
+}
+
+export interface CsfloatInferredLocation {
+  short?: string;
+  long?: string;
+  currency?: string;
 }
 
 export interface CsfloatUser {
@@ -215,6 +226,109 @@ export interface CsfloatMeResponse {
   };
 }
 
+export interface CsfloatExchangeRatesResponse {
+  data: Record<string, number>;
+}
+
+export interface CsfloatLocationResponse {
+  inferred_location?: CsfloatInferredLocation;
+}
+
+export interface CsfloatSchemaCollection {
+  key: string;
+  name: string;
+  has_crate?: boolean;
+}
+
+export interface CsfloatSchemaRarity {
+  key: string;
+  name: string;
+  value: number;
+}
+
+export interface CsfloatSchemaSticker {
+  market_hash_name: string;
+}
+
+export interface CsfloatSchemaKeychain {
+  market_hash_name: string;
+}
+
+export interface CsfloatSchemaCollectible {
+  market_hash_name: string;
+  image: string;
+  rarity: number;
+  price: number;
+}
+
+export interface CsfloatSchemaContainer {
+  market_hash_name: string;
+}
+
+export interface CsfloatSchemaAgent {
+  market_hash_name: string;
+  image: string;
+  rarity: number;
+  price: number;
+}
+
+export interface CsfloatSchemaCustomSticker {
+  group: number;
+  name: string;
+  count: number;
+}
+
+export interface CsfloatSchemaMusicKit {
+  market_hash_name: string;
+  rarity: number;
+  image: string;
+  normal_price: number;
+  stattrak_price: number;
+}
+
+export interface CsfloatSchemaHighlightReel {
+  market_hash_name?: string;
+  image?: string;
+  price?: number;
+}
+
+export interface CsfloatSchemaPaint {
+  index: number;
+  name: string;
+  max: number;
+  min: number;
+  rarity: number;
+  collection: string;
+  image: string;
+  souvenir?: boolean;
+  stattrak?: boolean;
+  normal_prices: number[];
+  normal_volume: number[];
+  stattrak_prices?: number[];
+  stattrak_volume?: number[];
+}
+
+export interface CsfloatSchemaWeapon {
+  name: string;
+  type: string;
+  sticker_amount: number;
+  paints: Record<string, CsfloatSchemaPaint>;
+}
+
+export interface CsfloatSchemaResponse {
+  collections: CsfloatSchemaCollection[];
+  rarities: CsfloatSchemaRarity[];
+  stickers: Record<string, CsfloatSchemaSticker>;
+  keychains: Record<string, CsfloatSchemaKeychain>;
+  collectibles: Record<string, CsfloatSchemaCollectible>;
+  containers: Record<string, CsfloatSchemaContainer>;
+  agents: Record<string, CsfloatSchemaAgent>;
+  custom_stickers: Record<string, CsfloatSchemaCustomSticker>;
+  music_kits: Record<string, CsfloatSchemaMusicKit>;
+  weapons: Record<string, CsfloatSchemaWeapon>;
+  highlight_reels?: Record<string, CsfloatSchemaHighlightReel>;
+}
+
 export interface CsfloatTradeSteamOffer {
   id?: string;
   state?: number | string;
@@ -252,6 +366,21 @@ export interface CsfloatTradesResponse {
   count?: number;
 }
 
+export interface CsfloatTransaction {
+  id?: string;
+  created_at?: string;
+  user_id?: string;
+  type?: string;
+  details?: Record<string, unknown>;
+  balance_offset?: number;
+  pending_offset?: number;
+}
+
+export interface CsfloatTransactionsResponse {
+  transactions: CsfloatTransaction[];
+  count?: number;
+}
+
 export interface CsfloatOffer {
   id?: string;
   created_at?: string;
@@ -269,6 +398,65 @@ export interface CsfloatOffer {
 export interface CsfloatOffersResponse {
   offers: CsfloatOffer[];
   count?: number;
+}
+
+export interface CsfloatNotification {
+  title?: string;
+  body?: string;
+  redirect_path?: string;
+  notification_id?: string;
+  type?: string;
+  created_at?: string;
+}
+
+export interface CsfloatNotificationsResponse {
+  data: CsfloatNotification[];
+  cursor?: string;
+}
+
+export interface CsfloatBuyOrder {
+  id?: string;
+  created_at?: string;
+  expression?: string;
+  market_hash_name?: string;
+  qty?: number;
+  price?: number;
+  max_price?: number;
+  quantity?: number;
+}
+
+export interface CsfloatBuyOrdersResponse {
+  orders: CsfloatBuyOrder[];
+  count?: number;
+}
+
+export interface CsfloatAutoBid {
+  id?: string;
+  created_at?: string;
+  max_price?: number;
+  contract_id?: string;
+}
+
+export interface CsfloatAccountStandingResponse {
+  standing?: string;
+  penalty_progress?: number;
+  recent_restrictions?: unknown[];
+}
+
+export interface CsfloatMobileStatusResponse {
+  created_at?: string;
+  updated_at?: string;
+  version?: string;
+  has_access_token?: boolean;
+  user_agent?: string;
+  status?: string;
+  message?: string;
+}
+
+export interface CsfloatHistoryGraphPoint {
+  count?: number;
+  day?: string;
+  avg_price?: number;
 }
 
 export interface CsfloatInventoryItem extends CsfloatItem {

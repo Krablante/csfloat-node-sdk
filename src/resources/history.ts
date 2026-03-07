@@ -1,5 +1,5 @@
 import type { CsfloatHttpClient } from "../client.js";
-import type { CsfloatListing } from "../types.js";
+import type { CsfloatHistoryGraphPoint, CsfloatListing } from "../types.js";
 
 export class HistoryResource {
   constructor(private readonly client: CsfloatHttpClient) {}
@@ -7,6 +7,16 @@ export class HistoryResource {
   getSales(marketHashName: string): Promise<CsfloatListing[]> {
     return this.client.get<CsfloatListing[]>(
       `history/${encodeURIComponent(marketHashName)}/sales`,
+    );
+  }
+
+  getGraph(
+    marketHashName: string,
+    params: { paint_index: number },
+  ): Promise<CsfloatHistoryGraphPoint[]> {
+    return this.client.get<CsfloatHistoryGraphPoint[]>(
+      `history/${encodeURIComponent(marketHashName)}/graph`,
+      params,
     );
   }
 }

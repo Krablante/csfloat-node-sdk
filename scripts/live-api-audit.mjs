@@ -109,6 +109,7 @@ async function main() {
     allow_live_mutations: config.allowLiveMutations,
     known_endpoints: [],
     candidate_endpoints: [],
+    mutation_probes: [],
     mutation_checks: [],
   };
 
@@ -123,12 +124,33 @@ async function main() {
   const marketHashName = firstListing?.item?.market_hash_name || null;
 
   const knownRoutes = [
+    ["GET", "/schema"],
+    ["GET", "/meta/exchange-rates"],
+    ["GET", "/meta/location"],
     ["GET", "/me"],
     ["GET", "/me/inventory"],
+    ["GET", "/me/account-standing"],
+    ["GET", "/me/transactions?limit=1"],
+    ["GET", "/me/trades?limit=1"],
+    ["GET", "/me/offers?limit=1"],
+    ["GET", "/me/offers-timeline?limit=1"],
+    ["GET", "/me/watchlist?limit=1"],
+    ["GET", "/me/notifications/timeline"],
+    ["GET", "/me/buy-orders?limit=1"],
+    ["GET", "/me/auto-bids"],
+    ["GET", "/me/mobile/status"],
     ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),
     ["GET", "/listings?limit=1&type=buy_now"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
+    ["GET", "/listings/948726619852374910/bids"],
+    ["GET", "/listings/949824804901487637/bids"],
+    ["GET", "/listings/948726619852374910/buy-orders"],
+    ["GET", "/listings/948726619852374910/similar"],
     ...(marketHashName ? [["GET", `/history/${encodeURIComponent(marketHashName)}/sales`]] : []),
+    [
+      "GET",
+      "/history/Souvenir%20P250%20%7C%20Boreal%20Forest%20(Factory%20New)/graph?paint_index=77",
+    ],
   ];
 
   for (const [method, route] of knownRoutes) {
@@ -143,24 +165,59 @@ async function main() {
   }
 
   const candidateRoutes = [
-    ["GET", "/me/trades?limit=1"],
-    ["GET", "/me/offers?limit=1"],
-    ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/stall"],
     ["GET", "/me/listings"],
+    ["GET", "/account-standing"],
     ["GET", "/notifications?limit=1"],
     ["GET", "/watchlist?limit=1"],
     ["GET", "/bids?limit=1"],
     ["GET", "/offers?limit=1"],
-    ["POST", "/offers", {}],
     ...(listingId ? [["GET", `/listings/${listingId}/bids`]] : []),
-    ["GET", "/listings/948726619852374910/bids"],
-    ["GET", "/listings/949824804901487637/bids"],
+    ["GET", "/listings/950170960026273280/sales"],
+    ["GET", "/listings/948726619852374910/sales"],
+    ["GET", "/offers/0/history"],
+    ["GET", "/me/notifications"],
+    ["GET", "/me/notification"],
+    ["GET", "/me/offer-history?limit=1"],
+    ["GET", "/offers/history?limit=1"],
   ];
 
   for (const [method, route, body] of candidateRoutes) {
     const result = await request(method, route, body);
     summary.candidate_endpoints.push({
+      method,
+      route,
+      status: result.status,
+      ok: result.ok,
+      summary: result.ok ? summarizePayload(result.data) : errorSummary(result.data),
+    });
+  }
+
+  const mutationProbeRoutes = [
+    ["POST", "/offers", {}],
+    ["POST", "/buy-orders", {}],
+    ["DELETE", "/buy-orders/0"],
+    ["POST", "/listings/buy", { contract_ids: ["0"], total_price: 0 }],
+    ["POST", "/listings/sell", {}],
+    ["POST", "/me/notifications/read-receipt", { last_read_id: "0" }],
+    ["POST", "/trades/bulk/accept", { trade_ids: ["0"] }],
+    ["POST", "/trades/bulk/cancel", { trade_ids: ["0"] }],
+    ["POST", "/me/trades/bulk/cancel", { trade_ids: ["0"] }],
+    ["POST", "/me/verify-sms", { phone_number: "0" }],
+    ["POST", "/me/mobile/status", {}],
+    ["POST", "/listings/950170960026273280/bit", { max_price: 1 }],
+    ["DELETE", "/offers/0"],
+    [
+      "POST",
+      "/trades/steam-status/new-offer",
+      { offer_id: "0", given_asset_ids: ["0"], received_asset_ids: ["0"] },
+    ],
+    ["POST", "/trades/steam-status/offer", { sent_offers: [], type: 0 }],
+  ];
+
+  for (const [method, route, body] of mutationProbeRoutes) {
+    const result = await request(method, route, body);
+    summary.mutation_probes.push({
       method,
       route,
       status: result.status,

@@ -49,4 +49,30 @@ describe("ListingsResource", () => {
 
     expect(get).toHaveBeenCalledWith("listings/949824804901487637/bids");
   });
+
+  it("requests listing buy orders", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => []);
+    const resource = new ListingsResource({
+      ...client,
+      get,
+    } as never);
+
+    await resource.getBuyOrders("948726619852374910", { limit: 10 });
+
+    expect(get).toHaveBeenCalledWith("listings/948726619852374910/buy-orders", {
+      limit: 10,
+    });
+  });
+
+  it("requests similar listings", async () => {
+    const get = vi.fn(async (_path: string) => []);
+    const resource = new ListingsResource({
+      ...client,
+      get,
+    } as never);
+
+    await resource.getSimilar("948726619852374910");
+
+    expect(get).toHaveBeenCalledWith("listings/948726619852374910/similar");
+  });
 });

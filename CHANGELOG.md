@@ -19,3 +19,6 @@ The format is based on Keep a Changelog.
 9. authenticated trades, offers, and watchlist endpoints
 10. auction bid fetching for listing endpoints
 11. repeatable live API audit script and discovery notes
+12. meta, buy-order, notification, transaction, and account-standing read endpoints
+13. listing similar-items and history-graph read endpoints
+14. public schema endpoint support and additional discovery notes for hidden routes
