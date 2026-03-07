@@ -451,6 +451,7 @@ export interface CsfloatBuyOrder {
   price?: number;
   max_price?: number;
   quantity?: number;
+  bought_item_count?: number;
 }
 
 export interface CsfloatBuyOrdersResponse {

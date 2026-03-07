@@ -291,6 +291,18 @@ To include the riskier mutation discovery probes as well:
 ALLOW_RISKY_PROBES=1 ENV_FILE=/path/to/.env npm run audit:live
 ```
 
+Run the deeper response-shape audit when you want raw payload samples and unioned field paths across the currently supported live surface:
+
+```bash
+ENV_FILE=/path/to/.env npm run audit:shapes
+```
+
+To let the shape audit create and remove a temporary low-price buy order so non-empty `buy_orders` fields can be observed:
+
+```bash
+ALLOW_LIVE_MUTATIONS=1 ENV_FILE=/path/to/.env npm run audit:shapes
+```
+
 ## License
 
 [MIT](./LICENSE)
