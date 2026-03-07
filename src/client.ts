@@ -1,4 +1,4 @@
-import { CsfloatSdkError } from "./errors.js";
+import { CsfloatSdkError, type CsfloatErrorKind } from "./errors.js";
 import type { QueryParams } from "./types.js";
 import { cleanParams } from "./utils.js";
 
@@ -27,6 +27,84 @@ function extractErrorCode(details: unknown): string | undefined {
 
   const code = details.code;
   return code === undefined || code === null ? undefined : String(code);
+}
+
+function extractApiMessage(details: unknown): string | undefined {
+  if (!details || typeof details !== "object" || !("message" in details)) {
+    return undefined;
+  }
+
+  const message = details.message;
+  return typeof message === "string" && message.length > 0 ? message : undefined;
+}
+
+function classifyApiError(
+  status: number,
+  details: unknown,
+): CsfloatErrorKind {
+  const apiMessage = extractApiMessage(details)?.toLowerCase() ?? "";
+
+  if (status === 401) {
+    return "authentication";
+  }
+
+  if (status === 403) {
+    if (apiMessage.includes("counter-offers endpoint")) {
+      return "role_gated";
+    }
+
+    return "authorization";
+  }
+
+  if (status === 404) {
+    return "not_found";
+  }
+
+  if (status === 429) {
+    return "rate_limit";
+  }
+
+  if (status >= 500) {
+    return "server";
+  }
+
+  if (status === 400) {
+    if (
+      apiMessage.includes("fully onboard") ||
+      apiMessage.includes("stripe") ||
+      apiMessage.includes("payout")
+    ) {
+      return "account_gated";
+    }
+
+    if (apiMessage.includes("counter-offers endpoint")) {
+      return "role_gated";
+    }
+
+    return "validation";
+  }
+
+  return "unknown";
+}
+
+function getErrorMessage(
+  status: number | undefined,
+  apiMessage: string | undefined,
+  fallback: string,
+): string {
+  if (status === undefined) {
+    return fallback;
+  }
+
+  if (!apiMessage) {
+    return `CSFloat API request failed with status ${status}`;
+  }
+
+  return `CSFloat API request failed with status ${status}: ${apiMessage}`;
+}
+
+function isRetryableKind(kind: CsfloatErrorKind): boolean {
+  return kind === "rate_limit" || kind === "server" || kind === "timeout" || kind === "network";
 }
 
 function isRetryableMethod(method: string, retryUnsafeRequests: boolean): boolean {
@@ -203,14 +281,16 @@ export class CsfloatHttpClient {
           }
 
           const code = extractErrorCode(data);
-          throw new CsfloatSdkError(
-            `CSFloat API request failed with status ${response.status}`,
-            {
-              status: response.status,
-              details: data,
-              ...(code === undefined ? {} : { code }),
-            },
-          );
+          const apiMessage = extractApiMessage(data);
+          const kind = classifyApiError(response.status, data);
+          throw new CsfloatSdkError(getErrorMessage(response.status, apiMessage, "CSFloat API request failed"), {
+            status: response.status,
+            details: data,
+            kind,
+            retryable: canRetry && isRetryableKind(kind),
+            ...(code === undefined ? {} : { code }),
+            ...(apiMessage === undefined ? {} : { apiMessage }),
+          });
         }
 
         return data as T;
@@ -220,7 +300,11 @@ export class CsfloatHttpClient {
         }
 
         if (error instanceof Error && error.name === "AbortError") {
-          throw new CsfloatSdkError("CSFloat API request timed out");
+          throw new CsfloatSdkError("CSFloat API request timed out", {
+            kind: "timeout",
+            retryable: canRetry,
+            cause: error,
+          });
         }
 
         if (canRetry && attempt < this.maxRetries) {
@@ -235,6 +319,9 @@ export class CsfloatHttpClient {
 
         throw new CsfloatSdkError("CSFloat API request failed", {
           details: error,
+          kind: "network",
+          retryable: canRetry,
+          cause: error,
         });
       } finally {
         clearTimeout(timer);

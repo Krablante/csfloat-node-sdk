@@ -160,6 +160,23 @@ console.log(
 
 By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.
 
+Errors are surfaced as `CsfloatSdkError` with normalized metadata such as `status`, `code`, `apiMessage`, `kind`, and `retryable`. The current error taxonomy includes `validation`, `authentication`, `authorization`, `account_gated`, `role_gated`, `not_found`, `rate_limit`, `server`, `timeout`, and `network`.
+
+```ts
+import { CsfloatSdkError, isCsfloatSdkError } from "csfloat-node-sdk";
+
+try {
+  await sdk.listings.createBuyNowListing({
+    asset_id: "123",
+    price: 99,
+  });
+} catch (error) {
+  if (isCsfloatSdkError(error) && error.kind === "account_gated") {
+    console.error(error.apiMessage);
+  }
+}
+```
+
 If you need proxying or custom transport behavior, you can inject your own `fetch` implementation or pass a Node-compatible `dispatcher`:
 
 ```ts

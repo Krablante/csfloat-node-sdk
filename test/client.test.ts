@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { CsfloatHttpClient } from "../src/client.js";
-import { CsfloatSdkError } from "../src/errors.js";
+import { CsfloatSdkError, isCsfloatSdkError } from "../src/errors.js";
 
 describe("CsfloatHttpClient", () => {
   afterEach(() => {
@@ -47,6 +47,9 @@ describe("CsfloatHttpClient", () => {
       name: "CsfloatSdkError",
       status: 400,
       code: "4",
+      kind: "validation",
+      retryable: false,
+      apiMessage: "invalid type",
       details: {
         code: 4,
         message: "invalid type",
@@ -68,7 +71,56 @@ describe("CsfloatHttpClient", () => {
     await expect(client.get("missing")).rejects.toMatchObject<CsfloatSdkError>({
       name: "CsfloatSdkError",
       status: 404,
+      kind: "not_found",
       details: "404 page not found\n",
+    });
+  });
+
+  it("classifies role-gated responses", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(
+        JSON.stringify({
+          code: 17,
+          message: "sellers can only use the counter-offers endpoint",
+        }),
+        {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({ apiKey: "secret" });
+
+    await expect(client.post("offers", {})).rejects.toMatchObject<CsfloatSdkError>({
+      status: 403,
+      kind: "role_gated",
+      apiMessage: "sellers can only use the counter-offers endpoint",
+    });
+  });
+
+  it("classifies account-gated responses", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(
+        JSON.stringify({
+          code: 134,
+          message: "You need to fully onboard with Stripe for payouts to list further items",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({ apiKey: "secret" });
+
+    await expect(client.post("listings", {})).rejects.toMatchObject<CsfloatSdkError>({
+      status: 400,
+      kind: "account_gated",
+      apiMessage: "You need to fully onboard with Stripe for payouts to list further items",
     });
   });
 
@@ -145,8 +197,32 @@ describe("CsfloatHttpClient", () => {
     await expect(client.post("offers", {})).rejects.toMatchObject<CsfloatSdkError>({
       name: "CsfloatSdkError",
       status: 429,
+      kind: "rate_limit",
+      retryable: false,
     });
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("classifies transport failures as network errors", async () => {
+    const fetchMock = vi.fn(async () => {
+      throw new TypeError("fetch failed");
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      maxRetries: 0,
+    });
+
+    await expect(client.get("schema")).rejects.toMatchObject<CsfloatSdkError>({
+      kind: "network",
+      retryable: true,
+    });
+  });
+
+  it("exports a working CsfloatSdkError type guard", () => {
+    expect(isCsfloatSdkError(new CsfloatSdkError("boom"))).toBe(true);
+    expect(isCsfloatSdkError(new Error("boom"))).toBe(false);
   });
 
   it("uses injected fetch implementation when provided", async () => {

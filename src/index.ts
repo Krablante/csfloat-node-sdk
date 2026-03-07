@@ -1,6 +1,6 @@
 export { CsfloatHttpClient } from "./client.js";
 export { CsfloatSdk } from "./sdk.js";
-export { CsfloatSdkError } from "./errors.js";
+export { CsfloatSdkError, isCsfloatSdkError } from "./errors.js";
 export {
   buildBlueRange,
   buildFadeRange,
@@ -27,6 +27,7 @@ export {
 export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
 export type { CsfloatClientOptions, CsfloatFetch } from "./client.js";
+export type { CsfloatErrorKind, CsfloatSdkErrorOptions } from "./errors.js";
 export type {
   CsfloatBlueRangeParams,
   CsfloatCategoryPreset,
