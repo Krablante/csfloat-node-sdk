@@ -106,6 +106,18 @@ describe("ListingsResource", () => {
     });
   });
 
+  it("requests the public price list", async () => {
+    const get = vi.fn(async (_path: string) => []);
+    const resource = new ListingsResource({
+      ...client,
+      get,
+    } as never);
+
+    await resource.getPriceList();
+
+    expect(get).toHaveBeenCalledWith("listings/price-list");
+  });
+
   it("requests listing buy orders", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => []);
     const resource = new ListingsResource({

@@ -13,6 +13,7 @@ Status legend:
 | Endpoint | Method | SDK Status | Validation Source | Notes |
 |---|---|---|---|---|
 | `/listings` | `GET` | implemented | official docs + live | supports query params |
+| `/listings/price-list` | `GET` | implemented | live | public price index; returns `{ market_hash_name, quantity, min_price }[]` |
 | `/listings/{id}` | `GET` | implemented | official docs + live | single listing fetch |
 | `/listings` | `POST` | implemented + account-gated | official docs + live | explicit `buy_now` supported; current live retest hit account-state gate for further listings |
 | `/listings/{id}` | `PATCH` | implemented | live | update listing price |
@@ -69,8 +70,8 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
 | `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
-| `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
-| `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted empty `sent_offers` update and returned success |
+| `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | accepted string-form `offer_id` payloads and returned success even for `"0"`; exact side effects still unmapped |
+| `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }` with success; empty sync produced no observed trade-state change |
 | `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
 
 ## Likely Stale Or Wrapper-Only Routes
@@ -222,6 +223,10 @@ Live-confirmed search behaviors:
 40. `PATCH /buy-orders/{id}` happy-path is confirmed with body `{ max_price }`; `PUT` and `POST` on the same route return `405`
 41. `POST /offers/{id}/accept` exists and returns `code 91: failed to accept offer` for an invalid offer id; the route is discovered, but the happy-path is intentionally not executed yet because that would complete a real purchase
 42. `POST /trades/bulk/accept` is the confirmed `accept sale` route for queued seller trades; on a real `$0.05` queued sale it returned `{ data: [trade] }`, transitioned the trade from `queued` to `pending`, and populated `accepted_at`, `trade_url`, `trade_token`, and `steam_offer` timing fields
+43. `GET /listings/price-list` is a public market-wide price index that returned `24653` entries during the 2026-03-07 live check; each entry currently exposes `market_hash_name`, `quantity`, and `min_price`
+44. currently observed query params on `/listings/price-list` such as `market_hash_name` and `limit` appear to be silently ignored; exact filtering/pagination semantics are not yet mapped
+45. `POST /trades/steam-status/new-offer` appears to key off a string `offer_id` field, not `trade_id`; `{ offer_id: "0" }` returned success while `{ trade_id: "0" }` returned `invalid offer id format`
+46. `POST /trades/steam-status/offer` accepts `sent_offers` and optional `trade_id` payloads, but an empty-array sync produced no observed state change on the current pending trade, so it remains discovered-only
 
 ## Listing Creation Surface
 

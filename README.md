@@ -87,7 +87,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |
-| Listings | implemented | `listings.getListings()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.getBuyOrders()`, `listings.getSimilar()` |
+| Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
@@ -146,8 +146,16 @@ const listings = await sdk.listings.getListings({
   limit: 10,
   type: "buy_now",
 });
+const priceList = await sdk.listings.getPriceList();
 
-console.log(rates.data.usd, me.user.steam_id, trades.count, inventory.length, listings.data.length);
+console.log(
+  rates.data.usd,
+  me.user.steam_id,
+  trades.count,
+  inventory.length,
+  listings.data.length,
+  priceList[0]?.market_hash_name,
+);
 ```
 
 By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.

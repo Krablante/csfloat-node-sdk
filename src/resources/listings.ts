@@ -12,6 +12,7 @@ import type {
   CsfloatListingsResponse,
   CsfloatListParams,
   CsfloatMessageResponse,
+  CsfloatPriceListEntry,
   QueryParams,
   UpdateListingRequest,
 } from "../types.js";
@@ -21,6 +22,10 @@ export class ListingsResource {
 
   getListings(params: CsfloatListParams = {}): Promise<CsfloatListingsResponse> {
     return this.client.get<CsfloatListingsResponse>("listings", params as QueryParams);
+  }
+
+  getPriceList(): Promise<CsfloatPriceListEntry[]> {
+    return this.client.get<CsfloatPriceListEntry[]>("listings/price-list");
   }
 
   iterateListings(params: Omit<CsfloatListParams, "cursor"> = {}) {

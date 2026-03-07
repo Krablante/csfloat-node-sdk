@@ -181,6 +181,7 @@ async function main() {
     ["GET", "/schema"],
     ["GET", "/meta/exchange-rates"],
     ["GET", "/meta/location"],
+    ["GET", "/listings/price-list"],
     ["GET", "/me"],
     ["GET", "/me/inventory"],
     ["GET", "/me/account-standing"],
@@ -223,6 +224,7 @@ async function main() {
     ["GET", "/schema"],
     ["GET", "/meta/exchange-rates"],
     ["GET", "/meta/location"],
+    ["GET", "/listings/price-list"],
     ["GET", "/listings?limit=40&min_ref_qty=20"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
     ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),
@@ -351,9 +353,9 @@ async function main() {
     [
       "POST",
       "/trades/steam-status/new-offer",
-      { offer_id: "0", given_asset_ids: ["0"], received_asset_ids: ["0"] },
+      { offer_id: "0" },
     ],
-    ["POST", "/trades/steam-status/offer", { sent_offers: [], type: 0 }],
+    ["POST", "/trades/steam-status/offer", { sent_offers: [] }],
   ];
 
   if (config.allowRiskyProbes) {

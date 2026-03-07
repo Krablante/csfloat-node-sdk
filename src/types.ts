@@ -245,6 +245,12 @@ export interface CsfloatListingsResponse {
   total_price?: number;
 }
 
+export interface CsfloatPriceListEntry {
+  market_hash_name: string;
+  quantity: number;
+  min_price: number;
+}
+
 export interface CsfloatMeResponse {
   user: CsfloatAuthenticatedUser & {
     steam_id: string;

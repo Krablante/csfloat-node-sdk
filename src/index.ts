@@ -83,6 +83,7 @@ export type {
   CsfloatOffersResponse,
   CsfloatPageParams,
   CsfloatPaymentAccounts,
+  CsfloatPriceListEntry,
   CsfloatReferencePrice,
   CsfloatSchemaAgent,
   CsfloatSchemaCollection,
