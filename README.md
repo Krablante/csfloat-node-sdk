@@ -1,6 +1,9 @@
 # csfloat-node-sdk
 
 [![CI](https://github.com/Krablante/csfloat-node-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/Krablante/csfloat-node-sdk/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-first-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Live API Audit](https://img.shields.io/badge/live%20API-audited-1f883d)](./scripts/live-api-audit.mjs)
+[![Coverage Matrix](https://img.shields.io/badge/API%20coverage-matrix-0a7ea4)](./API_COVERAGE.md)
 [![License: MIT](https://img.shields.io/github/license/Krablante/csfloat-node-sdk)](./LICENSE)
 [![Issues](https://img.shields.io/github/issues/Krablante/csfloat-node-sdk)](https://github.com/Krablante/csfloat-node-sdk/issues)
 
@@ -8,9 +11,18 @@ Unofficial Node.js / TypeScript SDK for the CSFloat API.
 
 This repository aims to provide a clean, typed, public SDK around the **currently known** CSFloat API surface, with honest coverage claims, maintainable abstractions, and release-quality OSS hygiene from day one.
 
-It is also intended to become one of the most comprehensive public maps of the currently accessible CSFloat API surface, consolidating official docs, public wrapper discovery, and live endpoint validation in one maintainer-grade repository.
+It is also intended to become one of the most comprehensive public maps of the currently accessible CSFloat API surface, consolidating official docs, public wrapper discovery, live endpoint validation, and practical SDK ergonomics in one maintainer-grade repository.
 
 Status: initial public release, actively maintained, and expanding coverage of the currently known CSFloat API surface.
+
+> The goal is simple: ship a maintainer-grade TypeScript SDK plus the strongest public CSFloat API reference we can responsibly validate.
+
+## At A Glance
+
+- broad, live-validated CSFloat API coverage with explicit docs instead of vague claims
+- TypeScript-first SDK surface for real account, market, and listing workflows
+- query helpers for search-heavy use cases, including wear presets and market scan params
+- release-ready repository hygiene: CI, changelog, contributing guide, security policy, and coverage matrix
 
 ## Why This Exists
 
@@ -23,17 +35,30 @@ There are community wrappers around the CSFloat API, but the ecosystem still ben
 5. a repository that is ready for real maintenance, review, and release workflows
 6. a consolidated public reference for the widest responsibly validated CSFloat API surface we can document
 
-## Highlights
+## Why This Repository Stands Out
 
 1. TypeScript-first SDK surface
 2. `fetch`-based transport with no runtime dependency bloat
-3. schema, meta, account, inventory, user, stall, listing, and history resources
-4. mutation helpers for create/update/delete listing flows
+3. schema, meta, account, inventory, user, stall, listing, and history resources in one package
+4. mutation helpers for create/update/delete listing flows and validated account-side write helpers
 5. generic cursor pagination helper
-6. GitHub Actions CI
-7. release-facing OSS files (`CHANGELOG`, `CONTRIBUTING`, `SECURITY`, `API_COVERAGE`)
-8. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
-9. repeatable live API audit script for validation and endpoint discovery
+6. live-confirmed search support for `sort_by`, `filter`, `source`, `min_ref_qty`, `min_float`, and `max_float`
+7. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
+8. GitHub Actions CI
+9. release-facing OSS files (`CHANGELOG`, `CONTRIBUTING`, `SECURITY`, `API_COVERAGE`)
+10. repeatable live API audit script for validation and endpoint discovery
+
+## Positioning
+
+This repository is not trying to be another thin wrapper around a couple of obvious endpoints.
+
+It is being built as a serious public SDK and documentation hub for the broadest responsibly confirmed CSFloat API surface we can verify in practice. That means:
+
+1. no pretending to cover routes we have not validated
+2. no hiding uncertainty around undocumented behavior
+3. no separating SDK ergonomics from endpoint discovery and coverage notes
+
+If you want a CSFloat package that is both usable in code and useful as a public API reference, that is the standard this repository is targeting.
 
 ## Coverage Statement
 
@@ -135,6 +160,8 @@ const mwListings = await sdk.listings.getListings({
   ...getWearParams("MW"),
 });
 ```
+
+For the full, route-by-route support picture, see [API_COVERAGE.md](./API_COVERAGE.md).
 
 ## Safety Note For Mutations
 
