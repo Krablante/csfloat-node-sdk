@@ -29,6 +29,7 @@ There are community wrappers around the CSFloat API, but the ecosystem still ben
 5. generic cursor pagination helper
 6. GitHub Actions CI
 7. release-facing OSS files (`CHANGELOG`, `CONTRIBUTING`, `SECURITY`, `API_COVERAGE`)
+8. repeatable live API audit script for validation and endpoint discovery
 
 ## Coverage Statement
 
@@ -151,6 +152,18 @@ npm install
 npm test
 npm run check
 npm run build
+```
+
+Run the repeatable live API audit against a local `.env` file:
+
+```bash
+ENV_FILE=/path/to/.env npm run audit:live
+```
+
+To opt into reversible live mutation checks:
+
+```bash
+ALLOW_LIVE_MUTATIONS=1 ENV_FILE=/path/to/.env npm run audit:live
 ```
 
 ## License

@@ -37,7 +37,8 @@
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "check": "tsc --noEmit",
     "test": "vitest run",
-    "example:basic": "node --env-file=.env examples/basic.mjs"
+    "example:basic": "node --env-file=.env examples/basic.mjs",
+    "audit:live": "node scripts/live-api-audit.mjs"
   },
   "keywords": [
     "csfloat",
