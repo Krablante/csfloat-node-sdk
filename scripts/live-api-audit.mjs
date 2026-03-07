@@ -372,6 +372,33 @@ async function main() {
   }
 
   if (config.allowLiveMutations && steamId) {
+    const buyOrderCreate = await request("POST", "/buy-orders", {
+      market_hash_name: "Sticker | Aleksib | Paris 2023",
+      max_price: 1,
+    });
+
+    if (buyOrderCreate.ok && buyOrderCreate.data?.id) {
+      const orderId = String(buyOrderCreate.data.id);
+      const buyOrderPatch = await request("PATCH", `/buy-orders/${orderId}`, {
+        max_price: 2,
+      });
+      const buyOrderDelete = await request("DELETE", `/buy-orders/${orderId}`);
+
+      summary.mutation_checks.push({
+        method: "POST/PATCH/DELETE",
+        route: `/buy-orders/${orderId}`,
+        status: buyOrderCreate.status,
+        ok: buyOrderCreate.ok && buyOrderPatch.ok && buyOrderDelete.ok,
+        details: {
+          created_price: buyOrderCreate.data?.price,
+          patched_price: buyOrderPatch.data?.price,
+          delete_summary: buyOrderDelete.ok
+            ? summarizePayload(buyOrderDelete.data)
+            : errorSummary(buyOrderDelete.data),
+        },
+      });
+    }
+
     const stall = await request("GET", `/users/${steamId}/stall?limit=1&type=buy_now`);
     const trackedListing = stall.ok && stall.data?.data?.[0] ? stall.data.data[0] : null;
 

@@ -185,6 +185,19 @@ describe("AccountResource", () => {
     });
   });
 
+  it("updates a buy order", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.updateBuyOrder("950530002502421241", {
+      max_price: 2,
+    });
+
+    expect(patch).toHaveBeenCalledWith("buy-orders/950530002502421241", {
+      max_price: 2,
+    });
+  });
+
   it("deletes a buy order", async () => {
     const del = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ delete: del } as never);

@@ -109,5 +109,6 @@ export type {
   CsfloatCursorParams,
   ListingType,
   SortBy,
+  UpdateBuyOrderRequest,
   UpdateListingRequest,
 } from "./types.js";

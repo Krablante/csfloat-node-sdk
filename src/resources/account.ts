@@ -20,6 +20,7 @@ import type {
   CsfloatUpdateMeRequest,
   CreateOfferRequest,
   QueryParams,
+  UpdateBuyOrderRequest,
 } from "../types.js";
 
 export class AccountResource {
@@ -89,6 +90,10 @@ export class AccountResource {
       max_price: request.max_price,
       ...(request.quantity === undefined ? {} : { quantity: request.quantity }),
     });
+  }
+
+  updateBuyOrder(orderId: string, request: UpdateBuyOrderRequest): Promise<CsfloatBuyOrder> {
+    return this.client.patch<CsfloatBuyOrder>(`buy-orders/${orderId}`, request);
   }
 
   deleteBuyOrder(orderId: string): Promise<CsfloatMessageResponse> {

@@ -485,6 +485,10 @@ export interface CreateBuyOrderRequest {
   quantity?: number;
 }
 
+export interface UpdateBuyOrderRequest {
+  max_price: number;
+}
+
 export interface CreateOfferRequest {
   contract_id: string;
   price: number;

@@ -36,6 +36,7 @@ Status legend:
 | `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline |
 | `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
 | `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
+| `/buy-orders/{id}` | `PATCH` | implemented | live | confirmed happy-path update with body `{ max_price }` |
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
@@ -217,6 +218,7 @@ Live-confirmed search behaviors:
 37. `POST /offers/{id}/counter-offer` happy-path is confirmed with body `{ price }` on a seller account
 38. `DELETE /offers/{id}` can cancel an active offer thread and returns `{ "message": "offer canceled" }`; exact semantics are confirmed for cancellation, but buyer-vs-seller decline permutations are still not fully mapped
 39. `POST /listings/buy` happy-path is confirmed with body `{ contract_ids: string[], total_price }` and returns `{ "message": "all listings purchased" }`
+40. `PATCH /buy-orders/{id}` happy-path is confirmed with body `{ max_price }`; `PUT` and `POST` on the same route return `405`
 
 ## Listing Creation Surface
 
