@@ -32,7 +32,8 @@ There are community wrappers around the CSFloat API, but the ecosystem still ben
 5. generic cursor pagination helper
 6. GitHub Actions CI
 7. release-facing OSS files (`CHANGELOG`, `CONTRIBUTING`, `SECURITY`, `API_COVERAGE`)
-8. repeatable live API audit script for validation and endpoint discovery
+8. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
+9. repeatable live API audit script for validation and endpoint discovery
 
 ## Coverage Statement
 
@@ -45,6 +46,7 @@ This SDK covers the **currently known** CSFloat API surface based on:
 The intent is not just to expose a few popular endpoints, but to centralize the broadest responsibly confirmed public and authenticated CSFloat API surface in one OSS repository.
 
 Confirmed market query support now includes live-tested `sort_by`, `filter`, `source`, and `min_ref_qty` behavior for listing scans. Exact `source` semantics are still being mapped, so the SDK exposes it as a raw working parameter rather than a finalized enum.
+Wear filtering via `min_float` / `max_float` is also live-confirmed, and the SDK exports ready-to-use preset helpers matching the CSFloat search UI.
 
 See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support matrix.
 
@@ -116,6 +118,22 @@ const listings = await sdk.listings.getListings({
 });
 
 console.log(rates.data.usd, me.user.steam_id, trades.count, inventory.length, listings.data.length);
+```
+
+Use the wear helpers for search-style float ranges:
+
+```ts
+import { CsfloatSdk, getWearParams } from "csfloat-node-sdk";
+
+const sdk = new CsfloatSdk({
+  apiKey: process.env.CSFLOAT_API_KEY!,
+});
+
+const mwListings = await sdk.listings.getListings({
+  limit: 10,
+  sort_by: "most_recent",
+  ...getWearParams("MW"),
+});
 ```
 
 ## Safety Note For Mutations

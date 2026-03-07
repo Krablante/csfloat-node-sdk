@@ -2,8 +2,10 @@ export { CsfloatHttpClient } from "./client.js";
 export { CsfloatSdk } from "./sdk.js";
 export { CsfloatSdkError } from "./errors.js";
 export { paginateCursor } from "./pagination.js";
+export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
 export type { CsfloatClientOptions } from "./client.js";
+export type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 export type {
   Category,
   CsfloatAccountStandingResponse,

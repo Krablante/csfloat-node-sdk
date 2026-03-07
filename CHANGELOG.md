@@ -26,3 +26,4 @@ The format is based on Keep a Changelog.
 16. discovery notes for the special unauthenticated public listings feed shape
 17. buy-order create/delete helpers based on live happy-path validation
 18. market `filter` and raw `source` query support based on browser and API recon
+19. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`

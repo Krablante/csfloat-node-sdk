@@ -115,7 +115,18 @@ Live-confirmed search behaviors:
 4. `filter` values are derived from browser UI labels:
    - `Sticker Combos` -> `sticker_combos`
    - `Unique Items` -> `unique`
-5. `source` is live and affects result ordering / inclusion, but its exact enum semantics are not yet fully mapped
+5. wear filtering via `min_float` / `max_float` is live
+6. browser wear shortcuts map like this:
+   - `FN` -> `max_float=0.07`
+   - `MW` -> `min_float=0.07&max_float=0.15`
+   - `FT` -> `min_float=0.15&max_float=0.38`
+   - `WW` -> `min_float=0.38&max_float=0.45`
+   - `BS` -> `min_float=0.45`
+7. `min_float` alone works
+8. `max_float` alone works
+9. reversed ranges such as `min_float=0.8&max_float=0.2` return an empty result set
+10. invalid ranges such as `min_float < 0` or `max_float > 1` do not hard-fail; they appear to be ignored/fallbacked by the backend
+11. `source` is live and affects result ordering / inclusion, but its exact enum semantics are not yet fully mapped
 
 ## Listing Creation Surface
 
