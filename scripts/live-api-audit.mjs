@@ -42,7 +42,9 @@ function getConfig() {
     apiKey,
     baseUrl: process.env.CSFLOAT_BASE_URL || "https://csfloat.com/api/v1",
     allowLiveMutations: process.env.ALLOW_LIVE_MUTATIONS === "1",
+    allowRiskyProbes: process.env.ALLOW_RISKY_PROBES === "1",
     preferredSteamId: process.env.CSFLOAT_STEAM_ID || fileEnv.CSFLOAT_STEAM_ID || null,
+    requestDelayMs: Number(process.env.CSFLOAT_REQUEST_DELAY_MS || 750),
   };
 }
 
@@ -74,9 +76,27 @@ function errorSummary(payload) {
 
 async function main() {
   const config = getConfig();
+  let lastRequestAt = 0;
+
+  async function pacedFetch(url, init) {
+    const now = Date.now();
+    const waitMs = Math.max(0, config.requestDelayMs - (now - lastRequestAt));
+    if (waitMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+
+    const response = await fetch(url, init);
+    lastRequestAt = Date.now();
+
+    if (response.status === 429) {
+      await new Promise((resolve) => setTimeout(resolve, Math.max(config.requestDelayMs * 4, 4000)));
+    }
+
+    return response;
+  }
 
   async function request(method, route, body) {
-    const response = await fetch(`${config.baseUrl}${route}`, {
+    const response = await pacedFetch(`${config.baseUrl}${route}`, {
       method,
       headers: {
         Authorization: config.apiKey,
@@ -104,7 +124,7 @@ async function main() {
   }
 
   async function publicRequest(method, route, body) {
-    const response = await fetch(`${config.baseUrl}${route}`, {
+    const response = await pacedFetch(`${config.baseUrl}${route}`, {
       method,
       headers: {
         Accept: "application/json",
@@ -134,6 +154,8 @@ async function main() {
     generated_at: new Date().toISOString(),
     base_url: config.baseUrl,
     allow_live_mutations: config.allowLiveMutations,
+    allow_risky_probes: config.allowRiskyProbes,
+    request_delay_ms: config.requestDelayMs,
     known_endpoints: [],
     public_no_auth_checks: [],
     market_query_checks: [],
@@ -322,7 +344,6 @@ async function main() {
     ["POST", "/me/mobile/status", {}],
     ["POST", "/listings/950170960026273280/bit", { max_price: 1 }],
     ["DELETE", "/offers/0"],
-    ["POST", "/offers/0/counter-offer", {}],
     [
       "POST",
       "/trades/steam-status/new-offer",
@@ -330,6 +351,10 @@ async function main() {
     ],
     ["POST", "/trades/steam-status/offer", { sent_offers: [], type: 0 }],
   ];
+
+  if (config.allowRiskyProbes) {
+    mutationProbeRoutes.push(["POST", "/offers/0/counter-offer", {}]);
+  }
 
   for (const [method, route, body] of mutationProbeRoutes) {
     const result = await request(method, route, body);

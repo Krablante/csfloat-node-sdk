@@ -229,10 +229,18 @@ Run the repeatable live API audit against a local `.env` file:
 ENV_FILE=/path/to/.env npm run audit:live
 ```
 
+The default audit path is paced and skips the most rate-limit-prone discovery probes.
+
 To opt into reversible live mutation checks:
 
 ```bash
 ALLOW_LIVE_MUTATIONS=1 ENV_FILE=/path/to/.env npm run audit:live
+```
+
+To include the riskier mutation discovery probes as well:
+
+```bash
+ALLOW_RISKY_PROBES=1 ENV_FILE=/path/to/.env npm run audit:live
 ```
 
 ## License
