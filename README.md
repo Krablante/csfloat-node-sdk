@@ -42,11 +42,13 @@ There are community wrappers around the CSFloat API, but the ecosystem still ben
 3. schema, meta, account, inventory, user, stall, listing, and history resources in one package
 4. mutation helpers for create/update/delete listing flows and validated account-side write helpers
 5. generic cursor pagination helper
-6. live-confirmed search support for `sort_by`, `filter`, `source`, `min_ref_qty`, `min_float`, and `max_float`
-7. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
-8. GitHub Actions CI
-9. release-facing OSS files (`CHANGELOG`, `CONTRIBUTING`, `SECURITY`, `API_COVERAGE`)
-10. repeatable live API audit script for validation and endpoint discovery
+6. live-confirmed search support for `sort_by`, `filter`, `source`, `min_ref_qty`, `category`, `collection`, `rarity`, `paint_seed`, `min_price`, `max_price`, `min_float`, and `max_float`
+7. live-confirmed advanced market filters for `min_fade`, `max_fade`, `min_blue`, `max_blue`, `music_kit_index`, and `keychain_highlight_reel`
+8. live-confirmed watchlist toggle helpers for `POST/DELETE /listings/{id}/watchlist`
+9. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
+10. GitHub Actions CI
+11. release-facing OSS files (`CHANGELOG`, `CONTRIBUTING`, `SECURITY`, `API_COVERAGE`)
+12. repeatable live API audit script for validation and endpoint discovery
 
 ## Positioning
 
@@ -70,7 +72,7 @@ This SDK covers the **currently known** CSFloat API surface based on:
 
 The intent is not just to expose a few popular endpoints, but to centralize the broadest responsibly confirmed public and authenticated CSFloat API surface in one OSS repository.
 
-Confirmed market query support now includes live-tested `sort_by`, `filter`, `source`, and `min_ref_qty` behavior for listing scans. Exact `source` semantics are still being mapped, so the SDK exposes it as a raw working parameter rather than a finalized enum.
+Confirmed market query support now includes live-tested `sort_by`, `filter`, `source`, `min_ref_qty`, `category`, `collection`, `rarity`, `min_price`, `max_price`, `paint_seed`, `min_fade`, `max_fade`, `min_blue`, `max_blue`, `music_kit_index`, and `keychain_highlight_reel` behavior for listing scans. Exact `source` semantics are still being mapped, so the SDK exposes it as a raw working parameter rather than a finalized enum.
 Wear filtering via `min_float` / `max_float` is also live-confirmed, and the SDK exports ready-to-use preset helpers matching the CSFloat search UI.
 
 See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support matrix.
@@ -85,7 +87,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.getBuyOrders()`, `listings.getSimilar()` |
-| Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()` |
+| Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
@@ -158,6 +160,18 @@ const mwListings = await sdk.listings.getListings({
   limit: 10,
   sort_by: "most_recent",
   ...getWearParams("MW"),
+});
+```
+
+Use the expanded market query surface for collection-, rarity-, or pattern-driven scans:
+
+```ts
+const expensiveCobble = await sdk.listings.getListings({
+  limit: 10,
+  collection: "set_cobblestone",
+  rarity: 6,
+  min_price: 100000,
+  type: "buy_now",
 });
 ```
 

@@ -39,6 +39,8 @@ Status legend:
 | `/me/mobile/status` | `POST` | implemented | live + public wrapper source | confirmed live with payload `{ "version": "8.0.0" }` |
 | `/listings/{id}/buy-orders` | `GET` | implemented | live + public wrapper source | public without extra query params; authenticated callers can also use `limit` |
 | `/listings/{id}/similar` | `GET` | implemented | live + public wrapper source | returns similar live listings |
+| `/listings/{id}/watchlist` | `POST` | implemented | live | confirmed happy-path add with `added to watchlist` |
+| `/listings/{id}/watchlist` | `DELETE` | implemented | live | confirmed happy-path remove with `removed from watchlist` |
 | `/history/{market_hash_name}/graph` | `GET` | implemented | live + public wrapper source | requires `paint_index` query param |
 
 ## Expanded Live Endpoint Surface
@@ -66,6 +68,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted empty `sent_offers` update and returned success |
 | `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
+| `/offers/{id}/counter-offer` | `POST` | discovered | live | invalid offer id returned `failed to counter offer`, confirming route existence |
 
 ## Likely Stale Or Wrapper-Only Routes
 
@@ -96,6 +99,21 @@ Currently covered or typed:
 11. `max_float`
 12. `sort_by`
 13. `user_id`
+14. `collection`
+15. `rarity`
+16. `min_price`
+17. `max_price`
+18. `paint_seed`
+19. `sticker_index`
+20. `keychain_index`
+21. `keychain_highlight_reel`
+22. `music_kit_index`
+23. `min_keychain_pattern`
+24. `max_keychain_pattern`
+25. `min_blue`
+26. `max_blue`
+27. `min_fade`
+28. `max_fade`
 
 Live-confirmed search behaviors:
 
@@ -127,6 +145,21 @@ Live-confirmed search behaviors:
 9. reversed ranges such as `min_float=0.8&max_float=0.2` return an empty result set
 10. invalid ranges such as `min_float < 0` or `max_float > 1` do not hard-fail; they appear to be ignored/fallbacked by the backend
 11. `source` is live and affects result ordering / inclusion, but its exact enum semantics are not yet fully mapped
+12. `category` is live and maps like this:
+   - `1` -> Normal
+   - `2` -> StatTrak
+   - `3` -> Souvenir
+   - `4` -> Highlight
+13. `def_index` + `paint_index` is live and can target a specific skin family
+14. `paint_seed` is live and can narrow family results to an exact seed
+15. `collection` is live; schema keys like `set_cobblestone` work
+16. `rarity` is live; schema rarity values like `6` work
+17. `min_price` and `max_price` are both live
+18. `music_kit_index` is live and can target music kit listings directly
+19. `keychain_highlight_reel` is live and can target highlight charm listings directly
+20. `min_fade` / `max_fade` are live for fade-capable finishes
+21. `min_blue` / `max_blue` are live for blue-percentage filtered searches
+22. `sticker_index` and `keychain_index` are accepted by the API; they currently behave as index filters for sticker/charm listings themselves, not yet a documented helper for applied attachments
 
 ## Listing Creation Surface
 

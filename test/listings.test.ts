@@ -63,6 +63,22 @@ describe("ListingsResource", () => {
       filter: "unique",
       source: 3,
       min_ref_qty: 20,
+      category: 3,
+      collection: "set_cobblestone",
+      rarity: 6,
+      min_price: 1000,
+      max_price: 100000,
+      def_index: 4,
+      paint_index: 437,
+      paint_seed: 611,
+      sticker_index: 73,
+      keychain_index: 29,
+      keychain_highlight_reel: 1,
+      music_kit_index: 3,
+      min_blue: 90,
+      max_blue: 100,
+      min_fade: 80,
+      max_fade: 100,
     });
 
     expect(get).toHaveBeenCalledWith("listings", {
@@ -71,6 +87,22 @@ describe("ListingsResource", () => {
       filter: "unique",
       source: 3,
       min_ref_qty: 20,
+      category: 3,
+      collection: "set_cobblestone",
+      rarity: 6,
+      min_price: 1000,
+      max_price: 100000,
+      def_index: 4,
+      paint_index: 437,
+      paint_seed: 611,
+      sticker_index: 73,
+      keychain_index: 29,
+      keychain_highlight_reel: 1,
+      music_kit_index: 3,
+      min_blue: 90,
+      max_blue: 100,
+      min_fade: 80,
+      max_fade: 100,
     });
   });
 
@@ -98,5 +130,29 @@ describe("ListingsResource", () => {
     await resource.getSimilar("948726619852374910");
 
     expect(get).toHaveBeenCalledWith("listings/948726619852374910/similar");
+  });
+
+  it("adds a listing to watchlist", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => ({ message: "added to watchlist" }));
+    const resource = new ListingsResource({
+      ...client,
+      post,
+    } as never);
+
+    await resource.addToWatchlist("950170960026273280");
+
+    expect(post).toHaveBeenCalledWith("listings/950170960026273280/watchlist", {});
+  });
+
+  it("removes a listing from watchlist", async () => {
+    const del = vi.fn(async (_path: string) => ({ message: "removed from watchlist" }));
+    const resource = new ListingsResource({
+      ...client,
+      delete: del,
+    } as never);
+
+    await resource.removeFromWatchlist("950170960026273280");
+
+    expect(del).toHaveBeenCalledWith("listings/950170960026273280/watchlist");
   });
 });

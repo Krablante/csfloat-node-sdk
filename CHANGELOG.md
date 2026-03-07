@@ -15,7 +15,9 @@ The format is based on Keep a Changelog.
 5. account write helpers for `PATCH /me`, notification read receipts, and mobile status updates
 6. buy-order create/delete helpers based on live happy-path validation
 7. market query support for `filter`, raw `source`, `sort_by`, and `min_ref_qty`
-8. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
+8. advanced market query support for `category`, `collection`, `rarity`, `min_price`, `max_price`, `paint_seed`, `music_kit_index`, `keychain_highlight_reel`, `min_fade`, `max_fade`, `min_blue`, and `max_blue`
+9. live-confirmed watchlist toggle helpers for `POST/DELETE /listings/{id}/watchlist`
+10. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
 
 ### Changed
 

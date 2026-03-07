@@ -10,6 +10,7 @@ import type {
   CsfloatListing,
   CsfloatListingsResponse,
   CsfloatListParams,
+  CsfloatMessageResponse,
   QueryParams,
   UpdateListingRequest,
 } from "../types.js";
@@ -48,6 +49,14 @@ export class ListingsResource {
 
   getSimilar(listingId: string): Promise<CsfloatListing[]> {
     return this.client.get<CsfloatListing[]>(`listings/${listingId}/similar`);
+  }
+
+  addToWatchlist(listingId: string): Promise<CsfloatMessageResponse> {
+    return this.client.post<CsfloatMessageResponse>(`listings/${listingId}/watchlist`, {});
+  }
+
+  removeFromWatchlist(listingId: string): Promise<CsfloatMessageResponse> {
+    return this.client.delete<CsfloatMessageResponse>(`listings/${listingId}/watchlist`);
   }
 
   createListing(request: CreateListingRequest): Promise<CsfloatListing> {

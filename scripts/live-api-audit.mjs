@@ -136,6 +136,7 @@ async function main() {
     allow_live_mutations: config.allowLiveMutations,
     known_endpoints: [],
     public_no_auth_checks: [],
+    market_query_checks: [],
     candidate_endpoints: [],
     mutation_probes: [],
     mutation_checks: [],
@@ -220,6 +221,45 @@ async function main() {
     });
   }
 
+  const marketQueryRoutes = [
+    ["GET", "/listings?limit=1&category=2"],
+    ["GET", "/listings?limit=1&category=3"],
+    ["GET", "/listings?limit=1&category=4"],
+    ["GET", "/listings?limit=1&collection=set_cobblestone"],
+    ["GET", "/listings?limit=1&rarity=6"],
+    ["GET", "/listings?limit=1&min_price=10000"],
+    ["GET", "/listings?limit=1&max_price=1000"],
+    ["GET", "/listings?limit=1&def_index=4&paint_index=437&paint_seed=611"],
+    ["GET", "/listings?limit=1&music_kit_index=3"],
+    ["GET", "/listings?limit=1&keychain_highlight_reel=1"],
+    ["GET", "/listings?limit=1&def_index=507&paint_index=38&min_fade=99&max_fade=100"],
+    ["GET", "/listings?limit=1&min_blue=90&max_blue=100"],
+  ];
+
+  for (const [method, route] of marketQueryRoutes) {
+    const result = await request(method, route);
+    const firstItem = result.data?.data?.[0];
+
+    summary.market_query_checks.push({
+      method,
+      route,
+      status: result.status,
+      ok: result.ok,
+      summary: result.ok
+        ? {
+            ...summarizePayload(result.data),
+            first_item: firstItem
+              ? {
+                  id: firstItem.id,
+                  market_hash_name: firstItem.item?.market_hash_name,
+                  price: firstItem.price,
+                }
+              : null,
+          }
+        : errorSummary(result.data),
+    });
+  }
+
   const candidateRoutes = [
     ["GET", "/me/stall"],
     ["GET", "/me/listings"],
@@ -263,6 +303,7 @@ async function main() {
     ["POST", "/me/mobile/status", {}],
     ["POST", "/listings/950170960026273280/bit", { max_price: 1 }],
     ["DELETE", "/offers/0"],
+    ["POST", "/offers/0/counter-offer", {}],
     [
       "POST",
       "/trades/steam-status/new-offer",
@@ -308,6 +349,24 @@ async function main() {
           after_plus_one: patchUp.data?.price,
           after_revert: patchDown.data?.price,
           verified_price: verify.data?.price,
+        },
+      });
+
+      const watchlistAdd = await request("POST", `/listings/${trackedListingId}/watchlist`, {});
+      const watchlistRemove = await request("DELETE", `/listings/${trackedListingId}/watchlist`);
+
+      summary.mutation_checks.push({
+        method: "POST/DELETE",
+        route: `/listings/${trackedListingId}/watchlist`,
+        status: watchlistAdd.status,
+        ok: watchlistAdd.ok && watchlistRemove.ok,
+        details: {
+          add_summary: watchlistAdd.ok
+            ? summarizePayload(watchlistAdd.data)
+            : errorSummary(watchlistAdd.data),
+          remove_summary: watchlistRemove.ok
+            ? summarizePayload(watchlistRemove.data)
+            : errorSummary(watchlistRemove.data),
         },
       });
     }

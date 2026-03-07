@@ -1,5 +1,6 @@
 export type ListingType = "buy_now" | "auction" | string;
 export type Category = "normal" | "stattrak" | "souvenir";
+export type CsfloatListingCategoryFilter = 1 | 2 | 3 | 4 | number;
 export type SortBy =
   | "lowest_price"
   | "highest_price"
@@ -134,6 +135,7 @@ export interface CsfloatAttachmentReference {
 
 export interface CsfloatSticker {
   sticker_id?: number;
+  stickerId?: number;
   slot?: number;
   wear?: number;
   icon_url?: string;
@@ -146,14 +148,24 @@ export interface CsfloatSticker {
 
 export interface CsfloatKeychain {
   sticker_id?: number;
+  stickerId?: number;
   slot?: number;
   offset_x?: number;
   offset_y?: number;
   offset_z?: number;
   pattern?: number;
+  wrapped_sticker?: number;
+  wrappedSticker?: number;
   icon_url?: string;
   name?: string;
   reference?: CsfloatAttachmentReference;
+}
+
+export interface CsfloatFadeDetails {
+  seed?: number;
+  percentage?: number;
+  rank?: number;
+  type?: string;
 }
 
 export interface CsfloatItem {
@@ -191,9 +203,12 @@ export interface CsfloatItem {
   serialized_inspect?: string;
   gs_sig?: string;
   phase?: string;
-  sticker_index?: string;
+  sticker_index?: number | string;
+  keychain_index?: number;
+  keychain_highlight_reel?: number;
+  music_kit_index?: number;
+  fade?: CsfloatFadeDetails | Record<string, unknown> | null;
   badges?: string[];
-  fade?: unknown;
 }
 
 export interface CsfloatListing {
@@ -240,6 +255,7 @@ export interface CsfloatSchemaCollection {
   key: string;
   name: string;
   has_crate?: boolean;
+  has_souvenir?: boolean;
 }
 
 export interface CsfloatSchemaRarity {
@@ -289,9 +305,11 @@ export interface CsfloatSchemaMusicKit {
 }
 
 export interface CsfloatSchemaHighlightReel {
+  name?: string;
   market_hash_name?: string;
   image?: string;
   price?: number;
+  keychain_index?: number;
 }
 
 export interface CsfloatSchemaPaint {
@@ -496,9 +514,24 @@ export interface CsfloatListParams {
   market_hash_name?: string;
   def_index?: number;
   paint_index?: number;
-  category?: Category;
+  category?: CsfloatListingCategoryFilter;
+  collection?: string;
+  rarity?: number;
+  min_price?: number;
+  max_price?: number;
   min_float?: number;
   max_float?: number;
+  paint_seed?: number;
+  sticker_index?: number;
+  keychain_index?: number;
+  keychain_highlight_reel?: number;
+  music_kit_index?: number;
+  min_keychain_pattern?: number;
+  max_keychain_pattern?: number;
+  min_blue?: number;
+  max_blue?: number;
+  min_fade?: number;
+  max_fade?: number;
   sort_by?: SortBy;
   user_id?: string;
 }
