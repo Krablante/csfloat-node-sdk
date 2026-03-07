@@ -74,6 +74,8 @@ export type {
   CsfloatNotification,
   CsfloatNotificationsResponse,
   CsfloatOffer,
+  CsfloatOfferState,
+  CsfloatOfferType,
   CsfloatOffersResponse,
   CsfloatPageParams,
   CsfloatPaymentAccounts,

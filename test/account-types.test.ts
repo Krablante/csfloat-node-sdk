@@ -86,4 +86,27 @@ describe("authenticated user typing", () => {
     expect(offer.expires_at).toContain("2026-03-08");
     expect(offer.type).toBe("buyer_offer");
   });
+
+  it("accepts the currently observed counter-offer variants", () => {
+    const offer: CsfloatOffer = {
+      id: "950517986626767962",
+      created_at: "2026-03-07T22:19:07.78251Z",
+      expires_at: "2026-03-08T22:19:07.782243Z",
+      contract_id: "944017518996097096",
+      contract_price: 3500,
+      buyer_id: "76561199827953866",
+      price: 3300,
+      type: "seller_offer",
+      state: "active",
+    };
+
+    const declinedOffer: CsfloatOffer = {
+      id: "950517355987995865",
+      type: "buyer_offer",
+      state: "declined",
+    };
+
+    expect(offer.type).toBe("seller_offer");
+    expect(declinedOffer.state).toBe("declined");
+  });
 });

@@ -5,6 +5,8 @@ export type ListingType = "buy_now" | "auction" | string;
 export type CsfloatSource = LooseString<"csfloat" | "p2p"> | number;
 export type Category = "normal" | "stattrak" | "souvenir";
 export type CsfloatListingCategoryFilter = LooseNumber<1 | 2 | 3 | 4>;
+export type CsfloatOfferType = LooseString<"buyer_offer" | "seller_offer">;
+export type CsfloatOfferState = LooseString<"active" | "declined">;
 export type SortBy = LooseString<
   | "lowest_price"
   | "highest_price"
@@ -430,8 +432,8 @@ export interface CsfloatOffer {
   expires_at?: string;
   price?: number;
   contract_price?: number;
-  type?: string;
-  state?: string;
+  type?: CsfloatOfferType;
+  state?: CsfloatOfferState;
   buyer_id?: string;
   buyer?: CsfloatUser;
   seller_id?: string;
