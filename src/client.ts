@@ -23,7 +23,7 @@ export class CsfloatHttpClient {
     this.apiKey = options.apiKey;
     this.baseUrl = options.baseUrl ?? "https://csfloat.com/api/v1";
     this.timeoutMs = options.timeoutMs ?? 15_000;
-    this.userAgent = options.userAgent ?? "csfloat-node-sdk/0.2.0";
+    this.userAgent = options.userAgent ?? "csfloat-node-sdk/0.3.0";
   }
 
   async get<T>(
