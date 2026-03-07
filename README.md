@@ -8,6 +8,8 @@ Unofficial Node.js / TypeScript SDK for the CSFloat API.
 
 This repository aims to provide a clean, typed, public SDK around the **currently known** CSFloat API surface, with honest coverage claims, maintainable abstractions, and release-quality OSS hygiene from day one.
 
+It is also intended to become one of the most comprehensive public maps of the currently accessible CSFloat API surface, consolidating official docs, public wrapper discovery, and live endpoint validation in one maintainer-grade repository.
+
 Status: initial public release, actively maintained, and expanding coverage of the currently known CSFloat API surface.
 
 ## Why This Exists
@@ -19,6 +21,7 @@ There are community wrappers around the CSFloat API, but the ecosystem still ben
 3. async pagination for global listing scans
 4. clean examples and coverage docs
 5. a repository that is ready for real maintenance, review, and release workflows
+6. a consolidated public reference for the widest responsibly validated CSFloat API surface we can document
 
 ## Highlights
 
@@ -38,6 +41,8 @@ This SDK covers the **currently known** CSFloat API surface based on:
 1. official documentation
 2. source discovery from public wrappers
 3. live validation against real account workflows
+
+The intent is not just to expose a few popular endpoints, but to centralize the broadest responsibly confirmed public and authenticated CSFloat API surface in one OSS repository.
 
 See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support matrix.
 

@@ -170,3 +170,7 @@ This repository does **not** claim:
 The honest claim for public release should be:
 
 `csfloat-node-sdk covers the currently known CSFloat API surface that is documented, source-discovered, or live-validated.`
+
+Stronger but still honest positioning:
+
+`csfloat-node-sdk aims to be one of the most comprehensive public maps of the currently accessible CSFloat API surface, while clearly separating implemented, discovered, live-validated, stale, and account-gated behavior.`
