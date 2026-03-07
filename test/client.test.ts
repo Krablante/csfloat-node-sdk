@@ -71,4 +71,81 @@ describe("CsfloatHttpClient", () => {
       details: "404 page not found\n",
     });
   });
+
+  it("retries retryable GET requests on 429 and succeeds", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ code: 20, message: "too many requests" }), {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": "0",
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      maxRetries: 1,
+      retryDelayMs: 0,
+      maxRetryDelayMs: 0,
+    });
+
+    await expect(client.get("schema")).resolves.toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("retries GET requests on transient network failures", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError("fetch failed"))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      maxRetries: 1,
+      retryDelayMs: 0,
+      maxRetryDelayMs: 0,
+    });
+
+    await expect(client.get("schema")).resolves.toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not retry unsafe requests unless explicitly enabled", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ code: 20, message: "too many requests" }), {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      maxRetries: 1,
+      retryDelayMs: 0,
+      maxRetryDelayMs: 0,
+    });
+
+    await expect(client.post("offers", {})).rejects.toMatchObject<CsfloatSdkError>({
+      name: "CsfloatSdkError",
+      status: 429,
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });

@@ -21,6 +21,7 @@ Status: public release, actively maintained, and expanding coverage of the curre
 
 - broad, live-validated CSFloat API coverage with explicit docs instead of vague claims
 - TypeScript-first SDK surface for real account, market, and listing workflows
+- safer transport defaults with built-in retry/backoff for transient GET failures
 - query helpers for search-heavy use cases, including wear presets and market scan params
 - release-ready repository hygiene: CI, changelog, contributing guide, security policy, and coverage matrix
 
@@ -133,6 +134,8 @@ import { CsfloatSdk } from "csfloat-node-sdk";
 
 const sdk = new CsfloatSdk({
   apiKey: process.env.CSFLOAT_API_KEY!,
+  maxRetries: 2,
+  retryDelayMs: 250,
 });
 
 const rates = await sdk.meta.getExchangeRates();
@@ -146,6 +149,8 @@ const listings = await sdk.listings.getListings({
 
 console.log(rates.data.usd, me.user.steam_id, trades.count, inventory.length, listings.data.length);
 ```
+
+By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.
 
 Use the wear helpers for search-style float ranges:
 

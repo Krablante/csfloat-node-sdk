@@ -3,6 +3,10 @@ import type { QueryParams } from "./types.js";
 import { cleanParams } from "./utils.js";
 
 const DEFAULT_USER_AGENT = "csfloat-node-sdk/0.4.5";
+const DEFAULT_MAX_RETRIES = 2;
+const DEFAULT_RETRY_DELAY_MS = 250;
+const DEFAULT_MAX_RETRY_DELAY_MS = 2_000;
+const RETRYABLE_STATUS_CODES = new Set([429, 502, 503, 504]);
 
 function parseResponseBody(text: string): unknown {
   if (!text) {
@@ -25,11 +29,64 @@ function extractErrorCode(details: unknown): string | undefined {
   return code === undefined || code === null ? undefined : String(code);
 }
 
+function isRetryableMethod(method: string, retryUnsafeRequests: boolean): boolean {
+  return retryUnsafeRequests || method === "GET";
+}
+
+function parseRetryAfterMs(value: string | null): number | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const seconds = Number(value);
+  if (Number.isFinite(seconds)) {
+    return Math.max(0, seconds * 1000);
+  }
+
+  const date = Date.parse(value);
+  if (Number.isNaN(date)) {
+    return undefined;
+  }
+
+  return Math.max(0, date - Date.now());
+}
+
+function getRetryDelayMs(
+  attempt: number,
+  retryAfterHeader: string | null,
+  {
+    retryDelayMs,
+    maxRetryDelayMs,
+  }: {
+    retryDelayMs: number;
+    maxRetryDelayMs: number;
+  },
+): number {
+  const retryAfterMs = parseRetryAfterMs(retryAfterHeader);
+  if (retryAfterMs !== undefined) {
+    return Math.min(retryAfterMs, maxRetryDelayMs);
+  }
+
+  return Math.min(retryDelayMs * 2 ** attempt, maxRetryDelayMs);
+}
+
+async function sleep(ms: number): Promise<void> {
+  if (ms <= 0) {
+    return;
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export interface CsfloatClientOptions {
   apiKey: string;
   baseUrl?: string;
   timeoutMs?: number;
   userAgent?: string;
+  maxRetries?: number;
+  retryDelayMs?: number;
+  maxRetryDelayMs?: number;
+  retryUnsafeRequests?: boolean;
 }
 
 export class CsfloatHttpClient {
@@ -37,6 +94,10 @@ export class CsfloatHttpClient {
   private readonly baseUrl: string;
   private readonly timeoutMs: number;
   private readonly userAgent: string;
+  private readonly maxRetries: number;
+  private readonly retryDelayMs: number;
+  private readonly maxRetryDelayMs: number;
+  private readonly retryUnsafeRequests: boolean;
 
   constructor(options: CsfloatClientOptions) {
     if (!options.apiKey) {
@@ -47,6 +108,10 @@ export class CsfloatHttpClient {
     this.baseUrl = options.baseUrl ?? "https://csfloat.com/api/v1";
     this.timeoutMs = options.timeoutMs ?? 15_000;
     this.userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
+    this.maxRetries = options.maxRetries ?? DEFAULT_MAX_RETRIES;
+    this.retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
+    this.maxRetryDelayMs = options.maxRetryDelayMs ?? DEFAULT_MAX_RETRY_DELAY_MS;
+    this.retryUnsafeRequests = options.retryUnsafeRequests ?? false;
   }
 
   async get<T>(
@@ -84,57 +149,84 @@ export class CsfloatHttpClient {
     if (options?.params) {
       url.search = cleanParams(options.params).toString();
     }
+    const canRetry = isRetryableMethod(method, this.retryUnsafeRequests);
 
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    for (let attempt = 0; ; attempt += 1) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), this.timeoutMs);
 
-    try {
-      const init: RequestInit = {
-        method,
-        headers: {
-          Authorization: this.apiKey,
-          "Content-Type": "application/json",
-          "User-Agent": this.userAgent,
-        },
-        signal: controller.signal,
-      };
-
-      if (options?.body !== undefined) {
-        init.body = JSON.stringify(options.body);
-      }
-
-      const response = await fetch(url, init);
-
-      const text = await response.text();
-      const data = parseResponseBody(text);
-
-      if (!response.ok) {
-        const code = extractErrorCode(data);
-        throw new CsfloatSdkError(
-          `CSFloat API request failed with status ${response.status}`,
-          {
-            status: response.status,
-            details: data,
-            ...(code === undefined ? {} : { code }),
+      try {
+        const init: RequestInit = {
+          method,
+          headers: {
+            Authorization: this.apiKey,
+            "Content-Type": "application/json",
+            "User-Agent": this.userAgent,
           },
-        );
-      }
+          signal: controller.signal,
+        };
 
-      return data as T;
-    } catch (error) {
-      if (error instanceof CsfloatSdkError) {
-        throw error;
-      }
+        if (options?.body !== undefined) {
+          init.body = JSON.stringify(options.body);
+        }
 
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new CsfloatSdkError("CSFloat API request timed out");
-      }
+        const response = await fetch(url, init);
 
-      throw new CsfloatSdkError("CSFloat API request failed", {
-        details: error,
-      });
-    } finally {
-      clearTimeout(timer);
+        const text = await response.text();
+        const data = parseResponseBody(text);
+
+        if (!response.ok) {
+          if (
+            canRetry &&
+            attempt < this.maxRetries &&
+            RETRYABLE_STATUS_CODES.has(response.status)
+          ) {
+            await sleep(
+              getRetryDelayMs(attempt, response.headers.get("Retry-After"), {
+                retryDelayMs: this.retryDelayMs,
+                maxRetryDelayMs: this.maxRetryDelayMs,
+              }),
+            );
+            continue;
+          }
+
+          const code = extractErrorCode(data);
+          throw new CsfloatSdkError(
+            `CSFloat API request failed with status ${response.status}`,
+            {
+              status: response.status,
+              details: data,
+              ...(code === undefined ? {} : { code }),
+            },
+          );
+        }
+
+        return data as T;
+      } catch (error) {
+        if (error instanceof CsfloatSdkError) {
+          throw error;
+        }
+
+        if (error instanceof Error && error.name === "AbortError") {
+          throw new CsfloatSdkError("CSFloat API request timed out");
+        }
+
+        if (canRetry && attempt < this.maxRetries) {
+          await sleep(
+            getRetryDelayMs(attempt, null, {
+              retryDelayMs: this.retryDelayMs,
+              maxRetryDelayMs: this.maxRetryDelayMs,
+            }),
+          );
+          continue;
+        }
+
+        throw new CsfloatSdkError("CSFloat API request failed", {
+          details: error,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
     }
   }
 }
