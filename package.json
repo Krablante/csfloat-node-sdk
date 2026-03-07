@@ -41,12 +41,14 @@
   },
   "keywords": [
     "csfloat",
+    "csfloat-api",
     "cs2",
     "sdk",
     "typescript",
-    "nodejs"
+    "nodejs",
+    "api-wrapper"
   ],
-  "author": "bloob",
+  "author": "G626 <gkrablante@gmail.com>",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

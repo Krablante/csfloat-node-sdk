@@ -8,6 +8,8 @@ Unofficial Node.js / TypeScript SDK for the CSFloat API.
 
 This repository aims to provide a clean, typed, public SDK around the **currently known** CSFloat API surface, with honest coverage claims, maintainable abstractions, and release-quality OSS hygiene from day one.
 
+Status: initial public release, actively maintained, and expanding coverage of the currently known CSFloat API surface.
+
 ## Why This Exists
 
 There are community wrappers around the CSFloat API, but the ecosystem still benefits from a stronger TypeScript-first implementation with:
@@ -52,7 +54,13 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 
 ## Installation
 
+This repository is public and usable today, but it is not yet published to npm.
+
+Clone the repository and install dependencies locally:
+
 ```bash
+git clone https://github.com/Krablante/csfloat-node-sdk.git
+cd csfloat-node-sdk
 npm install
 ```
 
@@ -79,6 +87,8 @@ npm run example:basic
 ```
 
 ## Minimal Usage
+
+Once the package is published or linked locally, the SDK can be consumed like this:
 
 ```ts
 import { CsfloatSdk } from "csfloat-node-sdk";
