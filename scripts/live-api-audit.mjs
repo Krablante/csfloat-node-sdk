@@ -168,6 +168,9 @@ async function main() {
   const steamId =
     config.preferredSteamId ||
     (me.ok && me.data && me.data.user ? String(me.data.user.steam_id) : null);
+  const offers = await request("GET", "/me/offers?limit=1");
+  const firstOffer = offers.ok && offers.data?.offers?.[0] ? offers.data.offers[0] : null;
+  const offerId = firstOffer ? String(firstOffer.id) : null;
 
   const listings = await request("GET", "/listings?limit=1&type=buy_now");
   const firstListing = listings.ok && listings.data?.data?.[0] ? listings.data.data[0] : null;
@@ -185,6 +188,7 @@ async function main() {
     ["GET", "/me/trades?limit=1"],
     ["GET", "/me/offers?limit=1"],
     ["GET", "/me/offers-timeline?limit=1"],
+    ...(offerId ? [["GET", `/offers/${offerId}`], ["GET", `/offers/${offerId}/history`]] : []),
     ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/notifications/timeline"],
     ["GET", "/me/buy-orders?limit=1"],

@@ -26,6 +26,24 @@ describe("AccountResource", () => {
     });
   });
 
+  it("requests a single offer by id", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getOffer("950518288876703091");
+
+    expect(get).toHaveBeenCalledWith("offers/950518288876703091");
+  });
+
+  it("requests offer history by id", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getOfferHistory("950518288876703091");
+
+    expect(get).toHaveBeenCalledWith("offers/950518288876703091/history");
+  });
+
   it("requests authenticated watchlist with params", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);

@@ -11,6 +11,7 @@ import type {
   CsfloatMeResponse,
   CsfloatMobileStatusResponse,
   CsfloatNotificationsResponse,
+  CsfloatOffer,
   CsfloatOffersResponse,
   CsfloatPageParams,
   CsfloatTradesResponse,
@@ -32,6 +33,14 @@ export class AccountResource {
 
   getOffers(params: CsfloatCursorParams = {}): Promise<CsfloatOffersResponse> {
     return this.client.get<CsfloatOffersResponse>("me/offers", params as QueryParams);
+  }
+
+  getOffer(offerId: string): Promise<CsfloatOffer> {
+    return this.client.get<CsfloatOffer>(`offers/${offerId}`);
+  }
+
+  getOfferHistory(offerId: string): Promise<CsfloatOffer[]> {
+    return this.client.get<CsfloatOffer[]>(`offers/${offerId}/history`);
   }
 
   getWatchlist(

@@ -10,9 +10,10 @@ The format is based on Keep a Changelog.
 
 1. `background_url` and `username` fields to `CsfloatUpdateMeRequest` — both live-confirmed accepted by `PATCH /me` (2026-03-07 research pass 2, returns `200 "user updated!"`)
 2. `account.updateBackground(url)` and `account.updateUsername(name)` convenience helpers wrapping `PATCH /me`
-3. `API_COVERAGE.md` expanded with new silently-ignored params: `sticker` (all forms: `ID`, `ID|slot`, `ID1,ID2`), `page`, `user_id` (standalone), `source` (all string and numeric forms on standard accounts), `is_commodity`
-4. `API_COVERAGE.md` new "Confirmed Hard-Rejected Query Params" section: `type=any/normal/stattrak/souvenir` returns `400` (only `buy_now`/`auction` are valid)
-5. `API_COVERAGE.md` live audit findings notes 27–34: history/graph `category` param semantics, `filter=` auth requirement (403), confirmed-dead listing subroutes, confirmed-dead `/me/*` hidden routes, confirmed-dead `/users/{id}/*` extensions, `/offers` GET method not allowed (405), dead top-level routes
+3. `account.getOffer(id)` and `account.getOfferHistory(id)` for direct offer fetches and historical offer-chain inspection
+4. `API_COVERAGE.md` expanded with new silently-ignored params: `sticker` (all forms: `ID`, `ID|slot`, `ID1,ID2`), `page`, `user_id` (standalone), `source` (all string and numeric forms on standard accounts), `is_commodity`
+5. `API_COVERAGE.md` new "Confirmed Hard-Rejected Query Params" section: `type=any/normal/stattrak/souvenir` returns `400` (only `buy_now`/`auction` are valid)
+6. `API_COVERAGE.md` live audit findings notes 27–35: history/graph `category` param semantics, `filter=` auth requirement (403), confirmed-dead listing subroutes, confirmed-dead `/me/*` hidden routes, confirmed-dead `/users/{id}/*` extensions, `/offers` GET method not allowed (405), dead top-level routes, and live-confirmed offer history chain fetches
 
 ### Notes on Negative Findings
 

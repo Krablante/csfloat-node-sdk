@@ -28,6 +28,8 @@ Status legend:
 | `/me/account-standing` | `GET` | implemented | live + public wrapper source | authenticated account standing |
 | `/me/transactions` | `GET` | implemented | live + public wrapper source | returns `{ transactions, count }` |
 | `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
+| `/offers/{id}` | `GET` | implemented | live | single offer fetch by valid offer id |
+| `/offers/{id}/history` | `GET` | implemented | live + public wrapper source | historical thread for the offer chain; confirmed with valid declined/counter-offer ids |
 | `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline |
 | `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
 | `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
@@ -64,7 +66,6 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/trades/bulk/accept` | `POST` | discovered | live + public wrapper source | invalid ids returned validation error |
 | `/offers/{id}` | `DELETE` | discovered | live | invalid offer id still reached cancel flow and returned `failed to cancel offer` |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
-| `/offers/{offerId}/history` | `GET` | discovered | live + public wrapper source | invalid offer id returned existence-confirming error |
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted empty `sent_offers` update and returned success |
 | `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
@@ -211,6 +212,7 @@ Live-confirmed search behaviors:
 32. all tested `/users/{id}/*` extensions return `404`: offers, trades, buy-orders, statistics, reviews, reputation, watchlist, inventory
 33. `GET /offers` returns `405 Method Not Allowed` — GET is not valid on this route; `POST /offers` is the only supported method
 34. top-level routes probed and all return `400 "invalid resource"`: announcements, referrals, promotions, leaderboard, search (with q=), items, market, prices, trending, stats, buy-now
+35. `GET /offers/{id}` returns the current offer snapshot, while `GET /offers/{id}/history` returns the historical chain for that offer thread; this was confirmed live on 2026-03-07 with a declined buyer offer and a declined seller counter-offer
 
 ## Listing Creation Surface
 
