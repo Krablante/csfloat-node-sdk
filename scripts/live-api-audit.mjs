@@ -103,11 +103,39 @@ async function main() {
     };
   }
 
+  async function publicRequest(method, route, body) {
+    const response = await fetch(`${config.baseUrl}${route}`, {
+      method,
+      headers: {
+        Accept: "application/json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = text;
+    }
+
+    return {
+      method,
+      route,
+      status: response.status,
+      ok: response.ok,
+      data,
+    };
+  }
+
   const summary = {
     generated_at: new Date().toISOString(),
     base_url: config.baseUrl,
     allow_live_mutations: config.allowLiveMutations,
     known_endpoints: [],
+    public_no_auth_checks: [],
     candidate_endpoints: [],
     mutation_probes: [],
     mutation_checks: [],
@@ -161,6 +189,34 @@ async function main() {
       status: result.status,
       ok: result.ok,
       summary: summarizePayload(result.data),
+    });
+  }
+
+  const publicRoutes = [
+    ["GET", "/schema"],
+    ["GET", "/meta/exchange-rates"],
+    ["GET", "/meta/location"],
+    ["GET", "/listings?limit=40&min_ref_qty=20"],
+    ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
+    ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),
+    ["GET", "/listings/948726619852374910/bids"],
+    ["GET", "/listings/948726619852374910/similar"],
+    ["GET", "/listings/948726619852374910/buy-orders"],
+    ...(marketHashName ? [["GET", `/history/${encodeURIComponent(marketHashName)}/sales`]] : []),
+    [
+      "GET",
+      "/history/Souvenir%20P250%20%7C%20Boreal%20Forest%20(Factory%20New)/graph?paint_index=77",
+    ],
+  ];
+
+  for (const [method, route] of publicRoutes) {
+    const result = await publicRequest(method, route);
+    summary.public_no_auth_checks.push({
+      method,
+      route,
+      status: result.status,
+      ok: result.ok,
+      summary: result.ok ? summarizePayload(result.data) : errorSummary(result.data),
     });
   }
 

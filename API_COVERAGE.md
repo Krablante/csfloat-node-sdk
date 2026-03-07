@@ -32,7 +32,10 @@ Status legend:
 | `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
-| `/listings/{id}/buy-orders` | `GET` | implemented | live + public wrapper source | returns buy-order matches for a listing; auth required |
+| `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, and `away` |
+| `/me/notifications/read-receipt` | `POST` | implemented | live + public wrapper source | mark notifications read via `last_read_id` |
+| `/me/mobile/status` | `POST` | implemented | live + public wrapper source | confirmed live with payload `{ "version": "8.0.0" }` |
+| `/listings/{id}/buy-orders` | `GET` | implemented | live + public wrapper source | public without extra query params; authenticated callers can also use `limit` |
 | `/listings/{id}/similar` | `GET` | implemented | live + public wrapper source | returns similar live listings |
 | `/history/{market_hash_name}/graph` | `GET` | implemented | live + public wrapper source | requires `paint_index` query param |
 
@@ -45,6 +48,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/me/trades` | `GET` | implemented | live | returns `{ trades, count }`; supports `limit` |
 | `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; supports `limit` |
 | `/me/watchlist` | `GET` | implemented | live | returns `{ data, cursor }`; supports `limit` |
+| `/listings?limit=40&min_ref_qty=20` | `GET` | discovered | live + frontend network | special unauthenticated public feed shape used by public pages; general search params still require auth |
 | `/listings/{auction_id}/bids` | `GET` | implemented | live | returns bid array for auction listings; empty array when no bids |
 | `/offers` | `POST` | discovered | live | route exists; seller account received `403 sellers can only use the counter-offers endpoint` |
 | `/buy-orders` | `POST` | discovered | live + public wrapper source | invalid payload returned validation error, confirming route existence |
@@ -57,7 +61,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/offers/{offerId}/history` | `GET` | discovered | live + public wrapper source | invalid offer id returned existence-confirming error |
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | invalid payload still reached annotated-offer validation |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted empty `sent_offers` update and returned success |
-| `/me/mobile/status` | `POST` | discovered | live | invalid body returned `invalid version format`, confirming a write route distinct from the read route |
+| `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
 
 ## Likely Stale Or Wrapper-Only Routes
 
@@ -129,7 +133,9 @@ Current live probing indicates:
 
 1. public routes include:
    - `/schema`
+   - `/listings?limit=40&min_ref_qty=20`
    - `/listings/{id}`
+   - `/listings/{id}/buy-orders` without extra query params
    - `/users/{id}`
    - `/users/{id}/stall`
    - `/history/.../sales`
@@ -140,7 +146,8 @@ Current live probing indicates:
    - `/listings/{id}/similar`
 2. authenticated routes include:
    - `/me*`
-   - `/listings/{id}/buy-orders`
+   - general `/listings` search with normal query params
+   - `/listings/{id}/buy-orders` when using auth-only query params such as `limit`
    - mutation routes such as `/buy-orders`, `/offers`, `/listings/buy`
 
 ## Repeatable Live Audit

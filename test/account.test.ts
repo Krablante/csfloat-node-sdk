@@ -108,4 +108,93 @@ describe("AccountResource", () => {
 
     expect(get).toHaveBeenCalledWith("me/mobile/status");
   });
+
+  it("patches generic me settings", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.updateMe({ offers_enabled: true, away: false });
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      offers_enabled: true,
+      away: false,
+    });
+  });
+
+  it("patches offers_enabled", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.setOffersEnabled(true);
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      offers_enabled: true,
+    });
+  });
+
+  it("patches stall_public", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.setStallPublic(true);
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      stall_public: true,
+    });
+  });
+
+  it("patches away", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.setAway(false);
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      away: false,
+    });
+  });
+
+  it("patches max_offer_discount", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.setMaxOfferDiscount(800);
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      max_offer_discount: 800,
+    });
+  });
+
+  it("patches trade_url", async () => {
+    const patch = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ patch } as never);
+
+    await resource.updateTradeUrl("https://steamcommunity.com/tradeoffer/new/?partner=1&token=abc");
+
+    expect(patch).toHaveBeenCalledWith("me", {
+      trade_url: "https://steamcommunity.com/tradeoffer/new/?partner=1&token=abc",
+    });
+  });
+
+  it("posts notification read receipt", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.markNotificationsRead("123");
+
+    expect(post).toHaveBeenCalledWith("me/notifications/read-receipt", {
+      last_read_id: "123",
+    });
+  });
+
+  it("posts mobile status version", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.setMobileStatus();
+
+    expect(post).toHaveBeenCalledWith("me/mobile/status", {
+      version: "8.0.0",
+    });
+  });
 });

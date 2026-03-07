@@ -5,6 +5,7 @@ import type {
   CsfloatBuyOrdersResponse,
   CsfloatCursorParams,
   CsfloatListingsResponse,
+  CsfloatMessageResponse,
   CsfloatMeResponse,
   CsfloatMobileStatusResponse,
   CsfloatNotificationsResponse,
@@ -12,6 +13,7 @@ import type {
   CsfloatPageParams,
   CsfloatTradesResponse,
   CsfloatTransactionsResponse,
+  CsfloatUpdateMeRequest,
   QueryParams,
 } from "../types.js";
 
@@ -62,5 +64,41 @@ export class AccountResource {
 
   getMobileStatus(): Promise<CsfloatMobileStatusResponse> {
     return this.client.get<CsfloatMobileStatusResponse>("me/mobile/status");
+  }
+
+  updateMe(request: CsfloatUpdateMeRequest): Promise<CsfloatMessageResponse> {
+    return this.client.patch<CsfloatMessageResponse>("me", request);
+  }
+
+  setOffersEnabled(enabled: boolean): Promise<CsfloatMessageResponse> {
+    return this.updateMe({ offers_enabled: enabled });
+  }
+
+  setStallPublic(isPublic: boolean): Promise<CsfloatMessageResponse> {
+    return this.updateMe({ stall_public: isPublic });
+  }
+
+  setAway(isAway: boolean): Promise<CsfloatMessageResponse> {
+    return this.updateMe({ away: isAway });
+  }
+
+  setMaxOfferDiscount(maxOfferDiscount: number): Promise<CsfloatMessageResponse> {
+    return this.updateMe({ max_offer_discount: maxOfferDiscount });
+  }
+
+  updateTradeUrl(tradeUrl: string): Promise<CsfloatMessageResponse> {
+    return this.updateMe({ trade_url: tradeUrl });
+  }
+
+  markNotificationsRead(lastReadId: string): Promise<CsfloatMessageResponse> {
+    return this.client.post<CsfloatMessageResponse>("me/notifications/read-receipt", {
+      last_read_id: lastReadId,
+    });
+  }
+
+  setMobileStatus(version = "8.0.0"): Promise<CsfloatMessageResponse> {
+    return this.client.post<CsfloatMessageResponse>("me/mobile/status", {
+      version,
+    });
   }
 }

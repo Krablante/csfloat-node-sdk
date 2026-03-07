@@ -449,8 +449,21 @@ export interface CsfloatMobileStatusResponse {
   version?: string;
   has_access_token?: boolean;
   user_agent?: string;
+  cap_bundle_id?: string;
   status?: string;
   message?: string;
+}
+
+export interface CsfloatMessageResponse {
+  message: string;
+}
+
+export interface CsfloatUpdateMeRequest {
+  max_offer_discount?: number;
+  offers_enabled?: boolean;
+  stall_public?: boolean;
+  away?: boolean;
+  trade_url?: string;
 }
 
 export interface CsfloatHistoryGraphPoint {
@@ -468,6 +481,7 @@ export type CsfloatInventoryResponse = CsfloatInventoryItem[];
 export interface CsfloatListParams {
   cursor?: string;
   limit?: number;
+  min_ref_qty?: number;
   type?: ListingType;
   market_hash_name?: string;
   def_index?: number;

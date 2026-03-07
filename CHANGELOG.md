@@ -22,3 +22,5 @@ The format is based on Keep a Changelog.
 12. meta, buy-order, notification, transaction, and account-standing read endpoints
 13. listing similar-items and history-graph read endpoints
 14. public schema endpoint support and additional discovery notes for hidden routes
+15. account write helpers for `PATCH /me`, notification read receipts, and mobile status updates
+16. discovery notes for the special unauthenticated public listings feed shape
