@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
-## [0.5.0] - 2026-03-07
+## [0.4.5] - 2026-03-07
 
 ### Added
 
