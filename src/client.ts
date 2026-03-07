@@ -78,6 +78,8 @@ async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export type CsfloatFetch = typeof fetch;
+
 export interface CsfloatClientOptions {
   apiKey: string;
   baseUrl?: string;
@@ -87,6 +89,8 @@ export interface CsfloatClientOptions {
   retryDelayMs?: number;
   maxRetryDelayMs?: number;
   retryUnsafeRequests?: boolean;
+  fetch?: CsfloatFetch;
+  dispatcher?: unknown;
 }
 
 export class CsfloatHttpClient {
@@ -98,6 +102,8 @@ export class CsfloatHttpClient {
   private readonly retryDelayMs: number;
   private readonly maxRetryDelayMs: number;
   private readonly retryUnsafeRequests: boolean;
+  private readonly fetchImpl: CsfloatFetch;
+  private readonly dispatcher?: unknown;
 
   constructor(options: CsfloatClientOptions) {
     if (!options.apiKey) {
@@ -112,6 +118,8 @@ export class CsfloatHttpClient {
     this.retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
     this.maxRetryDelayMs = options.maxRetryDelayMs ?? DEFAULT_MAX_RETRY_DELAY_MS;
     this.retryUnsafeRequests = options.retryUnsafeRequests ?? false;
+    this.fetchImpl = options.fetch ?? fetch;
+    this.dispatcher = options.dispatcher;
   }
 
   async get<T>(
@@ -156,7 +164,7 @@ export class CsfloatHttpClient {
       const timer = setTimeout(() => controller.abort(), this.timeoutMs);
 
       try {
-        const init: RequestInit = {
+        const init: RequestInit & { dispatcher?: unknown } = {
           method,
           headers: {
             Authorization: this.apiKey,
@@ -170,7 +178,11 @@ export class CsfloatHttpClient {
           init.body = JSON.stringify(options.body);
         }
 
-        const response = await fetch(url, init);
+        if (this.dispatcher !== undefined) {
+          init.dispatcher = this.dispatcher;
+        }
+
+        const response = await this.fetchImpl(url, init);
 
         const text = await response.text();
         const data = parseResponseBody(text);

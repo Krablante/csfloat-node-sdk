@@ -152,6 +152,18 @@ console.log(rates.data.usd, me.user.steam_id, trades.count, inventory.length, li
 
 By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.
 
+If you need proxying or custom transport behavior, you can inject your own `fetch` implementation or pass a Node-compatible `dispatcher`:
+
+```ts
+import { ProxyAgent } from "undici";
+import { CsfloatSdk } from "csfloat-node-sdk";
+
+const sdk = new CsfloatSdk({
+  apiKey: process.env.CSFLOAT_API_KEY!,
+  dispatcher: new ProxyAgent("http://127.0.0.1:8080"),
+});
+```
+
 Use the wear helpers for search-style float ranges:
 
 ```ts

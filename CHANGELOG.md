@@ -12,6 +12,7 @@ The format is based on Keep a Changelog.
 2. `account.counterOffer()` for seller-side counter offers via `POST /offers/{id}/counter-offer`
 3. `account.cancelOffer()` for offer-thread cancellation via `DELETE /offers/{id}`
 4. `listings.buyNow()` and `listings.buyListing()` for direct `buy_now` purchases via `POST /listings/buy`
+5. `fetch` injection and optional `dispatcher` support in `CsfloatHttpClient` for proxy/custom transport scenarios without adding runtime dependency bloat
 
 ### Changed
 

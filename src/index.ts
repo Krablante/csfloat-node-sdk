@@ -26,7 +26,7 @@ export {
 } from "./schema.js";
 export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
-export type { CsfloatClientOptions } from "./client.js";
+export type { CsfloatClientOptions, CsfloatFetch } from "./client.js";
 export type {
   CsfloatBlueRangeParams,
   CsfloatCategoryPreset,

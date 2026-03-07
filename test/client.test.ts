@@ -148,4 +148,44 @@ describe("CsfloatHttpClient", () => {
     });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it("uses injected fetch implementation when provided", async () => {
+    const customFetch = vi.fn(async () =>
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      fetch: customFetch as typeof fetch,
+    });
+
+    await expect(client.get("schema")).resolves.toEqual({ ok: true });
+    expect(customFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("forwards dispatcher to fetch init when provided", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    const dispatcher = { kind: "proxy-dispatcher" };
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      dispatcher,
+    });
+
+    await client.get("schema");
+
+    const [, init] = fetchMock.mock.calls[0];
+    expect(init).toMatchObject({
+      dispatcher,
+    });
+  });
 });
