@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.3.1] - 2026-03-07
+
+### Fixed
+
+1. added the live-confirmed `listing_id` field to `CsfloatInventoryItem` so authenticated inventory responses are typed correctly
+
+## [0.3.0] - 2026-03-07
+
+### Added
+
+1. advanced market query support for `category`, `collection`, `rarity`, `min_price`, `max_price`, `paint_seed`, `music_kit_index`, `keychain_highlight_reel`, `min_fade`, `max_fade`, `min_blue`, and `max_blue`
+2. live-confirmed watchlist toggle helpers for `POST/DELETE /listings/{id}/watchlist`
+3. repeatable keyed audit coverage for advanced market filters and reversible watchlist validation
+4. refined item and schema typing for fade details, highlight reels, collection metadata, and mixed attachment field shapes
+
+### Changed
+
+1. expanded `README.md` and `API_COVERAGE.md` to document the newly confirmed market-query and watchlist surface
+
 ## [0.2.0] - 2026-03-07
 
 ### Added
@@ -21,19 +40,6 @@ The format is based on Keep a Changelog.
 
 1. strengthened README positioning to present the repository as a maintainer-grade CSFloat SDK and documentation hub
 2. expanded `API_COVERAGE.md` to reflect the broader live-validated CSFloat API surface
-
-## [0.3.0] - 2026-03-07
-
-### Added
-
-1. advanced market query support for `category`, `collection`, `rarity`, `min_price`, `max_price`, `paint_seed`, `music_kit_index`, `keychain_highlight_reel`, `min_fade`, `max_fade`, `min_blue`, and `max_blue`
-2. live-confirmed watchlist toggle helpers for `POST/DELETE /listings/{id}/watchlist`
-3. repeatable keyed audit coverage for advanced market filters and reversible watchlist validation
-4. refined item and schema typing for fade details, highlight reels, collection metadata, and mixed attachment field shapes
-
-### Changed
-
-1. expanded `README.md` and `API_COVERAGE.md` to document the newly confirmed market-query and watchlist surface
 
 ## [0.1.0] - 2026-03-07
 

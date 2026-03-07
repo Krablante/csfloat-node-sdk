@@ -499,6 +499,7 @@ export interface CsfloatHistoryGraphPoint {
 }
 
 export interface CsfloatInventoryItem extends CsfloatItem {
+  listing_id?: string | null;
   reference?: CsfloatReferencePrice;
 }
 
