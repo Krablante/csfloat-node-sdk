@@ -2,6 +2,7 @@ import type { CsfloatHttpClient } from "../client.js";
 import { CsfloatSdkError } from "../errors.js";
 import { paginateCursor } from "../pagination.js";
 import type {
+  CsfloatBid,
   CreateListingRequest,
   CreateAuctionListingRequest,
   CreateBuyNowListingRequest,
@@ -31,6 +32,10 @@ export class ListingsResource {
 
   getListingById(listingId: string): Promise<CsfloatListing> {
     return this.client.get<CsfloatListing>(`listings/${listingId}`);
+  }
+
+  getBids(listingId: string): Promise<CsfloatBid[]> {
+    return this.client.get<CsfloatBid[]>(`listings/${listingId}/bids`);
   }
 
   createListing(request: CreateListingRequest): Promise<CsfloatListing> {

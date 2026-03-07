@@ -18,6 +18,11 @@ export type QueryParams = Record<
   string | number | boolean | undefined | null
 >;
 
+export interface CsfloatCursorParams {
+  cursor?: string;
+  limit?: number;
+}
+
 export interface CsfloatUserStatistics {
   median_trade_time?: number;
   total_avoided_trades?: number;
@@ -98,6 +103,8 @@ export interface CsfloatTopBid {
   state?: string;
   obfuscated_buyer_id?: string;
 }
+
+export type CsfloatBid = CsfloatTopBid;
 
 export interface CsfloatAuctionDetails {
   reserve_price?: number;
@@ -206,6 +213,62 @@ export interface CsfloatMeResponse {
   user: CsfloatAuthenticatedUser & {
     steam_id: string;
   };
+}
+
+export interface CsfloatTradeSteamOffer {
+  id?: string;
+  state?: number | string;
+  is_from_seller?: boolean;
+  can_cancel_at?: string;
+  sent_at?: string;
+  deadline_at?: string;
+  updated_at?: string;
+}
+
+export interface CsfloatTrade {
+  id?: string;
+  created_at?: string;
+  buyer_id?: string;
+  buyer?: CsfloatUser;
+  seller_id?: string;
+  seller?: CsfloatUser;
+  contract_id?: string;
+  accepted_at?: string;
+  state?: string;
+  verification_mode?: string;
+  steam_offer?: CsfloatTradeSteamOffer;
+  verify_sale_at?: string;
+  inventory_check_status?: number;
+  trade_protection_ends_at?: string;
+  contract?: CsfloatListing;
+  trade_url?: string;
+  trade_token?: string;
+  wait_for_cancel_ping?: boolean;
+  is_settlement_period?: boolean;
+}
+
+export interface CsfloatTradesResponse {
+  trades: CsfloatTrade[];
+  count?: number;
+}
+
+export interface CsfloatOffer {
+  id?: string;
+  created_at?: string;
+  price?: number;
+  state?: string;
+  buyer_id?: string;
+  buyer?: CsfloatUser;
+  seller_id?: string;
+  seller?: CsfloatUser;
+  contract_id?: string;
+  contract?: CsfloatListing;
+  is_from_seller?: boolean;
+}
+
+export interface CsfloatOffersResponse {
+  offers: CsfloatOffer[];
+  count?: number;
 }
 
 export interface CsfloatInventoryItem extends CsfloatItem {

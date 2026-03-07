@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { CsfloatSdkError } from "../src/errors.js";
 import { ListingsResource } from "../src/resources/listings.js";
@@ -36,5 +36,17 @@ describe("ListingsResource", () => {
         duration_days: 2 as never,
       }),
     ).toThrow(CsfloatSdkError);
+  });
+
+  it("requests bids for a listing", async () => {
+    const get = vi.fn(async (_path: string) => []);
+    const resource = new ListingsResource({
+      ...client,
+      get,
+    } as never);
+
+    await resource.getBids("949824804901487637");
+
+    expect(get).toHaveBeenCalledWith("listings/949824804901487637/bids");
   });
 });

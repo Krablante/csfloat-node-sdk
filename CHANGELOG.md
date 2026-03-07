@@ -16,3 +16,6 @@ The format is based on Keep a Changelog.
 6. API coverage matrix
 7. tests, build, and typecheck scripts
 8. read-only example against the CSFloat API
+9. authenticated trades, offers, and watchlist endpoints
+10. auction bid fetching for listing endpoints
+11. repeatable live API audit script and discovery notes

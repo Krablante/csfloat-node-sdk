@@ -29,10 +29,10 @@ These routes are confirmed live as of 2026-03-07, but are not yet implemented in
 
 | Endpoint | Method | SDK Status | Validation Source | Notes |
 |---|---|---|---|---|
-| `/me/trades` | `GET` | discovered | live | returns `{ trades, count }`; supports `limit` |
-| `/me/offers` | `GET` | discovered | live | returns `{ offers, count }`; supports `limit` |
-| `/me/watchlist` | `GET` | discovered | live | returns `{ data, cursor }`; supports `limit` |
-| `/listings/{auction_id}/bids` | `GET` | discovered | live | returns bid array for auction listings; empty array when no bids |
+| `/me/trades` | `GET` | implemented | live | returns `{ trades, count }`; supports `limit` |
+| `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; supports `limit` |
+| `/me/watchlist` | `GET` | implemented | live | returns `{ data, cursor }`; supports `limit` |
+| `/listings/{auction_id}/bids` | `GET` | implemented | live | returns bid array for auction listings; empty array when no bids |
 | `/offers` | `POST` | discovered | live | route exists; seller account received `403 sellers can only use the counter-offers endpoint` |
 
 ## Query/Behavior Surface Covered

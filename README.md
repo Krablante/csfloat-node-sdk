@@ -45,11 +45,11 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 
 | Area | Status | Methods |
 |---|---|---|
-| Account | implemented | `account.getMe()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getOffers()`, `account.getWatchlist()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |
-| Listings | implemented | `listings.getListings()`, `listings.iterateListings()`, `listings.getListingById()` |
+| Listings | implemented | `listings.getListings()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()` |
 | History | implemented | `history.getSales()` |
 
@@ -99,13 +99,14 @@ const sdk = new CsfloatSdk({
 });
 
 const me = await sdk.account.getMe();
+const trades = await sdk.account.getTrades({ limit: 5 });
 const inventory = await sdk.inventory.getInventory();
 const listings = await sdk.listings.getListings({
   limit: 10,
   type: "buy_now",
 });
 
-console.log(me.user.steam_id, inventory.length, listings.data.length);
+console.log(me.user.steam_id, trades.count, inventory.length, listings.data.length);
 ```
 
 ## Safety Note For Mutations
