@@ -1,8 +1,11 @@
+type LooseString<T extends string> = T | (string & {});
+type LooseNumber<T extends number> = T | (number & {});
+
 export type ListingType = "buy_now" | "auction" | string;
-export type CsfloatSource = "csfloat" | "p2p" | number | string;
+export type CsfloatSource = LooseString<"csfloat" | "p2p"> | number;
 export type Category = "normal" | "stattrak" | "souvenir";
-export type CsfloatListingCategoryFilter = 1 | 2 | 3 | 4 | number;
-export type SortBy =
+export type CsfloatListingCategoryFilter = LooseNumber<1 | 2 | 3 | 4>;
+export type SortBy = LooseString<
   | "lowest_price"
   | "highest_price"
   | "most_recent"
@@ -13,14 +16,14 @@ export type SortBy =
   | "highest_discount"
   | "float_rank"
   | "num_bids"
-  | string;
+>;
 
 export type QueryParams = Record<
   string,
   string | number | boolean | undefined | null
 >;
 
-export type CsfloatListingsFilter = "sticker_combos" | "unique" | string;
+export type CsfloatListingsFilter = LooseString<"sticker_combos" | "unique">;
 
 export interface CsfloatCursorParams {
   cursor?: string;
@@ -536,12 +539,6 @@ export interface CsfloatListParams {
   max_fade?: number;
   sort_by?: SortBy;
   user_id?: string;
-}
-
-/** Params for GET /me/buy-orders — live-confirmed: market_hash_name and sort_by are both accepted */
-export interface CsfloatBuyOrdersParams extends CsfloatPageParams {
-  market_hash_name?: string;
-  sort_by?: SortBy | string;
 }
 
 export interface CreateBuyNowListingRequest {

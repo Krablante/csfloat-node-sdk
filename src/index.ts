@@ -12,7 +12,6 @@ export type {
   CsfloatAutoBid,
   CsfloatBid,
   CsfloatBuyOrder,
-  CsfloatBuyOrdersParams,
   CsfloatBuyOrdersResponse,
   CsfloatSource,
   CsfloatListingCategoryFilter,

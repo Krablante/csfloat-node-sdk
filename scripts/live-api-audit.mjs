@@ -166,8 +166,6 @@ async function main() {
     ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/notifications/timeline"],
     ["GET", "/me/buy-orders?limit=1"],
-    // me/buy-orders with market_hash_name filter — live-confirmed 2026-03-07
-    ...(marketHashName ? [["GET", `/me/buy-orders?market_hash_name=${encodeURIComponent(marketHashName)}&limit=1`]] : []),
     ["GET", "/me/auto-bids"],
     ["GET", "/me/mobile/status"],
     ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),
@@ -180,7 +178,7 @@ async function main() {
     ...(marketHashName ? [["GET", `/history/${encodeURIComponent(marketHashName)}/sales`]] : []),
     // history/graph with explicit paint_index
     ["GET", "/history/Souvenir%20P250%20%7C%20Boreal%20Forest%20(Factory%20New)/graph?paint_index=77"],
-    // history/graph without paint_index — confirmed live 2026-03-07: returns aggregate per-skin data
+    // history/graph without paint_index — confirmed live 2026-03-07: route works without explicit paint_index
     ["GET", `/history/${encodeURIComponent("AK-47 | Redline (Field-Tested)")}/graph`],
   ];
 
@@ -226,6 +224,7 @@ async function main() {
     ["GET", "/listings?limit=1&category=2"],
     ["GET", "/listings?limit=1&category=3"],
     ["GET", "/listings?limit=1&category=4"],
+    ["GET", "/listings?limit=1&category=5"],
     ["GET", "/listings?limit=1&collection=set_cobblestone"],
     ["GET", "/listings?limit=1&rarity=6"],
     ["GET", "/listings?limit=1&min_price=10000"],
@@ -241,7 +240,7 @@ async function main() {
     // source string forms — live-confirmed (csfloat|p2p strings accepted alongside numeric values)
     ["GET", "/listings?limit=1&source=csfloat"],
     ["GET", "/listings?limit=1&source=p2p"],
-    // category as stattrak/souvenir real filter (confirmed 2026-03-07)
+    // category as real filter (confirmed 2026-03-07)
     ["GET", "/listings?limit=1&def_index=7&paint_index=282&category=2"],
     ["GET", "/listings?limit=1&def_index=7&paint_index=282&category=1"],
   ];

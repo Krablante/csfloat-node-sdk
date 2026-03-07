@@ -41,7 +41,7 @@ Status legend:
 | `/listings/{id}/similar` | `GET` | implemented | live + public wrapper source | returns similar live listings |
 | `/listings/{id}/watchlist` | `POST` | implemented | live | confirmed happy-path add with `added to watchlist` |
 | `/listings/{id}/watchlist` | `DELETE` | implemented | live | confirmed happy-path remove with `removed from watchlist` |
-| `/history/{market_hash_name}/graph` | `GET` | implemented | live + public wrapper source | requires `paint_index` query param |
+| `/history/{market_hash_name}/graph` | `GET` | implemented | live + public wrapper source | supports explicit `paint_index`; also responds when `paint_index` is omitted |
 
 ## Expanded Live Endpoint Surface
 
@@ -186,8 +186,9 @@ Live-confirmed search behaviors:
 21. `min_fade` / `max_fade` are live for fade-capable finishes
 22. `min_blue` / `max_blue` are live for blue-percentage filtered searches
 23. `sticker_index` and `keychain_index` are accepted by the API; they currently behave as index filters for sticker/charm listings themselves, not yet a documented helper for applied attachments
-24. `GET /me/buy-orders` accepts `market_hash_name` as a filter param and `sort_by` without hard-failing on unknown sort values (live-confirmed 2026-03-07)
-25. `GET /history/{name}/graph` works **without** `paint_index` — returns aggregate price data across all paint variants for the skin (live-confirmed 2026-03-07, returns breadth of historical points)
+24. only `category=1..4` have confirmed semantics; `category=5` returned a mixed, effectively unfiltered result set on 2026-03-07 and should be treated as unsupported
+25. `GET /me/buy-orders` accepts `market_hash_name` and `sort_by` without hard-failing on the current account, but temporary live orders did not show any filtering or sorting effect; these params should be treated as unconfirmed/ignored for now
+26. `GET /history/{name}/graph` works **without** `paint_index`; it returns a broader series than an explicit `paint_index` query, but the exact server-side aggregation semantics are not fully mapped yet
 
 ## Listing Creation Surface
 

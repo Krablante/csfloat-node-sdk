@@ -17,7 +17,7 @@ describe("HistoryResource", () => {
     );
   });
 
-  it("requests graph history without paint index (aggregate mode)", async () => {
+  it("requests graph history without paint index", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => []);
     const resource = new HistoryResource({ get } as never);
 
