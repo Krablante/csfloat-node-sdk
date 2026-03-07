@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.2.0] - 2026-03-07
+
+### Added
+
+1. live API audit script and discovery notes for repeatable endpoint validation
+2. authenticated account endpoints for trades, offers, watchlist, notifications, transactions, auto-bids, account standing, mobile status, and buy orders
+3. auction bid fetching and additional listing read helpers for buy orders and similar items
+4. public schema endpoint support and additional hidden-route discovery coverage
+5. account write helpers for `PATCH /me`, notification read receipts, and mobile status updates
+6. buy-order create/delete helpers based on live happy-path validation
+7. market query support for `filter`, raw `source`, `sort_by`, and `min_ref_qty`
+8. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
+
+### Changed
+
+1. strengthened README positioning to present the repository as a maintainer-grade CSFloat SDK and documentation hub
+2. expanded `API_COVERAGE.md` to reflect the broader live-validated CSFloat API surface
+
 ## [0.1.0] - 2026-03-07
 
 ### Added
@@ -16,14 +34,3 @@ The format is based on Keep a Changelog.
 6. API coverage matrix
 7. tests, build, and typecheck scripts
 8. read-only example against the CSFloat API
-9. authenticated trades, offers, and watchlist endpoints
-10. auction bid fetching for listing endpoints
-11. repeatable live API audit script and discovery notes
-12. meta, buy-order, notification, transaction, and account-standing read endpoints
-13. listing similar-items and history-graph read endpoints
-14. public schema endpoint support and additional discovery notes for hidden routes
-15. account write helpers for `PATCH /me`, notification read receipts, and mobile status updates
-16. discovery notes for the special unauthenticated public listings feed shape
-17. buy-order create/delete helpers based on live happy-path validation
-18. market `filter` and raw `source` query support based on browser and API recon
-19. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`

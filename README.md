@@ -13,7 +13,7 @@ This repository aims to provide a clean, typed, public SDK around the **currentl
 
 It is also intended to become one of the most comprehensive public maps of the currently accessible CSFloat API surface, consolidating official docs, public wrapper discovery, live endpoint validation, and practical SDK ergonomics in one maintainer-grade repository.
 
-Status: initial public release, actively maintained, and expanding coverage of the currently known CSFloat API surface.
+Status: public release, actively maintained, and expanding coverage of the currently known CSFloat API surface.
 
 > The goal is simple: ship a maintainer-grade TypeScript SDK plus the strongest public CSFloat API reference we can responsibly validate.
 
