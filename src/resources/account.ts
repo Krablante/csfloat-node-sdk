@@ -16,7 +16,9 @@ import type {
   CsfloatOffer,
   CsfloatOffersResponse,
   CsfloatPageParams,
+  CsfloatRecommenderTokenResponse,
   CsfloatTradeBatchResponse,
+  CsfloatTradesParams,
   CsfloatTradesResponse,
   CsfloatTransactionsResponse,
   CsfloatUpdateMeRequest,
@@ -32,7 +34,7 @@ export class AccountResource {
     return this.client.get<CsfloatMeResponse>("me");
   }
 
-  getTrades(params: CsfloatCursorParams = {}): Promise<CsfloatTradesResponse> {
+  getTrades(params: CsfloatTradesParams = {}): Promise<CsfloatTradesResponse> {
     return this.client.get<CsfloatTradesResponse>("me/trades", params as QueryParams);
   }
 
@@ -124,6 +126,10 @@ export class AccountResource {
 
   getAutoBids(): Promise<CsfloatAutoBid[]> {
     return this.client.get<CsfloatAutoBid[]>("me/auto-bids");
+  }
+
+  createRecommenderToken(): Promise<CsfloatRecommenderTokenResponse> {
+    return this.client.post<CsfloatRecommenderTokenResponse>("me/recommender-token", {});
   }
 
   getMobileStatus(): Promise<CsfloatMobileStatusResponse> {

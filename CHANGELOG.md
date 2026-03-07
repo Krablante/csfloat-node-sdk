@@ -18,6 +18,8 @@ The format is based on Keep a Changelog.
 8. `account.acceptTrades()`, `account.acceptTrade()`, and `account.acceptSale()` for queued seller-side sale acceptance via the live-confirmed `POST /trades/bulk/accept` route
 9. `listings.getPriceList()` for the public market-wide `/listings/price-list` index
 10. normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage` fields plus an exported `isCsfloatSdkError()` type guard
+11. `account.createRecommenderToken()` for the browser-observed `POST /me/recommender-token` flow
+12. richer `account.getTrades()` typing via `CsfloatTradesParams` with support for `state`, `role`, and `page`
 
 ### Changed
 
@@ -27,6 +29,7 @@ The format is based on Keep a Changelog.
 4. expanded trade docs with the confirmed `accept sale` transition from `queued` to `pending` and the resulting `trade_url`, `trade_token`, and `steam_offer` timing fields
 5. clarified that `/trades/steam-status/new-offer` and `/trades/steam-status/offer` are still discovered-only sync routes, while `/listings/price-list` is now implemented as a strongly validated public endpoint
 6. hardened transport errors into stable public categories (`validation`, `authentication`, `authorization`, `account_gated`, `role_gated`, `not_found`, `rate_limit`, `server`, `timeout`, `network`)
+7. expanded browser-auth coverage notes with the active/history trade query shapes, the offer timeline thread fetch pattern, the stale withdraw fetch to `/me/payments/stripe/connect`, and the external `loadout-api.csfloat.com` route used by the stall page
 
 ## [0.5.0] - 2026-03-07
 

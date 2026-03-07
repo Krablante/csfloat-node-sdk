@@ -318,6 +318,7 @@ async function main() {
     ["GET", "/me/notification"],
     ["GET", "/me/offer-history?limit=1"],
     ["GET", "/offers/history?limit=1"],
+    ["GET", "/me/payments/stripe/connect"],
     // listing subroutes — all 404 as of 2026-03-07 pass 2
     ...(listingId ? [
       ["GET", `/listings/${listingId}/offers`],
@@ -348,6 +349,7 @@ async function main() {
     ["POST", "/me/trades/bulk/cancel", { trade_ids: ["0"] }],
     ["POST", "/me/verify-sms", { phone_number: "0" }],
     ["POST", "/me/mobile/status", {}],
+    ["POST", "/me/recommender-token", {}],
     ["POST", "/listings/950170960026273280/bit", { max_price: 1 }],
     ["DELETE", "/offers/0"],
     [

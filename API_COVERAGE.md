@@ -40,6 +40,7 @@ Status legend:
 | `/buy-orders/{id}` | `PATCH` | implemented | live | confirmed happy-path update with body `{ max_price }` |
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
+| `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
 | `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path accept on a real queued `$0.05` sale with body `{ trade_ids: string[] }` |
 | `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, `away`, `trade_url`; **also confirmed for `background_url` and `username` (2026-03-07 research pass 2)** |
@@ -73,6 +74,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | accepted string-form `offer_id` payloads and returned success even for `"0"`; exact side effects still unmapped |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }` with success; empty sync produced no observed trade-state change |
 | `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
+| `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | discovered | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
 
 ## Likely Stale Or Wrapper-Only Routes
 
@@ -85,6 +87,7 @@ These routes appeared in public wrappers, but live probing on 2026-03-07 did not
 | `/me/trades/bulk/cancel` | `POST` | `404` | likely outdated path |
 | `/listings/{id}/sales` | `GET` | `404` | wrapper surface not confirmed live |
 | `/account-standing` | `GET` | `400 invalid resource` | stale path; live route is `/me/account-standing` |
+| `/me/payments/stripe/connect` | `GET` | `404` | stale withdraw-route fetch still observed in browser-auth flow |
 
 ## Confirmed Silently-Ignored Query Params
 
@@ -227,6 +230,9 @@ Live-confirmed search behaviors:
 44. currently observed query params on `/listings/price-list` such as `market_hash_name` and `limit` appear to be silently ignored; exact filtering/pagination semantics are not yet mapped
 45. `POST /trades/steam-status/new-offer` appears to key off a string `offer_id` field, not `trade_id`; `{ offer_id: "0" }` returned success while `{ trade_id: "0" }` returned `invalid offer id format`
 46. `POST /trades/steam-status/offer` accepts `sent_offers` and optional `trade_id` payloads, but an empty-array sync produced no observed state change on the current pending trade, so it remains discovered-only
+47. browser-auth discovery on `/profile/trades` showed that the UI uses two concrete trade queries: `/me/trades?state=queued,pending&limit=5000` for active seller-side work and `/me/trades?role=seller&state=failed,cancelled,verified&limit=30&page=0` for history
+48. browser-auth discovery on `/profile/offers` uses `/me/offers-timeline?limit=40` plus direct `/offers/{id}/history` fetches for the selected thread
+49. browser-auth discovery on `/stall/me` triggers `POST /me/recommender-token`, which returns `{ token, expires_at }`, and also calls the external public route `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts`
 
 ## Listing Creation Surface
 

@@ -7,6 +7,7 @@ export type Category = "normal" | "stattrak" | "souvenir";
 export type CsfloatListingCategoryFilter = LooseNumber<1 | 2 | 3 | 4>;
 export type CsfloatOfferType = LooseString<"buyer_offer" | "seller_offer">;
 export type CsfloatOfferState = LooseString<"active" | "declined">;
+export type CsfloatTradeRole = LooseString<"seller" | "buyer">;
 export type SortBy = LooseString<
   | "lowest_price"
   | "highest_price"
@@ -35,6 +36,12 @@ export interface CsfloatCursorParams {
 export interface CsfloatPageParams {
   page?: number;
   limit?: number;
+}
+
+export interface CsfloatTradesParams extends CsfloatPageParams {
+  cursor?: string;
+  state?: string;
+  role?: CsfloatTradeRole;
 }
 
 export interface CsfloatUserStatistics {
@@ -407,6 +414,11 @@ export interface CsfloatTradesResponse {
 
 export interface CsfloatTradeBatchResponse {
   data: CsfloatTrade[];
+}
+
+export interface CsfloatRecommenderTokenResponse {
+  token: string;
+  expires_at: string;
 }
 
 export interface CsfloatTransaction {

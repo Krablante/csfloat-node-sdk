@@ -7,11 +7,14 @@ describe("AccountResource", () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);
 
-    await resource.getTrades({ limit: 5, cursor: "abc" });
+    await resource.getTrades({ limit: 5, cursor: "abc", state: "queued,pending", role: "seller", page: 0 });
 
     expect(get).toHaveBeenCalledWith("me/trades", {
       limit: 5,
       cursor: "abc",
+      state: "queued,pending",
+      role: "seller",
+      page: 0,
     });
   });
 
@@ -24,6 +27,15 @@ describe("AccountResource", () => {
     expect(get).toHaveBeenCalledWith("me/offers", {
       limit: 1,
     });
+  });
+
+  it("creates a recommender token", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.createRecommenderToken();
+
+    expect(post).toHaveBeenCalledWith("me/recommender-token", {});
   });
 
   it("accepts trades in bulk", async () => {

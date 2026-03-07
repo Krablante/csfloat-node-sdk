@@ -83,7 +83,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Area | Status | Methods |
 |---|---|---|
 | Meta | implemented | `meta.getSchema()`, `meta.getExchangeRates()`, `meta.getLocation()` |
-| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.acceptTrades()`, `account.acceptTrade()`, `account.acceptSale()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.acceptTrades()`, `account.acceptTrade()`, `account.acceptSale()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.createRecommenderToken()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |
@@ -147,11 +147,18 @@ const listings = await sdk.listings.getListings({
   type: "buy_now",
 });
 const priceList = await sdk.listings.getPriceList();
+const sellerTrades = await sdk.account.getTrades({
+  state: "queued,pending",
+  role: "seller",
+  limit: 30,
+  page: 0,
+});
 
 console.log(
   rates.data.usd,
   me.user.steam_id,
   trades.count,
+  sellerTrades.count,
   inventory.length,
   listings.data.length,
   priceList[0]?.market_hash_name,
