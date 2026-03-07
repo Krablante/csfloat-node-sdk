@@ -427,7 +427,10 @@ export interface CsfloatTransactionsResponse {
 export interface CsfloatOffer {
   id?: string;
   created_at?: string;
+  expires_at?: string;
   price?: number;
+  contract_price?: number;
+  type?: string;
   state?: string;
   buyer_id?: string;
   buyer?: CsfloatUser;

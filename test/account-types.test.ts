@@ -4,6 +4,7 @@ import type {
   CsfloatAuthenticatedUser,
   CsfloatBuyOrder,
   CsfloatMeResponse,
+  CsfloatOffer,
   CsfloatTransaction,
 } from "../src/types.js";
 
@@ -66,5 +67,23 @@ describe("authenticated user typing", () => {
 
     expect(tx.details?.trade_id).toBe("947526657940522192");
     expect(tx.details?.fee_amount).toBe(12);
+  });
+
+  it("accepts the currently observed offer fields", () => {
+    const offer: CsfloatOffer = {
+      id: "950517355987995865",
+      created_at: "2026-03-07T22:16:37.426843Z",
+      expires_at: "2026-03-08T22:16:37.426566Z",
+      contract_id: "944017518996097096",
+      contract_price: 3500,
+      buyer_id: "76561199827953866",
+      price: 3290,
+      type: "buyer_offer",
+      state: "active",
+    };
+
+    expect(offer.contract_price).toBe(3500);
+    expect(offer.expires_at).toContain("2026-03-08");
+    expect(offer.type).toBe("buyer_offer");
   });
 });
