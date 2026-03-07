@@ -506,6 +506,11 @@ export interface CsfloatHistoryGraphPoint {
   avg_price?: number;
 }
 
+export interface CsfloatHistoryGraphParams {
+  paint_index?: number;
+  category?: CsfloatListingCategoryFilter;
+}
+
 export interface CsfloatInventoryItem extends CsfloatItem {
   listing_id?: string | null;
   reference?: CsfloatReferencePrice;

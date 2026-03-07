@@ -28,4 +28,18 @@ describe("HistoryResource", () => {
       {},
     );
   });
+
+  it("passes through category when probing graph history", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => []);
+    const resource = new HistoryResource({ get } as never);
+
+    await resource.getGraph("AK-47 | Redline (Field-Tested)", {
+      category: 3,
+    });
+
+    expect(get).toHaveBeenCalledWith(
+      "history/AK-47%20%7C%20Redline%20(Field-Tested)/graph",
+      { category: 3 },
+    );
+  });
 });

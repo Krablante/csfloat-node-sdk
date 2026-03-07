@@ -175,6 +175,33 @@ const expensiveCobble = await sdk.listings.getListings({
 });
 ```
 
+Use the market helpers when you want stronger local ergonomics for category presets and validated range params:
+
+```ts
+import {
+  buildFadeRange,
+  buildPriceRange,
+  getCategoryParams,
+  withWearPreset,
+} from "csfloat-node-sdk";
+
+const scopedSearch = await sdk.listings.getListings(
+  withWearPreset(
+    {
+      limit: 20,
+      sort_by: "best_deal",
+      type: "buy_now",
+      ...getCategoryParams("souvenir"),
+      ...buildPriceRange({ min_price: 1000, max_price: 50000 }),
+      ...buildFadeRange({ min_fade: 95, max_fade: 100 }),
+    },
+    "FN",
+  ),
+);
+```
+
+`history.getGraph()` also accepts the currently observed `category` query param in addition to `paint_index`, but its exact semantics are still intentionally documented as only partially mapped.
+
 For the full, route-by-route support picture, see [API_COVERAGE.md](./API_COVERAGE.md).
 
 ## Safety Note For Mutations

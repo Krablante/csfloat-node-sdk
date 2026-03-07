@@ -1,10 +1,27 @@
 export { CsfloatHttpClient } from "./client.js";
 export { CsfloatSdk } from "./sdk.js";
 export { CsfloatSdkError } from "./errors.js";
+export {
+  buildBlueRange,
+  buildFadeRange,
+  buildFloatRange,
+  buildPriceRange,
+  CSFLOAT_CATEGORY_PRESETS,
+  CSFLOAT_FILTER_OPTIONS,
+  CSFLOAT_SORT_OPTIONS,
+  getCategoryParams,
+  withWearPreset,
+} from "./market.js";
 export { paginateCursor } from "./pagination.js";
 export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
 export type { CsfloatClientOptions } from "./client.js";
+export type {
+  CsfloatBlueRangeParams,
+  CsfloatCategoryPreset,
+  CsfloatFadeRangeParams,
+  CsfloatPriceRangeParams,
+} from "./market.js";
 export type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 export type {
   Category,
@@ -26,6 +43,7 @@ export type {
   CsfloatExchangeRatesResponse,
   CsfloatFadeDetails,
   CsfloatFirebaseMessaging,
+  CsfloatHistoryGraphParams,
   CsfloatHistoryGraphPoint,
   CsfloatInferredLocation,
   CsfloatInventoryItem,
