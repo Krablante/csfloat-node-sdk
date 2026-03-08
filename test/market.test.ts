@@ -3,11 +3,15 @@ import { describe, expect, it } from "vitest";
 import { CsfloatSdkError } from "../src/errors.js";
 import {
   buildBlueRange,
+  buildCollectionFilter,
   buildFadeRange,
   buildFloatRange,
   buildKeychainFilters,
   buildKeychainPatternRange,
+  buildMusicKitFilter,
+  buildPaintSeedFilter,
   buildPriceRange,
+  buildRarityFilter,
   buildReferenceQuantityFilter,
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
@@ -131,6 +135,18 @@ describe("market helpers", () => {
       min_keychain_pattern: 0,
       max_keychain_pattern: 10,
     });
+    expect(buildCollectionFilter({ collection: "set_cobblestone" })).toEqual({
+      collection: "set_cobblestone",
+    });
+    expect(buildRarityFilter({ rarity: 6 })).toEqual({
+      rarity: 6,
+    });
+    expect(buildPaintSeedFilter({ paint_seed: 611 })).toEqual({
+      paint_seed: 611,
+    });
+    expect(buildMusicKitFilter({ music_kit_index: 3 })).toEqual({
+      music_kit_index: 3,
+    });
   });
 
   it("rejects inverted or out-of-range percent ranges", () => {
@@ -143,6 +159,10 @@ describe("market helpers", () => {
     expect(() => buildKeychainPatternRange({ min_keychain_pattern: 50, max_keychain_pattern: 10 })).toThrow(
       CsfloatSdkError,
     );
+    expect(() => buildCollectionFilter({ collection: "   " })).toThrow(CsfloatSdkError);
+    expect(() => buildRarityFilter({ rarity: -1 })).toThrow(CsfloatSdkError);
+    expect(() => buildPaintSeedFilter({ paint_seed: -1 })).toThrow(CsfloatSdkError);
+    expect(() => buildMusicKitFilter({ music_kit_index: -1 })).toThrow(CsfloatSdkError);
   });
 
   it("serializes applied sticker filters", () => {

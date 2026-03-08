@@ -398,10 +398,14 @@ Use the market helpers when you want stronger local ergonomics for category pres
 
 ```ts
 import {
+  buildCollectionFilter,
   buildFadeRange,
   buildKeychainFilters,
   buildKeychainPatternRange,
+  buildMusicKitFilter,
+  buildPaintSeedFilter,
   buildPriceRange,
+  buildRarityFilter,
   buildReferenceQuantityFilter,
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
@@ -424,6 +428,10 @@ const scopedSearch = await sdk.listings.getListings(
       type: CSFLOAT_LISTING_TYPES[0],
       ...getCategoryParams("souvenir"),
       ...buildPriceRange({ min_price: 1000, max_price: 50000 }),
+      ...buildCollectionFilter({ collection: "set_cobblestone" }),
+      ...buildRarityFilter({ rarity: 6 }),
+      ...buildPaintSeedFilter({ paint_seed: 611 }),
+      ...buildMusicKitFilter({ music_kit_index: 3 }),
       ...buildFadeRange({ min_fade: 95, max_fade: 100 }),
     },
     "FN",

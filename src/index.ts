@@ -18,11 +18,15 @@ export {
 } from "./loadout.js";
 export {
   buildBlueRange,
+  buildCollectionFilter,
   buildFadeRange,
   buildFloatRange,
   buildKeychainFilters,
   buildKeychainPatternRange,
+  buildMusicKitFilter,
+  buildPaintSeedFilter,
   buildPriceRange,
+  buildRarityFilter,
   buildReferenceQuantityFilter,
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
@@ -66,10 +70,14 @@ export type {
 export type {
   CsfloatBlueRangeParams,
   CsfloatCategoryPreset,
+  CsfloatCollectionFilterParams,
   CsfloatFadeRangeParams,
   CsfloatHomepageFeedPreset,
   CsfloatKeychainPatternRangeParams,
+  CsfloatMusicKitFilterParams,
+  CsfloatPaintSeedFilterParams,
   CsfloatPriceRangeParams,
+  CsfloatRarityFilterParams,
   CsfloatReferenceQuantityParams,
 } from "./market.js";
 export type {

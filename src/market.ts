@@ -118,6 +118,22 @@ export interface CsfloatReferenceQuantityParams {
   min_ref_qty?: number;
 }
 
+export interface CsfloatCollectionFilterParams {
+  collection?: string;
+}
+
+export interface CsfloatRarityFilterParams {
+  rarity?: number;
+}
+
+export interface CsfloatPaintSeedFilterParams {
+  paint_seed?: number;
+}
+
+export interface CsfloatMusicKitFilterParams {
+  music_kit_index?: number;
+}
+
 export interface CsfloatKeychainPatternRangeParams {
   min_keychain_pattern?: number;
   max_keychain_pattern?: number;
@@ -266,6 +282,50 @@ export function buildReferenceQuantityFilter(
 
   return {
     ...(params.min_ref_qty === undefined ? {} : { min_ref_qty: params.min_ref_qty }),
+  };
+}
+
+export function buildCollectionFilter(
+  params: CsfloatCollectionFilterParams,
+): Pick<CsfloatListParams, "collection"> {
+  if (params.collection !== undefined && params.collection.trim().length === 0) {
+    throw new CsfloatSdkError("collection cannot be an empty string");
+  }
+
+  return {
+    ...(params.collection === undefined ? {} : { collection: params.collection.trim() }),
+  };
+}
+
+export function buildRarityFilter(
+  params: CsfloatRarityFilterParams,
+): Pick<CsfloatListParams, "rarity"> {
+  assertPositiveInteger("rarity", params.rarity);
+
+  return {
+    ...(params.rarity === undefined ? {} : { rarity: params.rarity }),
+  };
+}
+
+export function buildPaintSeedFilter(
+  params: CsfloatPaintSeedFilterParams,
+): Pick<CsfloatListParams, "paint_seed"> {
+  assertPositiveInteger("paint_seed", params.paint_seed);
+
+  return {
+    ...(params.paint_seed === undefined ? {} : { paint_seed: params.paint_seed }),
+  };
+}
+
+export function buildMusicKitFilter(
+  params: CsfloatMusicKitFilterParams,
+): Pick<CsfloatListParams, "music_kit_index"> {
+  assertPositiveInteger("music_kit_index", params.music_kit_index);
+
+  return {
+    ...(params.music_kit_index === undefined
+      ? {}
+      : { music_kit_index: params.music_kit_index }),
   };
 }
 
