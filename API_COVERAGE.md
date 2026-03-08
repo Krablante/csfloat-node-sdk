@@ -393,6 +393,14 @@ This repository includes a repeatable audit script:
 ENV_FILE=/path/to/.env npm run audit:live
 ```
 
+The default script now runs the `core` scope, which keeps the stable read/mutation regression path and skips the heavier market-filter burst.
+
+To include the extended market/candidate sweep as well:
+
+```bash
+ENV_FILE=/path/to/.env npm run audit:live:extended
+```
+
 To opt into reversible live mutation checks:
 
 ```bash

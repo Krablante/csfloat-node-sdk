@@ -38,7 +38,8 @@
     "check": "tsc --noEmit",
     "test": "vitest run",
     "example:basic": "node --env-file=.env examples/basic.mjs",
-    "audit:live": "node scripts/live-api-audit.mjs",
+    "audit:live": "CSFLOAT_AUDIT_SCOPE=core node scripts/live-api-audit.mjs",
+    "audit:live:extended": "CSFLOAT_AUDIT_SCOPE=extended node scripts/live-api-audit.mjs",
     "audit:shapes": "node scripts/live-shape-audit.mjs"
   },
   "keywords": [

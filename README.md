@@ -437,7 +437,13 @@ Run the repeatable live API audit against a local `.env` file:
 ENV_FILE=/path/to/.env npm run audit:live
 ```
 
-The default audit path is paced and skips the most rate-limit-prone discovery probes.
+The default audit path is the `core` scope: it keeps the stable account, market, watchlist, and companion checks, but skips the broad market-filter burst and stale candidate sweep that are more likely to hit listing rate limits.
+
+To include the extended market-filter and candidate-route sweep as well:
+
+```bash
+ENV_FILE=/path/to/.env npm run audit:live:extended
+```
 
 To opt into reversible live mutation checks:
 
@@ -450,6 +456,8 @@ To include the riskier mutation discovery probes as well:
 ```bash
 ALLOW_RISKY_PROBES=1 ENV_FILE=/path/to/.env npm run audit:live
 ```
+
+Both live audit scripts also accept `CSFLOAT_REQUEST_DELAY_MS` if you need to slow them down further during the same-session market work.
 
 Run the deeper response-shape audit when you want raw payload samples and unioned field paths across the currently supported live surface:
 

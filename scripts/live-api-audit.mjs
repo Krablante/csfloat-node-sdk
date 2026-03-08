@@ -41,6 +41,7 @@ function getConfig() {
   return {
     apiKey,
     baseUrl: process.env.CSFLOAT_BASE_URL || "https://csfloat.com/api/v1",
+    auditScope: process.env.CSFLOAT_AUDIT_SCOPE || "core",
     allowLiveMutations: process.env.ALLOW_LIVE_MUTATIONS === "1",
     allowRiskyProbes: process.env.ALLOW_RISKY_PROBES === "1",
     preferredSteamId: process.env.CSFLOAT_STEAM_ID || fileEnv.CSFLOAT_STEAM_ID || null,
@@ -86,6 +87,10 @@ function firstNumericRecordKey(record) {
 
   const parsed = Number(firstKey);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function isExtendedScope(config) {
+  return config.auditScope === "extended";
 }
 
 async function main() {
@@ -170,6 +175,7 @@ async function main() {
   const summary = {
     generated_at: new Date().toISOString(),
     base_url: config.baseUrl,
+    audit_scope: config.auditScope,
     allow_live_mutations: config.allowLiveMutations,
     allow_risky_probes: config.allowRiskyProbes,
     request_delay_ms: config.requestDelayMs,
@@ -340,6 +346,16 @@ async function main() {
   }
 
   const marketQueryRoutes = [
+    ["GET", "/listings?limit=1&min_ref_qty=20"],
+    ...(stickerFilterQuery ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}`]] : []),
+    ...(keychainFilterQuery ? [["GET", `/listings?limit=1&keychains=${keychainFilterQuery}`]] : []),
+    ...(stickerFilterQuery
+      ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}&sticker_option=skins`]]
+      : []),
+    ["GET", `/listings?limit=1&stickers=${packageProbeStickerFilterQuery}&sticker_option=packages`],
+  ];
+
+  const extendedMarketQueryRoutes = [
     ["GET", "/listings?limit=1&category=2"],
     ["GET", "/listings?limit=1&category=3"],
     ["GET", "/listings?limit=1&category=4"],
@@ -353,13 +369,6 @@ async function main() {
     ["GET", "/listings?limit=1&keychain_highlight_reel=1"],
     ["GET", "/listings?limit=1&def_index=507&paint_index=38&min_fade=99&max_fade=100"],
     ["GET", "/listings?limit=1&min_blue=90&max_blue=100"],
-    ["GET", "/listings?limit=1&min_ref_qty=20"],
-    ...(stickerFilterQuery ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}`]] : []),
-    ...(keychainFilterQuery ? [["GET", `/listings?limit=1&keychains=${keychainFilterQuery}`]] : []),
-    ...(stickerFilterQuery
-      ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}&sticker_option=skins`]]
-      : []),
-    ["GET", `/listings?limit=1&stickers=${packageProbeStickerFilterQuery}&sticker_option=packages`],
     // filter enum values — live-confirmed; unauthenticated requests return 403 (not 401)
     ["GET", "/listings?limit=1&filter=sticker_combos"],
     ["GET", "/listings?limit=1&filter=unique"],
@@ -374,7 +383,11 @@ async function main() {
     ["GET", `/history/${encodeURIComponent("AK-47 | Redline (Field-Tested)")}/graph?category=1`],
   ];
 
-  for (const [method, route] of marketQueryRoutes) {
+  const activeMarketQueryRoutes = isExtendedScope(config)
+    ? marketQueryRoutes.concat(extendedMarketQueryRoutes)
+    : marketQueryRoutes;
+
+  for (const [method, route] of activeMarketQueryRoutes) {
     const result = await request(method, route);
     const firstItem = result.data?.data?.[0];
 
@@ -427,15 +440,17 @@ async function main() {
     ] : []),
   ];
 
-  for (const [method, route, body] of candidateRoutes) {
-    const result = await request(method, route, body);
-    summary.candidate_endpoints.push({
-      method,
-      route,
-      status: result.status,
-      ok: result.ok,
-      summary: result.ok ? summarizePayload(result.data) : errorSummary(result.data),
-    });
+  if (isExtendedScope(config)) {
+    for (const [method, route, body] of candidateRoutes) {
+      const result = await request(method, route, body);
+      summary.candidate_endpoints.push({
+        method,
+        route,
+        status: result.status,
+        ok: result.ok,
+        summary: result.ok ? summarizePayload(result.data) : errorSummary(result.data),
+      });
+    }
   }
 
   const mutationProbeRoutes = [

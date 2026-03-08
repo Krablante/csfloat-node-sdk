@@ -19,6 +19,7 @@ The format is based on Keep a Changelog.
 9. typed low-level `sticker_option` support on listing/watchlist query params after confirming `skins|packages` behavior on sticker-filtered searches
 10. `CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY` and `buildReferenceQuantityFilter()` for the live-confirmed `min_ref_qty` listing/watchlist filter used by the `Exclude Rare Items` UI toggle
 11. `CSFLOAT_STICKER_SEARCH_OPTIONS` for the current live-confirmed sticker attachment search modes (`skins` and `packages`)
+12. `npm run audit:live:extended` for the heavier market-filter and candidate-route live sweep
 
 ### Changed
 
@@ -33,6 +34,7 @@ The format is based on Keep a Changelog.
 9. documented and audited the sticker- and keychain-filtered watchlist path after confirming that `/me/watchlist?stickers=[...]` and `/me/watchlist?keychains=[...]` reuse the same JSON attachment contract
 10. fixed the schema-derived live-audit probes to read `/schema` sticker/keychain maps correctly instead of treating them as arrays, and upgraded the `sticker_option=packages` regression probe to a positive market case (`sticker_id=85`)
 11. slowed the default `audit:live` pacing to `1250ms` per request and added a single GET retry after `429` responses so the safe live regression pass better matches the intended market pacing
+12. split `audit:live` into `core` vs `extended` scopes so the default script keeps the stable surface while `audit:live:extended` carries the more rate-limit-prone market query burst and candidate sweep
 
 ## [0.7.0] - 2026-03-08
 
