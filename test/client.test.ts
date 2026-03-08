@@ -5,6 +5,7 @@ import { CsfloatSdkError, isCsfloatSdkError } from "../src/errors.js";
 
 describe("CsfloatHttpClient", () => {
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
@@ -307,6 +308,67 @@ describe("CsfloatHttpClient", () => {
     expect(init).toMatchObject({
       dispatcher,
     });
+  });
+
+  it("paces request start times when minRequestDelayMs is configured", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-08T00:00:00.000Z"));
+
+    const callTimes: number[] = [];
+    const fetchMock = vi.fn(async () => {
+      callTimes.push(Date.now());
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      fetch: fetchMock as typeof fetch,
+      minRequestDelayMs: 50,
+    });
+
+    const first = client.get("schema");
+    const second = client.get("me");
+
+    await vi.runAllTimersAsync();
+    await Promise.all([first, second]);
+
+    expect(callTimes).toHaveLength(2);
+    expect(callTimes[1] - callTimes[0]).toBeGreaterThanOrEqual(50);
+  });
+
+  it("shares request pacing with derived clients by default", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-08T00:00:00.000Z"));
+
+    const callTimes: number[] = [];
+    const fetchMock = vi.fn(async () => {
+      callTimes.push(Date.now());
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      fetch: fetchMock as typeof fetch,
+      minRequestDelayMs: 50,
+    });
+    const derived = client.derive({
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+
+    const first = client.get("schema");
+    const second = derived.get("recommend");
+
+    await vi.runAllTimersAsync();
+    await Promise.all([first, second]);
+
+    expect(callTimes).toHaveLength(2);
+    expect(callTimes[1] - callTimes[0]).toBeGreaterThanOrEqual(50);
   });
 
   it("can derive a child client with overridden auth and base url", async () => {

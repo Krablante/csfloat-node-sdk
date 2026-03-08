@@ -41,6 +41,9 @@ The format is based on Keep a Changelog.
 31. stronger npm package metadata: clearer live-validated description, broader discoverability keywords, and `sideEffects: false`
 32. `CsfloatBuyOrderExpressionBuilder`, `buildExpressionBuyOrderRequest()`, `buildSingleSkinBuyOrderExpression()`, `buildSingleSkinBuyOrderRequest()`, and the related buy-order expression types/constants for the now live-confirmed expression-backed `/buy-orders` and `/buy-orders/similar-orders` workflows
 33. a publishable `example:buy-order` script covering safe expression-backed similar-order lookups without creating a live order
+34. `sdk.workflows` with `getPublicMarketFeeds()`, `getAccountWorkspace()`, and `getSingleSkinBuyOrderInsights()` for higher-level multi-call task helpers built entirely on live-confirmed routes
+35. a publishable CLI entrypoint with `feeds`, `workspace`, and `buy-order-similar` commands
+36. optional `minRequestDelayMs` transport pacing for safer bot/runtime usage across a shared SDK instance and its derived companion clients
 
 ### Changed
 
@@ -73,6 +76,7 @@ The format is based on Keep a Changelog.
 27. expanded the public market/homepage coverage again by adding repeatable unauthenticated probes for the current `Top Deals`, `Newest Items`, and `Unique Items` homepage feed variants
 28. tightened the public loadout-discover typing by narrowing `any_filled` to the only live-accepted value (`true`) and adding the current discover-mode `GET /v1/loadout?sort_by=favorites&limit=20&months=1&any_filled=true` route to the repeatable live audit
 29. promoted the buy-order expression path from browser-observed/docs-only semantics to implemented SDK surface after live-confirming `POST /buy-orders` create/delete and `POST /buy-orders/similar-orders?limit=...` happy-paths with a real expression AST on 2026-03-08
+30. strengthened the release/publish story again by making `release:check` validate the built CLI help path in addition to tests, typecheck, build, and tarball checks
 
 ## [0.7.0] - 2026-03-08
 

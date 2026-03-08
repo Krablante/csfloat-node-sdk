@@ -7,6 +7,7 @@ import { LoadoutResource } from "./resources/loadout.js";
 import { MetaResource } from "./resources/meta.js";
 import { StallResource } from "./resources/stall.js";
 import { UsersResource } from "./resources/users.js";
+import { WorkflowResource } from "./resources/workflows.js";
 
 export class CsfloatSdk {
   readonly client: CsfloatHttpClient;
@@ -18,6 +19,7 @@ export class CsfloatSdk {
   readonly history: HistoryResource;
   readonly users: UsersResource;
   readonly meta: MetaResource;
+  readonly workflows: WorkflowResource;
 
   constructor(options: CsfloatClientOptions) {
     this.client = new CsfloatHttpClient(options);
@@ -29,5 +31,6 @@ export class CsfloatSdk {
     this.history = new HistoryResource(this.client);
     this.users = new UsersResource(this.client);
     this.meta = new MetaResource(this.client);
+    this.workflows = new WorkflowResource(this.account, this.listings, this.stall);
   }
 }

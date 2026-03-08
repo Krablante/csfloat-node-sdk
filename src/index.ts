@@ -1,6 +1,7 @@
 export { CsfloatHttpClient } from "./client.js";
 export { CsfloatSdk } from "./sdk.js";
 export { CsfloatSdkError, isCsfloatSdkError } from "./errors.js";
+export { WorkflowResource } from "./resources/workflows.js";
 export {
   buildExpressionBuyOrderRequest,
   buildSingleSkinBuyOrderExpression,
@@ -69,6 +70,11 @@ export {
   toCsfloatScreenshotUrl,
 } from "./schema.js";
 export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
+export {
+  CSFLOAT_ACCOUNT_WORKSPACE_DEFAULTS,
+  CSFLOAT_BUY_ORDER_INSIGHT_DEFAULTS,
+  CSFLOAT_PUBLIC_FEED_WORKFLOW_DEFAULTS,
+} from "./workflows.js";
 
 export type { CsfloatClientOptions, CsfloatFetch } from "./client.js";
 export type { CsfloatErrorKind, CsfloatSdkErrorOptions } from "./errors.js";
@@ -77,6 +83,14 @@ export type {
   CsfloatSingleSkinBuyOrderExpressionOptions,
   CsfloatSingleSkinBuyOrderRequestOptions,
 } from "./buy-order.js";
+export type {
+  CsfloatAccountWorkspaceOptions,
+  CsfloatAccountWorkspaceResult,
+  CsfloatPublicMarketFeedWorkflowOptions,
+  CsfloatPublicMarketFeedWorkflowResult,
+  CsfloatSingleSkinBuyOrderInsightOptions,
+  CsfloatSingleSkinBuyOrderInsightResult,
+} from "./workflows.js";
 export type {
   CsfloatLoadoutSkinSearchParams,
   CsfloatSingleSkinRecommendationOptions,

@@ -176,6 +176,7 @@ export interface CsfloatClientOptions {
   baseUrl?: string;
   defaultHeaders?: Record<string, string>;
   sendAuthorization?: boolean;
+  minRequestDelayMs?: number;
   timeoutMs?: number;
   userAgent?: string;
   maxRetries?: number;
@@ -186,11 +187,17 @@ export interface CsfloatClientOptions {
   dispatcher?: unknown;
 }
 
+interface CsfloatRequestPacingState {
+  nextRequestTime: number;
+  tail: Promise<void>;
+}
+
 export class CsfloatHttpClient {
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly defaultHeaders: Record<string, string>;
   private readonly sendAuthorization: boolean;
+  private readonly minRequestDelayMs: number;
   private readonly timeoutMs: number;
   private readonly userAgent: string;
   private readonly maxRetries: number;
@@ -199,8 +206,13 @@ export class CsfloatHttpClient {
   private readonly retryUnsafeRequests: boolean;
   private readonly fetchImpl: CsfloatFetch;
   private readonly dispatcher?: unknown;
+  private readonly pacingState: CsfloatRequestPacingState | undefined;
 
-  constructor(options: CsfloatClientOptions) {
+  constructor(
+    options: CsfloatClientOptions & {
+      pacingState?: CsfloatRequestPacingState;
+    },
+  ) {
     if (!options.apiKey) {
       throw new CsfloatSdkError("Missing required option: apiKey");
     }
@@ -209,6 +221,12 @@ export class CsfloatHttpClient {
     this.baseUrl = options.baseUrl ?? "https://csfloat.com/api/v1";
     this.defaultHeaders = { ...(options.defaultHeaders ?? {}) };
     this.sendAuthorization = options.sendAuthorization ?? true;
+    this.minRequestDelayMs = options.minRequestDelayMs ?? 0;
+
+    if (!Number.isInteger(this.minRequestDelayMs) || this.minRequestDelayMs < 0) {
+      throw new CsfloatSdkError("minRequestDelayMs must be a non-negative integer");
+    }
+
     this.timeoutMs = options.timeoutMs ?? 15_000;
     this.userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
     this.maxRetries = options.maxRetries ?? DEFAULT_MAX_RETRIES;
@@ -217,9 +235,22 @@ export class CsfloatHttpClient {
     this.retryUnsafeRequests = options.retryUnsafeRequests ?? false;
     this.fetchImpl = options.fetch ?? fetch;
     this.dispatcher = options.dispatcher;
+    this.pacingState = this.minRequestDelayMs > 0
+      ? options.pacingState ?? {
+          nextRequestTime: 0,
+          tail: Promise.resolve(),
+        }
+      : undefined;
   }
 
   derive(options: Partial<CsfloatClientOptions> & { apiKey?: string } = {}): CsfloatHttpClient {
+    const minRequestDelayMs = options.minRequestDelayMs ?? this.minRequestDelayMs;
+
+    const sharedPacingState =
+      minRequestDelayMs > 0 && options.minRequestDelayMs === undefined
+        ? this.pacingState
+        : undefined;
+
     return new CsfloatHttpClient({
       apiKey: options.apiKey ?? this.apiKey,
       baseUrl: options.baseUrl ?? this.baseUrl,
@@ -228,6 +259,7 @@ export class CsfloatHttpClient {
         ...(options.defaultHeaders ?? {}),
       },
       sendAuthorization: options.sendAuthorization ?? this.sendAuthorization,
+      minRequestDelayMs,
       timeoutMs: options.timeoutMs ?? this.timeoutMs,
       userAgent: options.userAgent ?? this.userAgent,
       maxRetries: options.maxRetries ?? this.maxRetries,
@@ -236,6 +268,7 @@ export class CsfloatHttpClient {
       retryUnsafeRequests: options.retryUnsafeRequests ?? this.retryUnsafeRequests,
       fetch: options.fetch ?? this.fetchImpl,
       dispatcher: options.dispatcher ?? this.dispatcher,
+      ...(sharedPacingState === undefined ? {} : { pacingState: sharedPacingState }),
     });
   }
 
@@ -270,6 +303,22 @@ export class CsfloatHttpClient {
     return this.request<T>("DELETE", path);
   }
 
+  private async waitForPacingTurn(): Promise<void> {
+    if (!this.pacingState) {
+      return;
+    }
+
+    const state = this.pacingState;
+    const turn = state.tail.then(async () => {
+      const waitMs = Math.max(0, state.nextRequestTime - Date.now());
+      await sleep(waitMs);
+      state.nextRequestTime = Date.now() + this.minRequestDelayMs;
+    });
+
+    state.tail = turn.catch(() => undefined);
+    await turn;
+  }
+
   private async request<T>(
     method: string,
     path: string,
@@ -289,6 +338,8 @@ export class CsfloatHttpClient {
       const timer = setTimeout(() => controller.abort(), this.timeoutMs);
 
       try {
+        await this.waitForPacingTurn();
+
         const init: RequestInit & { dispatcher?: unknown } = {
           method,
           headers: {

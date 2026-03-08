@@ -23,7 +23,9 @@ The project is intentionally conservative about claims. Anything called `impleme
 - broad live-validated CSFloat API coverage with explicit notes for `implemented`, `discovered`, `gated`, and `stale` behavior
 - practical write workflows, not just read-only wrappers
 - safer transport defaults with retry/backoff, typed errors, and custom transport hooks
+- optional client-side pacing via `minRequestDelayMs` for safer bot/runtime usage
 - search and market-scan helpers for the parts of the API that people actually use
+- workflow helpers and a small CLI for the most common read-heavy tasks
 - release-quality OSS hygiene: CI, tests, changelog, contributing guide, security policy, and a maintained coverage matrix
 
 ## What’s In The Current Generation
@@ -34,6 +36,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - low-level trade sync helpers for the browser-observed Steam status routes: `syncSteamNewOffer()` and `syncSteamOffers()`
 - live-confirmed buy-order insight flows: inspect-based lookup and similar-order discovery
 - live-confirmed buy-order expression workflows via `account.createBuyOrder({ expression, ... })`, `account.getSimilarBuyOrders({ expression }, ...)`, and composable builder helpers
+- workflow-first helpers via `sdk.workflows` for public feed snapshots, account workspace snapshots, and single-skin buy-order insights
 - live-confirmed support helpers around adjacent account/insight flows such as `meta.getNotary()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, and `account.getSimilarBuyOrders()`
 - live-confirmed auction flow pieces: bid history, max-price `placeBid()`, `deleteAutoBid()` cancellation on cheap auctions, and stable item-route bootstrap reads for `getBuyOrders()` / `getSimilar()` around active auction listings
 - live-confirmed bulk listing controls: `createBulkListings()`, `updateBulkListings()`, and `deleteBulkListings()` / `unlistBulkListings()`
@@ -42,6 +45,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
 - public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendForSkin()`, `loadout.recommendStickers()`, `loadout.recommendStickersForSkin()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
 - normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage`
+- publishable CLI commands via `feeds`, `workspace`, and `buy-order-similar`
 
 ## Coverage Philosophy
 
@@ -77,6 +81,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.createBulkListings()`, `listings.updateBulkListings()`, `listings.deleteBulkListings()`, `listings.unlistBulkListings()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
 | Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendForSkin()`, `loadout.recommendStickers()`, `loadout.recommendStickersForSkin()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
+| Workflows | implemented | `workflows.getPublicMarketFeeds()`, `workflows.getAccountWorkspace()`, `workflows.getSingleSkinBuyOrderInsights()` |
 
 ## Installation
 
@@ -122,6 +127,7 @@ npm run example:basic
 Additional focused examples:
 
 ```bash
+npm run cli:help
 npm run example:buy-order
 npm run example:market
 npm run example:watchlist
@@ -135,6 +141,15 @@ Published/package-ready examples now cover:
 3. public loadout discover + single-skin recommendation flows
 4. expression-backed buy-order similarity lookups
 
+The package also now ships a small CLI for the most common read-heavy workflows:
+
+```bash
+node dist/cli.js help
+node --env-file=.env dist/cli.js feeds
+node --env-file=.env dist/cli.js workspace
+node --env-file=.env dist/cli.js buy-order-similar --def-index 7 --paint-index 72 --stattrak false --souvenir false
+```
+
 ## Minimal Usage
 
 Once the package is published or linked locally, the SDK can be consumed like this:
@@ -144,6 +159,7 @@ import { CsfloatSdk } from "csfloat-node-sdk";
 
 const sdk = new CsfloatSdk({
   apiKey: process.env.CSFLOAT_API_KEY!,
+  minRequestDelayMs: 1250,
   maxRetries: 2,
   retryDelayMs: 250,
 });
@@ -370,9 +386,43 @@ const temporaryOrder = await sdk.account.createBuyOrder(request);
 await sdk.account.deleteBuyOrder(String(temporaryOrder.id));
 ```
 
+The higher-level `workflows` resource sits on top of these primitives when you want multi-call task helpers instead of raw route wrappers:
+
+```ts
+const feeds = await sdk.workflows.getPublicMarketFeeds();
+
+const workspace = await sdk.workflows.getAccountWorkspace({
+  watchlist_limit: 5,
+  stall_limit: 5,
+});
+
+const insights = await sdk.workflows.getSingleSkinBuyOrderInsights(7, 72, {
+  stattrak: false,
+  souvenir: false,
+  similar_limit: 3,
+  listing_limit: 3,
+});
+```
+
+These helpers intentionally stay on top of already live-confirmed routes:
+
+1. `getPublicMarketFeeds()` bundles the public `/search` bootstrap and homepage feed presets.
+2. `getAccountWorkspace()` bundles `me`, watchlist, stall, offers, trades, and auto-bids into a practical account snapshot.
+3. `getSingleSkinBuyOrderInsights()` builds the single-skin expression, returns a request preview, fetches similar buy orders, and loads matching listings.
+
 `stall.getStall()` now accepts the same practical listing-style query params currently confirmed on public stall pages, including `sort_by`, `filter`, `type`, and `min_ref_qty`.
 
 By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.
+
+If you are building a bot or always-on scanner, `minRequestDelayMs` adds simple client-side pacing across the SDK instance and its derived companion clients:
+
+```ts
+const pacedSdk = new CsfloatSdk({
+  apiKey: process.env.CSFLOAT_API_KEY!,
+  minRequestDelayMs: 1250,
+  maxRetries: 2,
+});
+```
 
 Errors are surfaced as `CsfloatSdkError` with normalized metadata such as `status`, `code`, `apiMessage`, `kind`, and `retryable`. The current error taxonomy includes `validation`, `authentication`, `authorization`, `account_gated`, `role_gated`, `not_found`, `rate_limit`, `server`, `timeout`, and `network`.
 
