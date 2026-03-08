@@ -6,6 +6,8 @@ import type {
   CsfloatListingCategoryFilter,
   CsfloatListingsFilter,
   CsfloatStickerSearchOption,
+  CsfloatWatchlistState,
+  ListingType,
   SortBy,
 } from "./types.js";
 import type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
@@ -28,9 +30,20 @@ export const CSFLOAT_FILTER_OPTIONS: readonly CsfloatListingsFilter[] = [
   "unique",
 ];
 
+export const CSFLOAT_LISTING_TYPES: readonly ListingType[] = [
+  "buy_now",
+  "auction",
+];
+
 export const CSFLOAT_STICKER_SEARCH_OPTIONS: readonly CsfloatStickerSearchOption[] = [
   "skins",
   "packages",
+];
+
+export const CSFLOAT_WATCHLIST_STATES: readonly CsfloatWatchlistState[] = [
+  "listed",
+  "sold",
+  "delisted",
 ];
 
 export const CSFLOAT_SORT_OPTIONS: readonly SortBy[] = [

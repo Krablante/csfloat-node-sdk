@@ -12,7 +12,9 @@ import {
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   CSFLOAT_CATEGORY_PRESETS,
+  CSFLOAT_LISTING_TYPES,
   CSFLOAT_STICKER_SEARCH_OPTIONS,
+  CSFLOAT_WATCHLIST_STATES,
   getCategoryParams,
   withWearPreset,
 } from "../src/market.js";
@@ -25,7 +27,9 @@ describe("market helpers", () => {
       souvenir: 3,
       highlight: 4,
     });
+    expect(CSFLOAT_LISTING_TYPES).toEqual(["buy_now", "auction"]);
     expect(CSFLOAT_STICKER_SEARCH_OPTIONS).toEqual(["skins", "packages"]);
+    expect(CSFLOAT_WATCHLIST_STATES).toEqual(["listed", "sold", "delisted"]);
     expect(CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY).toBe(20);
   });
 

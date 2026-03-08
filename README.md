@@ -311,7 +311,9 @@ import {
   buildReferenceQuantityFilter,
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
+  CSFLOAT_LISTING_TYPES,
   CSFLOAT_STICKER_SEARCH_OPTIONS,
+  CSFLOAT_WATCHLIST_STATES,
   getCategoryParams,
   withWearPreset,
 } from "csfloat-node-sdk";
@@ -321,7 +323,7 @@ const scopedSearch = await sdk.listings.getListings(
     {
       limit: 20,
       sort_by: "best_deal",
-      type: "buy_now",
+      type: CSFLOAT_LISTING_TYPES[0],
       ...getCategoryParams("souvenir"),
       ...buildPriceRange({ min_price: 1000, max_price: 50000 }),
       ...buildFadeRange({ min_fade: 95, max_fade: 100 }),
@@ -383,6 +385,11 @@ const excludeRareItems = await sdk.listings.getListings({
     min_ref_qty: CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   }),
 });
+
+const soldWatchlist = await sdk.account.getWatchlist({
+  limit: 10,
+  state: CSFLOAT_WATCHLIST_STATES[1],
+});
 ```
 
 `sticker_option: "packages"` is live-meaningful on market searches when paired with sticker filters; for example, sticker ids `85` and `96` currently surface `EMS One 2014 Souvenir Package` listings.
@@ -404,6 +411,8 @@ const discountedWatchlistAuctions = await sdk.account.getWatchlist({
   sort_by: "highest_discount",
 });
 ```
+
+`CSFLOAT_LISTING_TYPES` and `CSFLOAT_WATCHLIST_STATES` are exported for the current live-confirmed enum-like values on market/watchlist queries, so callers do not need to hardcode the common string forms.
 
 `history.getGraph()` also accepts the currently observed `category` query param in addition to `paint_index`, but its exact semantics are still intentionally documented as only partially mapped.
 

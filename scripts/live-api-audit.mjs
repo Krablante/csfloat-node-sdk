@@ -349,6 +349,7 @@ async function main() {
     ...(steamId ? [["GET", `https://loadout-api.csfloat.com/v1/user/${steamId}/loadouts`]] : []),
     ...(loadoutId ? [["GET", `https://loadout-api.csfloat.com/v1/loadout/${loadoutId}`]] : []),
     ["GET", "/listings?limit=40&min_ref_qty=20"],
+    ["GET", "/listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
     ...(steamId
       ? [
@@ -467,7 +468,6 @@ async function main() {
     ["GET", "/me/notification"],
     ["GET", "/me/offer-history?limit=1"],
     ["GET", "/offers/history?limit=1"],
-    ["GET", "/me/payments/stripe/connect"],
     // listing subroutes — all 404 as of 2026-03-07 pass 2
     ...(listingId ? [
       ["GET", `/listings/${listingId}/offers`],
@@ -501,17 +501,14 @@ async function main() {
     ["POST", "/trades/bulk/accept", { trade_ids: ["0"] }],
     ["POST", "/trades/bulk/cancel", { trade_ids: ["0"] }],
     ["POST", "/me/trades/bulk/cancel", { trade_ids: ["0"] }],
-    ["POST", "/me/verify-sms", { phone_number: "0" }],
     ["POST", "/me/mobile/status", {}],
     ["POST", "/me/recommender-token", {}],
     ["POST", "/me/notary-token", {}],
     ["POST", "/me/gs-inspect-token", {}],
     ["POST", "/buy-orders/similar-orders", { market_hash_name: "AK-47 | Redline (Field-Tested)" }],
-    ["POST", "/buy-orders/matching-items/floatdb", { market_hash_name: "AK-47 | Redline (Field-Tested)" }],
     ["POST", "/listings/950170960026273280/bit", { max_price: 1 }],
     ["DELETE", "/offers/0"],
     ["POST", "/trades/bulk/received", { trade_ids: ["0"] }],
-    ["POST", "/trades/0/report-error", { error: "sdk probe" }],
     ["POST", "/trades/notary", {}],
     [
       "POST",

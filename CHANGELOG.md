@@ -28,6 +28,7 @@ The format is based on Keep a Changelog.
 18. `CsfloatOffersParams` and expanded `account.getOffers()` typing for the live-confirmed page-based `/me/offers` surface
 19. `CsfloatOrder`, `CsfloatBuyOrdersParams`, and expanded `account.getBuyOrders()` typing for the browser-confirmed page/order surface on `/me/buy-orders`
 20. `buildKeychainPatternRange()` and `CsfloatKeychainPatternRangeParams` for the live-confirmed charm pattern range search surface
+21. `CSFLOAT_LISTING_TYPES` and `CSFLOAT_WATCHLIST_STATES` for the current live-confirmed enum-like `type` / `state` values used across market and watchlist queries
 
 ### Changed
 
@@ -54,6 +55,8 @@ The format is based on Keep a Changelog.
 21. widened `account.getOffers()` from `limit`-only/cursor-oriented typing to the current live profile-UI surface where `page` and `limit` are meaningful, while the old `cursor` param now remains documented as backward-compatible but currently ignored
 22. widened `account.getBuyOrders()` from plain page params to the current live profile-UI contract where `page`, `limit`, and validated `order=asc|desc` are accepted, while keeping the docs explicit that current account-side ordering differences remain weakly mapped because both test accounts had zero active orders
 23. strengthened market/search docs and live audit coverage around `music_kit_index`, `keychain_highlight_reel`, and `min_keychain_pattern` / `max_keychain_pattern`, including a fresh non-empty `Charm | Semi-Precious` pattern-range confirmation on 2026-03-08
+24. tightened market/search coverage again with live-distinct `filter=sticker_combos` vs `filter=unique` semantics, a tracked public homepage feed probe (`/listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500`), and an explicit note that the current cart UI is client-side `checkout_cart_contracts` state rather than a dedicated `/cart` backend route
+25. aligned the repeatable live audit with the current allowed scope by removing stale `verify-sms`, report-flow, floatdb-adjacent, and Stripe-connect probes from the default sweep
 
 ## [0.7.0] - 2026-03-08
 
