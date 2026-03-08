@@ -71,6 +71,35 @@ describe("AccountResource", () => {
     });
   });
 
+  it("cancels trades in bulk", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.cancelTrades(["950524496987687389"]);
+
+    expect(post).toHaveBeenCalledWith("trades/bulk/cancel", {
+      trade_ids: ["950524496987687389"],
+    });
+  });
+
+  it("cancels a single trade", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ delete: del } as never);
+
+    await resource.cancelTrade("950524496987687389");
+
+    expect(del).toHaveBeenCalledWith("trades/950524496987687389");
+  });
+
+  it("cancels a sale through the single-trade alias", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ delete: del } as never);
+
+    await resource.cancelSale("950524496987687389");
+
+    expect(del).toHaveBeenCalledWith("trades/950524496987687389");
+  });
+
   it("creates an offer", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);

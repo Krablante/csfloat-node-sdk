@@ -56,6 +56,8 @@ Status legend:
 | `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
 | `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path accept on a real queued `$0.05` sale with body `{ trade_ids: string[] }` |
+| `/trades/bulk/cancel` | `POST` | implemented | browser bundle + live invalid probe | bundle-mapped seller-side bulk cancel route; live invalid probe with `{ trade_ids:[\"0\"] }` returned `400 invalid trade ids specified` on the correct path |
+| `/trades/{id}` | `DELETE` | implemented | browser bundle + live invalid probe | bundle-mapped seller-side cancel route; live invalid probe on `id=0` returned `500 record not found`, confirming path/method |
 | `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, `away`, `trade_url`; **also confirmed for `background_url` and `username` (2026-03-07 research pass 2)** |
 | `/me/notifications/read-receipt` | `POST` | implemented | live + public wrapper source | mark notifications read via `last_read_id` |
 | `/me/mobile/status` | `POST` | implemented | live + public wrapper source | confirmed live with payload `{ "version": "8.0.0" }` |
@@ -84,6 +86,14 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
 | `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
+| `/trades/{id}` | `GET` | discovered | browser bundle + live invalid probe | trade detail route exists; invalid `id=0` returned `500 record not found`; happy-path sample not yet captured in current account state |
+| `/trades/{id}/buyer-details` | `GET` | discovered | browser bundle + live invalid probe | buyer-details route exists; invalid `id=0` returned `500 record not found`; response shape still unmapped |
+| `/trades/{id}/cannot-deliver` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely seller-side failure path, not executed happy-path due risk |
+| `/trades/{id}/dispute` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; not exercised on a real trade |
+| `/trades/{id}/received` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely buyer-side receipt acknowledgement path |
+| `/trades/{id}/rollback` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
+| `/trades/{id}/manual-verification` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
+| `/trades/{id}/rollback-verify` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | accepted string-form `offer_id` payloads and returned success even for `"0"`; exact side effects still unmapped |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }` with success; empty sync produced no observed trade-state change |
@@ -96,7 +106,7 @@ These routes appeared in public wrappers, but live probing on 2026-03-07 did not
 |---|---|---|---|
 | `/listings/sell` | `POST` | `404` | likely stale wrapper surface |
 | `/listings/{id}/bit` | `POST` | `404` | likely stale wrapper surface |
-| `/me/trades/bulk/cancel` | `POST` | `404` | likely outdated path |
+| `/me/trades/bulk/cancel` | `POST` | `404` | outdated wrapper path; browser bundle and live invalid probe confirm the real route is `/trades/bulk/cancel` |
 | `/listings/{id}/sales` | `GET` | `404` | wrapper surface not confirmed live |
 | `/account-standing` | `GET` | `400 invalid resource` | stale path; live route is `/me/account-standing` |
 | `/me/payments/stripe/connect` | `GET` | `404` | stale withdraw-route fetch still observed in browser-auth flow |

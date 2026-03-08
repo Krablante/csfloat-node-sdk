@@ -54,6 +54,22 @@ export class AccountResource {
     return this.acceptTrade(tradeId);
   }
 
+  cancelTrades(tradeIds: string[] | AcceptTradesRequest): Promise<CsfloatTradeBatchResponse> {
+    const body = Array.isArray(tradeIds)
+      ? { trade_ids: tradeIds }
+      : tradeIds;
+
+    return this.client.post<CsfloatTradeBatchResponse>("trades/bulk/cancel", body);
+  }
+
+  cancelTrade(tradeId: string): Promise<CsfloatMessageResponse> {
+    return this.client.delete<CsfloatMessageResponse>(`trades/${tradeId}`);
+  }
+
+  cancelSale(tradeId: string): Promise<CsfloatMessageResponse> {
+    return this.cancelTrade(tradeId);
+  }
+
   getOffers(params: CsfloatCursorParams = {}): Promise<CsfloatOffersResponse> {
     return this.client.get<CsfloatOffersResponse>("me/offers", params as QueryParams);
   }
