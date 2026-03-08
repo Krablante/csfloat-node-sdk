@@ -258,6 +258,10 @@ export interface CsfloatListingsResponse {
   total_price?: number;
 }
 
+export interface CsfloatListingBatchResponse {
+  data: CsfloatListing[];
+}
+
 export interface CsfloatPriceListEntry {
   market_hash_name: string;
   quantity: number;
@@ -927,5 +931,10 @@ export type CreateListingRequest =
   | CreateAuctionListingRequest;
 
 export interface UpdateListingRequest {
+  price: number;
+}
+
+export interface UpdateBulkListingRequest {
+  contract_id: string;
   price: number;
 }

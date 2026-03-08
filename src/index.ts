@@ -83,6 +83,7 @@ export type {
   CsfloatGenerateLoadoutSkinItem,
   CsfloatGenerateLoadoutSuggestion,
   CsfloatListing,
+  CsfloatListingBatchResponse,
   CsfloatListingsResponse,
   CsfloatListParams,
   CsfloatLoadout,
@@ -165,5 +166,6 @@ export type {
   SortBy,
   SimilarBuyOrdersRequest,
   UpdateBuyOrderRequest,
+  UpdateBulkListingRequest,
   UpdateListingRequest,
 } from "./types.js";

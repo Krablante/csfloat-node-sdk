@@ -9,6 +9,7 @@ import type {
   CreateAuctionListingRequest,
   CreateBuyNowListingRequest,
   CsfloatAutoBid,
+  CsfloatListingBatchResponse,
   CsfloatListing,
   CsfloatListingsResponse,
   CsfloatListParams,
@@ -16,6 +17,7 @@ import type {
   PlaceBidRequest,
   CsfloatPriceListEntry,
   QueryParams,
+  UpdateBulkListingRequest,
   UpdateListingRequest,
 } from "../types.js";
 
@@ -102,6 +104,49 @@ export class ListingsResource {
 
   createAuctionListing(request: CreateAuctionListingRequest): Promise<CsfloatListing> {
     return this.createListing(request);
+  }
+
+  createBulkListings(requests: CreateListingRequest[]): Promise<CsfloatListing[]> {
+    if (requests.length === 0) {
+      throw new CsfloatSdkError("at least one listing item is required");
+    }
+
+    const items = requests.map((request) => {
+      this.validateCreateListingRequest(request);
+
+      return {
+        ...request,
+        type: request.type ?? "buy_now",
+      };
+    });
+
+    return this.client
+      .post<CsfloatListingBatchResponse>("listings/bulk-list", { items })
+      .then((response) => response.data);
+  }
+
+  updateBulkListings(modifications: UpdateBulkListingRequest[]): Promise<CsfloatListing[]> {
+    if (modifications.length === 0) {
+      throw new CsfloatSdkError("at least one listing modification is required");
+    }
+
+    return this.client
+      .patch<CsfloatListingBatchResponse>("listings/bulk-modify", { modifications })
+      .then((response) => response.data);
+  }
+
+  deleteBulkListings(contractIds: string[]): Promise<CsfloatMessageResponse> {
+    if (contractIds.length === 0) {
+      throw new CsfloatSdkError("at least one contract id is required");
+    }
+
+    return this.client.patch<CsfloatMessageResponse>("listings/bulk-delist", {
+      contract_ids: contractIds,
+    });
+  }
+
+  unlistBulkListings(contractIds: string[]): Promise<CsfloatMessageResponse> {
+    return this.deleteBulkListings(contractIds);
   }
 
   updateListing(listingId: string, request: UpdateListingRequest): Promise<CsfloatListing> {

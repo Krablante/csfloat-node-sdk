@@ -11,11 +11,13 @@ The format is based on Keep a Changelog.
 1. `meta.getApp()` for the live-confirmed `GET /meta/app` route, currently returning app bootstrap metadata such as `min_required_version`
 2. `meta.getSchemaBrowse()` for the live-confirmed `GET /schema/browse` route, including typed category names like `stickers`, `keychains`, and `music kits`
 3. `account.getPendingDeposits()` for the live-confirmed `GET /me/payments/pending-deposits` route
+4. `listings.createBulkListings()`, `listings.updateBulkListings()`, `listings.deleteBulkListings()`, and `listings.unlistBulkListings()` for the browser-confirmed bulk listing layer under `/listings/bulk-*`
 
 ### Changed
 
 1. expanded `API_COVERAGE.md` with the newly confirmed `/meta/app`, `/schema/browse`, and `/me/payments/pending-deposits` surfaces
 2. expanded live audit coverage to keep app meta, schema browse, and pending deposits on the repeatable safe-read path
+3. expanded `API_COVERAGE.md` again with live-confirmed bulk listing workflows, including the overpricing/KYC gate on `POST /listings/bulk-list` and the current price-focused contract on `PATCH /listings/bulk-modify`
 
 ## [0.7.0] - 2026-03-08
 

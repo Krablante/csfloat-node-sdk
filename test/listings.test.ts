@@ -46,6 +46,45 @@ describe("ListingsResource", () => {
     });
   });
 
+  it("builds a bulk buy_now listing payload with explicit defaults", async () => {
+    const post = vi.fn(async (_path: string, body: { items: unknown[] }) => ({ data: body.items }));
+    const resource = new ListingsResource({
+      ...client,
+      post,
+    } as never);
+
+    const result = await resource.createBulkListings([
+      {
+        asset_id: "123",
+        price: 100,
+        private: true,
+      },
+      {
+        asset_id: "456",
+        price: 200,
+        description: "bulk test",
+      },
+    ]);
+
+    expect(post).toHaveBeenCalledWith("listings/bulk-list", {
+      items: [
+        {
+          asset_id: "123",
+          price: 100,
+          private: true,
+          type: "buy_now",
+        },
+        {
+          asset_id: "456",
+          price: 200,
+          description: "bulk test",
+          type: "buy_now",
+        },
+      ],
+    });
+    expect(result).toHaveLength(2);
+  });
+
   it("rejects invalid auction duration", async () => {
     const resource = new ListingsResource(client);
 
@@ -57,6 +96,74 @@ describe("ListingsResource", () => {
         duration_days: 2 as never,
       }),
     ).toThrow(CsfloatSdkError);
+  });
+
+  it("rejects empty bulk listing payloads", async () => {
+    const resource = new ListingsResource(client);
+
+    expect(() => resource.createBulkListings([])).toThrow(CsfloatSdkError);
+  });
+
+  it("updates bulk listing prices", async () => {
+    const patch = vi.fn(async (_path: string, body: { modifications: unknown[] }) => ({
+      data: body.modifications,
+    }));
+    const resource = new ListingsResource({
+      ...client,
+      patch,
+    } as never);
+
+    await resource.updateBulkListings([
+      { contract_id: "a", price: 4 },
+      { contract_id: "b", price: 5 },
+    ]);
+
+    expect(patch).toHaveBeenCalledWith("listings/bulk-modify", {
+      modifications: [
+        { contract_id: "a", price: 4 },
+        { contract_id: "b", price: 5 },
+      ],
+    });
+  });
+
+  it("rejects empty bulk modifications", async () => {
+    const resource = new ListingsResource(client);
+
+    expect(() => resource.updateBulkListings([])).toThrow(CsfloatSdkError);
+  });
+
+  it("delists listings in bulk", async () => {
+    const patch = vi.fn(async (_path: string, _body?: unknown) => ({ message: "contracts delisted" }));
+    const resource = new ListingsResource({
+      ...client,
+      patch,
+    } as never);
+
+    await resource.deleteBulkListings(["a", "b"]);
+
+    expect(patch).toHaveBeenCalledWith("listings/bulk-delist", {
+      contract_ids: ["a", "b"],
+    });
+  });
+
+  it("aliases unlistBulkListings to the same bulk-delist route", async () => {
+    const patch = vi.fn(async (_path: string, _body?: unknown) => ({ message: "contracts delisted" }));
+    const resource = new ListingsResource({
+      ...client,
+      patch,
+    } as never);
+
+    await resource.unlistBulkListings(["a"]);
+
+    expect(patch).toHaveBeenCalledWith("listings/bulk-delist", {
+      contract_ids: ["a"],
+    });
+  });
+
+  it("rejects empty bulk delist payloads", async () => {
+    const resource = new ListingsResource(client);
+
+    expect(() => resource.deleteBulkListings([])).toThrow(CsfloatSdkError);
   });
 
   it("requests bids for a listing", async () => {

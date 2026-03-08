@@ -16,6 +16,9 @@ Status legend:
 | `/listings/price-list` | `GET` | implemented | live | public price index; returns `{ market_hash_name, quantity, min_price }[]` |
 | `/listings/{id}` | `GET` | implemented | official docs + live | single listing fetch |
 | `/listings` | `POST` | implemented + account-gated | official docs + live | explicit `buy_now` supported; current live retest hit account-state gate for further listings |
+| `/listings/bulk-list` | `POST` | implemented + account-gated | browser bundle + live | confirmed happy-path on two private low-cost buy-now listings; body `{ items:[{ asset_id, price, type, private?, description?, max_offer_discount? }] }`; overpriced batches can hit seller KYC/Stripe gating |
+| `/listings/bulk-modify` | `PATCH` | implemented | browser bundle + live | confirmed happy-path with body `{ modifications:[{ contract_id, price }] }`; current SDK keeps this route price-focused until broader field semantics are proven |
+| `/listings/bulk-delist` | `PATCH` | implemented | browser bundle + live | confirmed happy-path with body `{ contract_ids:[...] }` and response `{ "message":"contracts delisted" }` |
 | `/listings/{id}` | `PATCH` | implemented | live | update listing price |
 | `/listings/{id}` | `DELETE` | implemented | live + python clone | unlist / delist behavior |
 | `/users/{id}` | `GET` | implemented | python clone + live | public user profile |
@@ -302,6 +305,10 @@ Live-confirmed search behaviors:
 72. `GET /meta/app` is live and currently returns a minimal bootstrap payload `{ min_required_version }`; on 2026-03-08 the value was `"9.0.0"`
 73. `GET /schema/browse` is live and groups schema-adjacent browse items under `{ data:[{ type, user_visible_type, items:[...] }] }`; `type=stickers` returned tournament-era sticker buckets such as `DreamHack 2013` and `Katowice 2014`
 74. the browser bundle lowercases schema browse category labels directly before calling `/schema/browse`, so the currently known query values are `rifles`, `pistols`, `smgs`, `heavy`, `knives`, `gloves`, `agents`, `containers`, `stickers`, `keychains`, `patches`, `collectibles`, and `music kits`
+75. `POST /listings/bulk-list` is live on authenticated seller accounts and returns `{ data:[listing, ...] }`; on 2026-03-08 a happy-path batch of two private `Zeus x27 | Swamp DDPAT (Factory New)` listings at `$0.04` succeeded, while the same route at `$9.99` hit `400 "Listing is suspected to be overpriced. You need to complete KYC and onboard with Stripe to list this item."`
+76. `PATCH /listings/bulk-modify` is live and currently confirmed with price-only updates: `{ modifications:[{ contract_id, price }] }` returned `{ data:[updated listings...] }` on the same two-listing batch
+77. `PATCH /listings/bulk-modify` failure modes are already useful for validation: `{ contract_id:"0", price:3 }` returned `500 "failed to fetch listing"`, while `{ contract_id:"0", price:1 }` failed earlier at the server price floor with `422 "minimum allowed price is $0.03 USD"`
+78. `PATCH /listings/bulk-delist` is live and reversible: `{ contract_ids:[...] }` returned `200 {"message":"contracts delisted"}` on the real two-listing batch, and `{ contract_ids:["0"] }` returned `500 "failed to delist contracts"`
 
 ## Listing Creation Surface
 
@@ -327,6 +334,7 @@ Important:
 1. `buy_now` create flow is live-validated
 2. `auction` request shape is supported from known API surface, but should be treated as not-yet-live-validated by this repository until explicitly tested
 3. `POST /listings` should not be treated as universally available for every account state; a live retest on 2026-03-07 returned code `134` with a Stripe onboarding requirement for further listings
+4. `POST /listings/bulk-list` currently reuses the same per-item payload shapes under `{ items:[...] }`; the repository has live-validated the `buy_now` batch path, but not yet a real auction batch happy-path
 
 ## Current Account-State Notes
 
