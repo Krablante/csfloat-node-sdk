@@ -5,6 +5,7 @@ import type {
   CsfloatBuyOrder,
   CsfloatMeResponse,
   CsfloatOffer,
+  CsfloatTrade,
   CsfloatTransaction,
 } from "../src/types.js";
 
@@ -108,5 +109,25 @@ describe("authenticated user typing", () => {
 
     expect(offer.type).toBe("seller_offer");
     expect(declinedOffer.state).toBe("declined");
+  });
+
+  it("accepts the currently observed trade lifecycle fields", () => {
+    const trade: CsfloatTrade = {
+      id: "950192629398768070",
+      state: "pending",
+      verification_mode: "escrow",
+      accepted_at: "2026-03-07T00:48:15.724011Z",
+      verified_at: "2026-03-08T08:00:00Z",
+      verify_sale_at: "2026-03-08T08:00:00Z",
+      expires_at: "2026-03-07T02:48:15.724011Z",
+      inventory_check_status: 1,
+      trade_protection_ends_at: "2026-03-07T08:00:00Z",
+      wait_for_cancel_ping: false,
+      is_settlement_period: true,
+    };
+
+    expect(trade.state).toBe("pending");
+    expect(trade.verification_mode).toBe("escrow");
+    expect(trade.verified_at).toContain("2026-03-08");
   });
 });

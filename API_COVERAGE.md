@@ -42,6 +42,7 @@ Status legend:
 | `/buy-orders/{id}` | `PATCH` | implemented | live | confirmed happy-path update with body `{ max_price }` |
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
+| `/me/auto-bids/{id}` | `DELETE` | implemented | browser-auth network + live | confirmed happy-path delete with `{"message":"deleted auto-bid"}` |
 | `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
 | `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path accept on a real queued `$0.05` sale with body `{ trade_ids: string[] }` |
@@ -220,8 +221,10 @@ Live-confirmed search behaviors:
 33. `GET /offers` returns `405 Method Not Allowed` — GET is not valid on this route; `POST /offers` is the only supported method
 34. top-level routes probed and all return `400 "invalid resource"`: announcements, referrals, promotions, leaderboard, search (with q=), items, market, prices, trending, stats, buy-now
 35. browser-auth auction detail flow confirmed that the `history` button maps to `GET /listings/{id}/bids`, while both `Bid` and `Auto Bid` converge on the same max-price route `POST /listings/{id}/bid`
-36. `POST /listings/{id}/bid` is a stable happy-path route on cheap auctions; live API test with `{ "max_price": 9 }` created a bid record `{ id, created_at, max_price, contract_id }` that immediately appeared in `GET /me/auto-bids`
-37. browser-auth modal state after a live bid shows `Your Max Bid: ...` and a `Remove` affordance, but cancel/update semantics remain unmapped; direct guesses `DELETE /auto-bids/{id}` and `DELETE /listings/{id}/bid` both returned `405`
+36. `POST /listings/{id}/bid` is a stable happy-path route on cheap auctions; live API tests with `{ "max_price": 9 }`, `{ "max_price": 15 }`, and `{ "max_price": 17 }` created bid records `{ id, created_at, max_price, contract_id }` that immediately appeared in `GET /me/auto-bids`
+37. repeated `POST /listings/{id}/bid` behaves as replacement/update semantics for a listing-level auto-bid: the previous entry disappears from `GET /me/auto-bids` and a new record with a new `id` becomes active
+38. browser-auth modal state after a live bid shows `Your Max Bid: ...` and a `Remove` affordance; clicking it revealed the actual cancel route `DELETE /me/auto-bids/{id}` via browser-auth network capture
+39. direct guesses `DELETE /auto-bids/{id}` and `DELETE /listings/{id}/bid` both returned `405`; the correct delete path is user-scoped under `/me/auto-bids/{id}`
 35. `GET /offers/{id}` returns the current offer snapshot, while `GET /offers/{id}/history` returns the historical chain for that offer thread; this was confirmed live on 2026-03-07 with a declined buyer offer and a declined seller counter-offer
 36. `POST /offers` happy-path is confirmed with body `{ contract_id, price }` on a buyer account; using `listing_id` instead of `contract_id` falls back to `failed to find contract with id '0'`
 37. `POST /offers/{id}/counter-offer` happy-path is confirmed with body `{ price }` on a seller account

@@ -128,6 +128,10 @@ export class AccountResource {
     return this.client.get<CsfloatAutoBid[]>("me/auto-bids");
   }
 
+  deleteAutoBid(autoBidId: string): Promise<CsfloatMessageResponse> {
+    return this.client.delete<CsfloatMessageResponse>(`me/auto-bids/${autoBidId}`);
+  }
+
   createRecommenderToken(): Promise<CsfloatRecommenderTokenResponse> {
     return this.client.post<CsfloatRecommenderTokenResponse>("me/recommender-token", {});
   }

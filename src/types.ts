@@ -8,6 +8,12 @@ export type CsfloatListingCategoryFilter = LooseNumber<1 | 2 | 3 | 4>;
 export type CsfloatOfferType = LooseString<"buyer_offer" | "seller_offer">;
 export type CsfloatOfferState = LooseString<"active" | "declined">;
 export type CsfloatTradeRole = LooseString<"seller" | "buyer">;
+export type CsfloatTradeState = LooseString<
+  "queued" | "pending" | "failed" | "verified" | "cancelled"
+>;
+export type CsfloatTradeVerificationMode = LooseString<
+  "inventory" | "key" | "escrow"
+>;
 export type SortBy = LooseString<
   | "lowest_price"
   | "highest_price"
@@ -432,8 +438,10 @@ export interface CsfloatTrade {
   seller?: CsfloatUser;
   contract_id?: string;
   accepted_at?: string;
-  state?: string;
-  verification_mode?: string;
+  verified_at?: string;
+  expires_at?: string;
+  state?: CsfloatTradeState;
+  verification_mode?: CsfloatTradeVerificationMode;
   steam_offer?: CsfloatTradeSteamOffer;
   verify_sale_at?: string;
   inventory_check_status?: number;

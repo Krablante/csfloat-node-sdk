@@ -270,6 +270,15 @@ describe("AccountResource", () => {
     expect(get).toHaveBeenCalledWith("me/auto-bids");
   });
 
+  it("deletes an auto bid", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ delete: del } as never);
+
+    await resource.deleteAutoBid("950552189460416427");
+
+    expect(del).toHaveBeenCalledWith("me/auto-bids/950552189460416427");
+  });
+
   it("requests mobile status", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ get } as never);

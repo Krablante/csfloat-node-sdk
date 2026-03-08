@@ -9,11 +9,14 @@ The format is based on Keep a Changelog.
 ### Added
 
 1. `listings.placeBid()` for auction max-price bidding via the live-confirmed `POST /listings/{id}/bid` route
+2. `account.deleteAutoBid()` for auction auto-bid cancellation via the live-confirmed `DELETE /me/auto-bids/{id}` route
 
 ### Changed
 
 1. expanded coverage notes for browser-auth auction flows, including the fact that item-page `history` maps to `GET /listings/{id}/bids` and both `Bid` / `Auto Bid` converge on the same max-price bid route
-2. documented the currently unmapped auto-bid removal/update semantics and the failed delete guesses (`DELETE /auto-bids/{id}` and `DELETE /listings/{id}/bid` both returned `405`)
+2. documented that repeated `POST /listings/{id}/bid` acts as replacement/update semantics for an existing listing auto-bid
+3. documented the correct auto-bid removal path `DELETE /me/auto-bids/{id}` and kept the failed delete guesses (`DELETE /auto-bids/{id}` and `DELETE /listings/{id}/bid` both returned `405`) as negative findings
+4. tightened `CsfloatTrade` typing with live-observed `verified_at`, `expires_at`, and explicit state/verification-mode unions
 
 ## [0.6.0] - 2026-03-08
 
