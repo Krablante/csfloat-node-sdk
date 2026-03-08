@@ -401,6 +401,7 @@ async function main() {
     ["GET", "/listings?limit=1&def_index=4&paint_index=437&paint_seed=611"],
     ["GET", "/listings?limit=1&music_kit_index=3"],
     ["GET", "/listings?limit=1&keychain_highlight_reel=1"],
+    ["GET", "/listings?limit=1&keychain_index=29&min_keychain_pattern=0&max_keychain_pattern=10"],
     ["GET", "/listings?limit=1&def_index=507&paint_index=38&min_fade=99&max_fade=100"],
     ["GET", "/listings?limit=1&min_blue=90&max_blue=100"],
     // filter enum values — live-confirmed; unauthenticated requests return 403 (not 401)

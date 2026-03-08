@@ -67,6 +67,11 @@ export interface CsfloatReferenceQuantityParams {
   min_ref_qty?: number;
 }
 
+export interface CsfloatKeychainPatternRangeParams {
+  min_keychain_pattern?: number;
+  max_keychain_pattern?: number;
+}
+
 function assertPositiveInteger(label: string, value: number | undefined): void {
   if (value === undefined) {
     return;
@@ -190,6 +195,27 @@ export function buildReferenceQuantityFilter(
 
   return {
     ...(params.min_ref_qty === undefined ? {} : { min_ref_qty: params.min_ref_qty }),
+  };
+}
+
+export function buildKeychainPatternRange(
+  params: CsfloatKeychainPatternRangeParams,
+): Pick<CsfloatListParams, "min_keychain_pattern" | "max_keychain_pattern"> {
+  assertPositiveInteger("min_keychain_pattern", params.min_keychain_pattern);
+  assertPositiveInteger("max_keychain_pattern", params.max_keychain_pattern);
+  assertAscendingRange(
+    "keychain pattern range",
+    params.min_keychain_pattern,
+    params.max_keychain_pattern,
+  );
+
+  return {
+    ...(params.min_keychain_pattern === undefined
+      ? {}
+      : { min_keychain_pattern: params.min_keychain_pattern }),
+    ...(params.max_keychain_pattern === undefined
+      ? {}
+      : { max_keychain_pattern: params.max_keychain_pattern }),
   };
 }
 

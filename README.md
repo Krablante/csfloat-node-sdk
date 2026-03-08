@@ -306,6 +306,7 @@ Use the market helpers when you want stronger local ergonomics for category pres
 import {
   buildFadeRange,
   buildKeychainFilters,
+  buildKeychainPatternRange,
   buildPriceRange,
   buildReferenceQuantityFilter,
   buildStickerFilters,
@@ -348,6 +349,22 @@ const souvenirPackageSearch = await sdk.listings.getListings({
 const charmSearch = await sdk.listings.getListings({
   limit: 10,
   ...buildKeychainFilters([{ keychain_index: 1 }]),
+});
+
+const patternedCharmSearch = await sdk.listings.getListings({
+  limit: 10,
+  keychain_index: 29,
+  ...buildKeychainPatternRange({ min_keychain_pattern: 0, max_keychain_pattern: 10 }),
+});
+
+const highlightCharms = await sdk.listings.getListings({
+  limit: 10,
+  keychain_highlight_reel: 1,
+});
+
+const musicKits = await sdk.listings.getListings({
+  limit: 10,
+  music_kit_index: 3,
 });
 
 const watchedStickerItems = await sdk.account.getWatchlist({

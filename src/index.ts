@@ -6,6 +6,7 @@ export {
   buildFadeRange,
   buildFloatRange,
   buildKeychainFilters,
+  buildKeychainPatternRange,
   buildPriceRange,
   buildReferenceQuantityFilter,
   buildStickerFilters,
@@ -40,6 +41,7 @@ export type {
   CsfloatBlueRangeParams,
   CsfloatCategoryPreset,
   CsfloatFadeRangeParams,
+  CsfloatKeychainPatternRangeParams,
   CsfloatPriceRangeParams,
   CsfloatReferenceQuantityParams,
 } from "./market.js";

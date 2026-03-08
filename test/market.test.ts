@@ -6,6 +6,7 @@ import {
   buildFadeRange,
   buildFloatRange,
   buildKeychainFilters,
+  buildKeychainPatternRange,
   buildPriceRange,
   buildReferenceQuantityFilter,
   buildStickerFilters,
@@ -77,6 +78,10 @@ describe("market helpers", () => {
       min_blue: 80,
       max_blue: 100,
     });
+    expect(buildKeychainPatternRange({ min_keychain_pattern: 0, max_keychain_pattern: 10 })).toEqual({
+      min_keychain_pattern: 0,
+      max_keychain_pattern: 10,
+    });
   });
 
   it("rejects inverted or out-of-range percent ranges", () => {
@@ -85,6 +90,10 @@ describe("market helpers", () => {
       CsfloatSdkError,
     );
     expect(() => buildBlueRange({ min_blue: -1 })).toThrow(CsfloatSdkError);
+    expect(() => buildKeychainPatternRange({ min_keychain_pattern: -1 })).toThrow(CsfloatSdkError);
+    expect(() => buildKeychainPatternRange({ min_keychain_pattern: 50, max_keychain_pattern: 10 })).toThrow(
+      CsfloatSdkError,
+    );
   });
 
   it("serializes applied sticker filters", () => {
