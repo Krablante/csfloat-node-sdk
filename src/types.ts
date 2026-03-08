@@ -275,6 +275,44 @@ export interface CsfloatLocationResponse {
   inferred_location?: CsfloatInferredLocation;
 }
 
+export interface CsfloatLoadoutItemRef {
+  def_index?: number;
+}
+
+export interface CsfloatLoadoutSide {
+  agent?: CsfloatLoadoutItemRef;
+  gloves?: CsfloatLoadoutItemRef;
+  is_filled?: boolean;
+  knife?: CsfloatLoadoutItemRef;
+  midtier?: CsfloatLoadoutItemRef[];
+  pistols?: CsfloatLoadoutItemRef[];
+  rifles?: CsfloatLoadoutItemRef[];
+  zeus?: CsfloatLoadoutItemRef;
+}
+
+export interface CsfloatLoadoutSocialStats {
+  favorites?: number;
+}
+
+export interface CsfloatLoadout {
+  created_at?: string;
+  ct?: CsfloatLoadoutSide;
+  id?: string;
+  name?: string;
+  social_stats?: CsfloatLoadoutSocialStats;
+  t?: CsfloatLoadoutSide;
+  updated_at?: string;
+  user_id?: string;
+}
+
+export interface CsfloatUserLoadoutsResponse {
+  loadouts: CsfloatLoadout[];
+}
+
+export interface CsfloatLoadoutResponse {
+  loadout: CsfloatLoadout;
+}
+
 export interface CsfloatSchemaCollection {
   key: string;
   name: string;

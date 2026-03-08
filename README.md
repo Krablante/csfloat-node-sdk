@@ -89,6 +89,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | User stall | implemented | `stall.getStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
+| Loadout API | implemented | `loadout.getUserLoadouts()`, `loadout.getLoadout()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
@@ -153,6 +154,7 @@ const sellerTrades = await sdk.account.getTrades({
   limit: 30,
   page: 0,
 });
+const loadouts = await sdk.loadout.getUserLoadouts(me.user.steam_id);
 
 console.log(
   rates.data.usd,
@@ -162,6 +164,7 @@ console.log(
   inventory.length,
   listings.data.length,
   priceList[0]?.market_hash_name,
+  loadouts.loadouts.length,
 );
 ```
 

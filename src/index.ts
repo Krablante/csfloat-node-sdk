@@ -13,6 +13,7 @@ export {
   withWearPreset,
 } from "./market.js";
 export { paginateCursor } from "./pagination.js";
+export { LoadoutResource } from "./resources/loadout.js";
 export {
   findSchemaPaintsByIndex,
   getSchemaCollection,
@@ -72,6 +73,11 @@ export type {
   CsfloatListing,
   CsfloatListingsResponse,
   CsfloatListParams,
+  CsfloatLoadout,
+  CsfloatLoadoutItemRef,
+  CsfloatLoadoutResponse,
+  CsfloatLoadoutSide,
+  CsfloatLoadoutSocialStats,
   CsfloatLocationResponse,
   CsfloatMessageResponse,
   CsfloatMeResponse,
@@ -112,6 +118,7 @@ export type {
   CsfloatUpdateMeRequest,
   CsfloatUser,
   CsfloatUserPreferences,
+  CsfloatUserLoadoutsResponse,
   CsfloatUserStatistics,
   CsfloatCursorParams,
   ListingType,

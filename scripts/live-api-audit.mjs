@@ -176,12 +176,23 @@ async function main() {
   const firstListing = listings.ok && listings.data?.data?.[0] ? listings.data.data[0] : null;
   const listingId = firstListing ? String(firstListing.id) : null;
   const marketHashName = firstListing?.item?.market_hash_name || null;
+  const loadouts =
+    steamId === null
+      ? null
+      : await publicRequest("GET", `https://loadout-api.csfloat.com/v1/user/${steamId}/loadouts`);
+  const firstLoadout =
+    loadouts?.ok && loadouts.data?.loadouts?.[0]
+      ? loadouts.data.loadouts[0]
+      : null;
+  const loadoutId = firstLoadout ? String(firstLoadout.id) : null;
 
   const knownRoutes = [
     ["GET", "/schema"],
     ["GET", "/meta/exchange-rates"],
     ["GET", "/meta/location"],
     ["GET", "/listings/price-list"],
+    ...(steamId ? [["GET", `https://loadout-api.csfloat.com/v1/user/${steamId}/loadouts`]] : []),
+    ...(loadoutId ? [["GET", `https://loadout-api.csfloat.com/v1/loadout/${loadoutId}`]] : []),
     ["GET", "/me"],
     ["GET", "/me/inventory"],
     ["GET", "/me/account-standing"],
@@ -225,6 +236,8 @@ async function main() {
     ["GET", "/meta/exchange-rates"],
     ["GET", "/meta/location"],
     ["GET", "/listings/price-list"],
+    ...(steamId ? [["GET", `https://loadout-api.csfloat.com/v1/user/${steamId}/loadouts`]] : []),
+    ...(loadoutId ? [["GET", `https://loadout-api.csfloat.com/v1/loadout/${loadoutId}`]] : []),
     ["GET", "/listings?limit=40&min_ref_qty=20"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
     ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),

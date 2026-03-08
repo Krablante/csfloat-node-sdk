@@ -26,6 +26,8 @@ Status legend:
 | `/schema` | `GET` | implemented | live + public wrapper source | public item schema; both `/schema` and `/schema/` resolve |
 | `/meta/exchange-rates` | `GET` | implemented | live + public wrapper source | public exchange rate map |
 | `/meta/location` | `GET` | implemented | live + public wrapper source | public inferred location data |
+| `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | implemented | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
+| `https://loadout-api.csfloat.com/v1/loadout/{id}` | `GET` | implemented | browser-auth network + live | public loadout detail route; returns `{ loadout: ... }` |
 | `/me/account-standing` | `GET` | implemented | live + public wrapper source | authenticated account standing |
 | `/me/transactions` | `GET` | implemented | live + public wrapper source | returns `{ transactions, count }` |
 | `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
@@ -74,8 +76,6 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | accepted string-form `offer_id` payloads and returned success even for `"0"`; exact side effects still unmapped |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }` with success; empty sync produced no observed trade-state change |
 | `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
-| `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | discovered | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
-
 ## Likely Stale Or Wrapper-Only Routes
 
 These routes appeared in public wrappers, but live probing on 2026-03-07 did not confirm them:
@@ -233,6 +233,7 @@ Live-confirmed search behaviors:
 47. browser-auth discovery on `/profile/trades` showed that the UI uses two concrete trade queries: `/me/trades?state=queued,pending&limit=5000` for active seller-side work and `/me/trades?role=seller&state=failed,cancelled,verified&limit=30&page=0` for history
 48. browser-auth discovery on `/profile/offers` uses `/me/offers-timeline?limit=40` plus direct `/offers/{id}/history` fetches for the selected thread
 49. browser-auth discovery on `/stall/me` triggers `POST /me/recommender-token`, which returns `{ token, expires_at }`, and also calls the external public route `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts`
+50. browser-auth discovery on `/loadout/overview` and `/loadout/{id}` confirmed the public companion routes `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` and `https://loadout-api.csfloat.com/v1/loadout/{id}`
 
 ## Listing Creation Surface
 

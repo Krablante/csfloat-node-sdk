@@ -20,6 +20,7 @@ The format is based on Keep a Changelog.
 10. normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage` fields plus an exported `isCsfloatSdkError()` type guard
 11. `account.createRecommenderToken()` for the browser-observed `POST /me/recommender-token` flow
 12. richer `account.getTrades()` typing via `CsfloatTradesParams` with support for `state`, `role`, and `page`
+13. `loadout.getUserLoadouts()` and `loadout.getLoadout()` for the public `loadout-api.csfloat.com` companion API
 
 ### Changed
 
@@ -30,6 +31,7 @@ The format is based on Keep a Changelog.
 5. clarified that `/trades/steam-status/new-offer` and `/trades/steam-status/offer` are still discovered-only sync routes, while `/listings/price-list` is now implemented as a strongly validated public endpoint
 6. hardened transport errors into stable public categories (`validation`, `authentication`, `authorization`, `account_gated`, `role_gated`, `not_found`, `rate_limit`, `server`, `timeout`, `network`)
 7. expanded browser-auth coverage notes with the active/history trade query shapes, the offer timeline thread fetch pattern, the stale withdraw fetch to `/me/payments/stripe/connect`, and the external `loadout-api.csfloat.com` route used by the stall page
+8. expanded browser-auth coverage again with the public loadout overview/detail routes and the discovery that `/loadout` redirects to `/loadout/overview?mode=created&sort_by=date-desc`
 
 ## [0.5.0] - 2026-03-07
 
