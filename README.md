@@ -293,6 +293,7 @@ Low-level applied-attachment filters can also be serialized for market/watchlist
 ```ts
 const appliedStickerSearch = await sdk.listings.getListings({
   limit: 10,
+  sticker_option: "skins",
   ...buildStickerFilters([{ sticker_id: 3, slot: 1 }]),
 });
 

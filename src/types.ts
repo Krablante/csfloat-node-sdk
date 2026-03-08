@@ -34,6 +34,7 @@ export type QueryParams = Record<
 
 export type CsfloatListingsFilter = LooseString<"sticker_combos" | "unique">;
 export type CsfloatWatchlistState = LooseString<"listed" | "sold" | "delisted">;
+export type CsfloatStickerSearchOption = LooseString<"skins" | "packages">;
 
 export interface CsfloatCursorParams {
   cursor?: string;
@@ -929,6 +930,7 @@ export interface CsfloatListParams {
   music_kit_index?: number;
   stickers?: string;
   keychains?: string;
+  sticker_option?: CsfloatStickerSearchOption;
   min_keychain_pattern?: number;
   max_keychain_pattern?: number;
   min_blue?: number;

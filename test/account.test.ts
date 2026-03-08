@@ -217,6 +217,7 @@ describe("AccountResource", () => {
       filter: "sticker_combos",
       category: 2,
       type: "auction",
+      sticker_option: "skins",
       min_price: 100,
     });
 
@@ -228,6 +229,7 @@ describe("AccountResource", () => {
       filter: "sticker_combos",
       category: 2,
       type: "auction",
+      sticker_option: "skins",
       min_price: 100,
     });
   });

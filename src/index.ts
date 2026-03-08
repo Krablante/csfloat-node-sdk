@@ -173,6 +173,7 @@ export type {
   CsfloatUserLoadoutsResponse,
   CsfloatUserStatistics,
   CsfloatCursorParams,
+  CsfloatStickerSearchOption,
   CsfloatWatchlistParams,
   CsfloatWatchlistState,
   ListingType,
