@@ -478,6 +478,8 @@ const discountedWatchlistAuctions = await sdk.account.getWatchlist({
 });
 ```
 
+`account.iterateWatchlist()` and `stall.iterateStall()` are also live-backed cursor helpers: current watchlist and public stall probes both produced distinct follow-up pages under successive cursors on 2026-03-08, so callers can iterate these surfaces without hand-rolling cursor loops.
+
 `CSFLOAT_LISTING_TYPES` and `CSFLOAT_WATCHLIST_STATES` are exported for the current live-confirmed enum-like values on market/watchlist queries, so callers do not need to hardcode the common string forms.
 
 `history.getGraph()` also accepts the currently observed `category` query param in addition to `paint_index`, but its exact semantics are still intentionally documented as only partially mapped.

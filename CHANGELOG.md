@@ -32,7 +32,7 @@ The format is based on Keep a Changelog.
 22. `getHomepageFeedParams()` and `CSFLOAT_HOMEPAGE_FEED_PRESETS` for the current live-confirmed public homepage market-feed combinations (`top_deals`, `newest`, `unique`)
 23. `loadout.getDiscoverLoadouts()`, `getDiscoverLoadoutParams()`, `CSFLOAT_DISCOVER_LOADOUT_PARAMS`, and `CSFLOAT_LOADOUT_SORT_OPTIONS` for the current live-confirmed public discover-mode companion surface
 24. `buildLoadoutListParams()`, `buildLoadoutSkinSearchParams()`, `CSFLOAT_LOADOUT_MAX_LIMIT`, and `loadout.getSkinLoadouts()` for the current live-confirmed loadout search boundary and paired skin-search contract
-25. `account.iterateWatchlist()` and `stall.iterateStall()` for the live-confirmed cursor pagination surfaces on authenticated watchlist pages and public stall pages
+25. `account.iterateWatchlist()` and `stall.iterateStall()` as live-backed cursor helpers for the current watchlist and public stall pagination surface
 
 ### Changed
 
