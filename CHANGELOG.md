@@ -40,6 +40,7 @@ The format is based on Keep a Changelog.
 13. strengthened `/me/watchlist` live coverage with meaningful `type=auction|buy_now`, `filter=unique`, and `sort_by=highest_discount` / `sort_by=lowest_price` confirmations, and kept those checks on the core live-audit path
 14. taught the HTTP client to support derived external companion calls with custom default headers and optional authorization suppression, which is now used for the origin-gated checker lookup surface
 15. promoted `/trades/steam-status/new-offer` and `/trades/steam-status/offer` from discovered-only to implemented as explicitly low-level sync helpers after reconfirming their safe request shapes and stable `200 {"message":"successfully updated offer state"}` responses on 2026-03-08
+16. documented that the `/sell` and `/stall/me` browser-auth pages currently stay on already-covered bootstrap routes rather than exposing additional safe backend endpoints
 
 ## [0.7.0] - 2026-03-08
 
