@@ -6,6 +6,7 @@ import type {
   CsfloatMeResponse,
   CsfloatOffer,
   CsfloatTrade,
+  CsfloatTradeBuyerDetails,
   CsfloatTransaction,
 } from "../src/types.js";
 
@@ -129,5 +130,17 @@ describe("authenticated user typing", () => {
     expect(trade.state).toBe("pending");
     expect(trade.verification_mode).toBe("escrow");
     expect(trade.verified_at).toContain("2026-03-08");
+  });
+
+  it("accepts the currently observed trade buyer details fields", () => {
+    const buyer: CsfloatTradeBuyerDetails = {
+      steam_level: 6,
+      steam_age_badge_level: 4,
+      persona_name: "МАТИЛЬДА, колбаск",
+      avatar_url: "https://avatars.akamai.steamstatic.com/example_medium.jpg",
+    };
+
+    expect(buyer.steam_age_badge_level).toBe(4);
+    expect(buyer.persona_name).toContain("МАТИЛЬДА");
   });
 });

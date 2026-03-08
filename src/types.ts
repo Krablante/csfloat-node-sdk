@@ -550,6 +550,7 @@ export interface CsfloatTradeSteamOffer {
 
 export interface CsfloatTradeBuyerDetails {
   steam_level?: number;
+  steam_age_badge_level?: number;
   persona_name?: string;
   avatar_url?: string;
 }
