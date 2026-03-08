@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/github/license/Krablante/csfloat-node-sdk)](./LICENSE)
 [![Issues](https://img.shields.io/github/issues/Krablante/csfloat-node-sdk)](https://github.com/Krablante/csfloat-node-sdk/issues)
 
-Maintainer-grade Node.js / TypeScript SDK for the **currently known** CSFloat API surface.
+The strongest public Node.js / TypeScript SDK for the **currently known** CSFloat surface that we can responsibly validate today.
 
 `csfloat-node-sdk` is built to do two things well at the same time:
 
@@ -16,7 +16,24 @@ Maintainer-grade Node.js / TypeScript SDK for the **currently known** CSFloat AP
 
 The project is intentionally conservative about claims. Anything called `implemented` or highlighted in the README has been wired into the SDK and validated against live traffic, browser-auth discovery, or both.
 
-> The goal is simple: ship the strongest public TypeScript SDK and coverage reference we can responsibly validate for CSFloat.
+> The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
+
+## Why Choose This SDK
+
+If you want the broadest public CSFloat TypeScript surface with honest live validation, this repository is built to be the default choice.
+
+What it tries to beat:
+
+1. thin wrappers that expose a few obvious endpoints but stop where the practical workflows begin
+2. generated-feeling SDKs with weak docs and no clear evidence that the trickier routes were ever exercised
+3. libraries that make you re-assemble the same market, watchlist, buy-order, and loadout flows yourself
+
+What you get here instead:
+
+1. live-validated endpoint coverage and a public [API_COVERAGE.md](./API_COVERAGE.md) matrix
+2. practical write workflows, not just read-only browsing
+3. workflow helpers, builder helpers, examples, CLI commands, and safer transport defaults for bots
+4. honest notes for gated, partial, and weakly mapped surfaces instead of inflated claims
 
 ## Why This Repository Matters
 
@@ -27,6 +44,15 @@ The project is intentionally conservative about claims. Anything called `impleme
 - search and market-scan helpers for the parts of the API that people actually use
 - workflow helpers and a small CLI for the most common read-heavy tasks
 - release-quality OSS hygiene: CI, tests, changelog, contributing guide, security policy, and a maintained coverage matrix
+
+## Who This Is For
+
+This SDK is optimized for:
+
+1. bot authors who need safer defaults and less glue code
+2. dashboard and analytics developers who want stable typed payloads
+3. serious market scanners who need public feed helpers, iteration helpers, and buy-order tooling
+4. maintainers who care whether claims are actually backed by live probes
 
 ## What’s In The Current Generation
 
@@ -132,6 +158,7 @@ npm run example:buy-order
 npm run example:market
 npm run example:watchlist
 npm run example:loadout
+npm run example:workflows
 ```
 
 Published/package-ready examples now cover:
@@ -140,6 +167,7 @@ Published/package-ready examples now cover:
 2. authenticated watchlist iteration + public stall iteration
 3. public loadout discover + single-skin recommendation flows
 4. expression-backed buy-order similarity lookups
+5. the higher-level workflow layer end-to-end
 
 The package also now ships a small CLI for the most common read-heavy workflows:
 

@@ -44,6 +44,7 @@ The format is based on Keep a Changelog.
 34. `sdk.workflows` with `getPublicMarketFeeds()`, `getAccountWorkspace()`, and `getSingleSkinBuyOrderInsights()` for higher-level multi-call task helpers built entirely on live-confirmed routes
 35. a publishable CLI entrypoint with `feeds`, `workspace`, and `buy-order-similar` commands
 36. optional `minRequestDelayMs` transport pacing for safer bot/runtime usage across a shared SDK instance and its derived companion clients
+37. a publishable `example:workflows` script covering the new workflow layer end-to-end (`getPublicMarketFeeds()`, `getAccountWorkspace()`, and `getSingleSkinBuyOrderInsights()`)
 
 ### Changed
 
