@@ -37,6 +37,9 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "check": "tsc --noEmit",
+    "check:node": "for file in examples/*.mjs scripts/live-*.mjs; do node --check \"$file\"; done",
+    "pack:check": "npm pack --dry-run",
+    "release:check": "npm test && npm run check && npm run check:node && npm run build && npm run pack:check",
     "test": "vitest run",
     "example:basic": "node --env-file=.env examples/basic.mjs",
     "example:market": "node --env-file=.env examples/market-public-feeds.mjs",
@@ -44,7 +47,8 @@
     "example:loadout": "node --env-file=.env examples/loadout-companion.mjs",
     "audit:live": "CSFLOAT_AUDIT_SCOPE=core node scripts/live-api-audit.mjs",
     "audit:live:extended": "CSFLOAT_AUDIT_SCOPE=extended node scripts/live-api-audit.mjs",
-    "audit:shapes": "node scripts/live-shape-audit.mjs"
+    "audit:shapes": "node scripts/live-shape-audit.mjs",
+    "prepublishOnly": "npm run release:check"
   },
   "keywords": [
     "csfloat",

@@ -100,7 +100,14 @@ Run local quality checks:
 ```bash
 npm test
 npm run check
+npm run check:node
 npm run build
+```
+
+For a publish-ready local gate, run:
+
+```bash
+npm run release:check
 ```
 
 Run the basic example:

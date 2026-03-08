@@ -37,6 +37,7 @@ The format is based on Keep a Changelog.
 27. `buildLoadoutRecommendationRequest()`, `buildStickerRecommendationRequest()`, `buildGenerateLoadoutRecommendationsRequest()`, `buildSingleSkinRecommendationRequest()`, `buildSingleSkinStickerRecommendationRequest()`, `loadout.recommendForSkin()`, `loadout.recommendStickersForSkin()`, `CSFLOAT_LOADOUT_FACTIONS`, and `CSFLOAT_STICKER_RECOMMENDATION_MAX_COUNT` for the current live-confirmed companion recommendation/generate boundary
 28. publishable example scripts for `basic`, `market`, `watchlist`, and `loadout` workflows, plus package-file inclusion for `examples/`
 29. `buildCollectionFilter()`, `buildRarityFilter()`, `buildPaintSeedFilter()`, and `buildMusicKitFilter()` for the already live-confirmed visible market filter fields
+30. `check:node`, `pack:check`, `release:check`, stronger CI coverage for package/examples/scripts, and `prepublishOnly` release gating
 
 ### Changed
 

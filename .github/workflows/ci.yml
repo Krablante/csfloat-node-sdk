@@ -28,5 +28,11 @@ jobs:
       - name: Run typecheck
         run: npm run check
 
+      - name: Check Node entrypoints
+        run: npm run check:node
+
       - name: Build package
         run: npm run build
+
+      - name: Check package bundle
+        run: npm run pack:check

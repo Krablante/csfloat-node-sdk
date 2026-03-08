@@ -14,7 +14,14 @@ Thanks for contributing to `csfloat-node-sdk`.
 npm install
 npm test
 npm run check
+npm run check:node
 npm run build
+```
+
+Before cutting a release or publishing, run:
+
+```bash
+npm run release:check
 ```
 
 ## Contribution Guidelines
