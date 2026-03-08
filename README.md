@@ -109,6 +109,20 @@ Run the basic example:
 npm run example:basic
 ```
 
+Additional focused examples:
+
+```bash
+npm run example:market
+npm run example:watchlist
+npm run example:loadout
+```
+
+Published/package-ready examples now cover:
+
+1. public market page + homepage feed presets
+2. authenticated watchlist iteration + public stall iteration
+3. public loadout discover + single-skin recommendation flows
+
 ## Minimal Usage
 
 Once the package is published or linked locally, the SDK can be consumed like this:
