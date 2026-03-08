@@ -28,6 +28,7 @@ Status legend:
 | `/meta/location` | `GET` | implemented | live + public wrapper source | public inferred location data |
 | `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | implemented | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
 | `https://loadout-api.csfloat.com/v1/loadout/{id}` | `GET` | implemented | browser-auth network + live | public loadout detail route; returns `{ loadout: ... }` |
+| `https://loadout-api.csfloat.com/v1/recommend` | `POST` | implemented | browser-auth network + live | requires `Authorization: Bearer <recommender-token>` from `/me/recommender-token`; confirmed skin-only request shape `{ items:[{ type:\"skin\", def_index, paint_index }], count, def_whitelist?, def_blacklist? }` and response `{ count, results:[{ def_index, paint_index, score }] }` |
 | `/me/account-standing` | `GET` | implemented | live + public wrapper source | authenticated account standing |
 | `/me/transactions` | `GET` | implemented | live + public wrapper source | returns `{ transactions, count }` |
 | `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
@@ -241,6 +242,9 @@ Live-confirmed search behaviors:
 48. browser-auth discovery on `/profile/offers` uses `/me/offers-timeline?limit=40` plus direct `/offers/{id}/history` fetches for the selected thread
 49. browser-auth discovery on `/stall/me` triggers `POST /me/recommender-token`, which returns `{ token, expires_at }`, and also calls the external public route `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts`
 50. browser-auth discovery on `/loadout/overview` and `/loadout/{id}` confirmed the public companion routes `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` and `https://loadout-api.csfloat.com/v1/loadout/{id}`
+51. `POST https://loadout-api.csfloat.com/v1/recommend` requires `Authorization: Bearer <recommender-token>`; a valid live skin request on 2026-03-08 was `{ "items":[{ "type":"skin", "def_index":7, "paint_index":490 }], "count":5 }` and returned `{ "count":5, "results":[{ "def_index", "paint_index", "score" }, ...] }`
+52. `def_whitelist` and `def_blacklist` are accepted optional arrays on `/v1/recommend`; a live request with `def_whitelist:[7]` returned only weapon `def_index=7` results
+53. sticker-style recommendation requests are currently unsupported; live probes with `{ "items":[{ "type":"sticker", "sticker_index":3 }], "count":5 }` and `{ "type":"sticker", "sticker_index":55 }` both returned `400 {"error":"Item 1 unsupported type 'sticker'"}`
 
 ## Listing Creation Surface
 

@@ -33,7 +33,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - live-confirmed auction flow pieces: bid history, max-price `placeBid()`, and `deleteAutoBid()` cancellation on cheap auctions
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
-- public companion `loadout-api.csfloat.com` support via `loadout.getUserLoadouts()` and `loadout.getLoadout()`
+- public companion `loadout-api.csfloat.com` support via `loadout.getUserLoadouts()`, `loadout.getLoadout()`, and bearer-token `loadout.recommend()`
 - normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage`
 
 ## Coverage Philosophy
@@ -66,7 +66,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | User stall | implemented | `stall.getStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.placeBid()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
-| Loadout API | implemented | `loadout.getUserLoadouts()`, `loadout.getLoadout()` |
+| Loadout API | implemented | `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.recommend()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
@@ -135,6 +135,13 @@ const sellerTrades = await sdk.account.getTrades({
   page: 0,
 });
 const loadouts = await sdk.loadout.getUserLoadouts(me.user.steam_id);
+const recommender = await sdk.account.createRecommenderToken();
+const recommendations = await sdk.loadout.recommend(recommender.token, {
+  items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+  def_whitelist: [7, 9, 13],
+  def_blacklist: [],
+  count: 5,
+});
 
 console.log(
   rates.data.usd,
@@ -146,6 +153,7 @@ console.log(
   priceList[0]?.market_hash_name,
   auctionBid.id,
   loadouts.loadouts.length,
+  recommendations.results[0]?.paint_index,
 );
 ```
 

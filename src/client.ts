@@ -200,6 +200,21 @@ export class CsfloatHttpClient {
     this.dispatcher = options.dispatcher;
   }
 
+  derive(options: Partial<CsfloatClientOptions> & { apiKey?: string } = {}): CsfloatHttpClient {
+    return new CsfloatHttpClient({
+      apiKey: options.apiKey ?? this.apiKey,
+      baseUrl: options.baseUrl ?? this.baseUrl,
+      timeoutMs: options.timeoutMs ?? this.timeoutMs,
+      userAgent: options.userAgent ?? this.userAgent,
+      maxRetries: options.maxRetries ?? this.maxRetries,
+      retryDelayMs: options.retryDelayMs ?? this.retryDelayMs,
+      maxRetryDelayMs: options.maxRetryDelayMs ?? this.maxRetryDelayMs,
+      retryUnsafeRequests: options.retryUnsafeRequests ?? this.retryUnsafeRequests,
+      fetch: options.fetch ?? this.fetchImpl,
+      dispatcher: options.dispatcher ?? this.dispatcher,
+    });
+  }
+
   async get<T>(
     path: string,
     params?: QueryParams,

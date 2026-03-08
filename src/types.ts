@@ -319,6 +319,30 @@ export interface CsfloatLoadoutResponse {
   loadout: CsfloatLoadout;
 }
 
+export interface CsfloatLoadoutRecommendationSkinItem {
+  type: "skin";
+  def_index: number;
+  paint_index: number;
+}
+
+export interface CsfloatLoadoutRecommendationRequest {
+  items: CsfloatLoadoutRecommendationSkinItem[];
+  count: number;
+  def_whitelist?: number[];
+  def_blacklist?: number[];
+}
+
+export interface CsfloatLoadoutRecommendationResult {
+  def_index: number;
+  paint_index: number;
+  score: number;
+}
+
+export interface CsfloatLoadoutRecommendationResponse {
+  count: number;
+  results: CsfloatLoadoutRecommendationResult[];
+}
+
 export interface CsfloatSchemaCollection {
   key: string;
   name: string;

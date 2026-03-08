@@ -264,4 +264,37 @@ describe("CsfloatHttpClient", () => {
       dispatcher,
     });
   });
+
+  it("can derive a child client with overridden auth and base url", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    const client = new CsfloatHttpClient({
+      apiKey: "Bearer root",
+      fetch: fetchMock as typeof fetch,
+      userAgent: "csfloat-node-sdk/test",
+      baseUrl: "https://csfloat.com/api/v1",
+    });
+
+    const derived = client.derive({
+      apiKey: "Bearer child",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+
+    await derived.post("recommend", { count: 1, items: [] });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL("https://loadout-api.csfloat.com/v1/recommend"),
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer child",
+          "User-Agent": "csfloat-node-sdk/test",
+        }),
+      }),
+    );
+  });
 });

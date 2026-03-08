@@ -1,6 +1,8 @@
 import type { CsfloatHttpClient } from "../client.js";
 import type {
   CsfloatLoadoutResponse,
+  CsfloatLoadoutRecommendationRequest,
+  CsfloatLoadoutRecommendationResponse,
   CsfloatUserLoadoutsResponse,
 } from "../types.js";
 
@@ -19,5 +21,17 @@ export class LoadoutResource {
     return this.client.get<CsfloatLoadoutResponse>(
       `${LOADOUT_API_BASE_URL}/loadout/${loadoutId}`,
     );
+  }
+
+  recommend(
+    recommenderToken: string,
+    request: CsfloatLoadoutRecommendationRequest,
+  ): Promise<CsfloatLoadoutRecommendationResponse> {
+    return this.client
+      .derive({
+        apiKey: `Bearer ${recommenderToken}`,
+        baseUrl: LOADOUT_API_BASE_URL,
+      })
+      .post<CsfloatLoadoutRecommendationResponse>("recommend", request);
   }
 }
