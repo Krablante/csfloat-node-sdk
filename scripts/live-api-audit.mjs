@@ -275,6 +275,8 @@ async function main() {
     ["GET", "/me/inventory"],
     ["GET", "/me/account-standing"],
     ["GET", "/me/transactions?limit=1"],
+    ["GET", "/me/transactions?page=0&limit=10&order=asc"],
+    ["GET", "/me/transactions?page=0&limit=10&order=desc&type=deposit"],
     ["GET", "/me/trades?limit=1"],
     ["GET", "/me/offers?limit=1"],
     ["GET", "/me/offers-timeline?limit=1"],

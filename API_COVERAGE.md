@@ -47,7 +47,7 @@ Status legend:
 | `https://loadout-api.csfloat.com/v1/loadout/{id}/favorite` | `POST` | implemented | bundle semantics + live | requires `Authorization: Bearer <recommender-token>`; returns `{"loadout":{"social_stats":{"favorites":N}},"message":"Loadout added to favorites"}` |
 | `https://loadout-api.csfloat.com/v1/loadout/{id}/favorite` | `DELETE` | implemented | bundle semantics + live | requires `Authorization: Bearer <recommender-token>`; returns `{"loadout":{"social_stats":{"favorites":N}},"message":"Loadout removed from favorites"}` |
 | `/me/account-standing` | `GET` | implemented | live + public wrapper source | authenticated account standing |
-| `/me/transactions` | `GET` | implemented | live + public wrapper source | returns `{ transactions, count }` |
+| `/me/transactions` | `GET` | implemented | live + public wrapper source | returns `{ transactions, count }`; current live validation confirms meaningful `page`, `limit`, `order=asc|desc`, and `type=deposit|withdrawal|fine|bid_posted|trade_verified` |
 | `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
 | `/offers` | `POST` | implemented | live | confirmed happy-path create on buyer account with body `{ contract_id, price }` |
 | `/offers/{id}` | `GET` | implemented | live | single offer fetch by valid offer id |
@@ -333,6 +333,7 @@ Live-confirmed search behaviors:
 97. the public stall route also accepts attachment-style listing filters: on 2026-03-08, `keychains=[{"i":83}]` returned the matching `Souvenir Zeus x27 | Charged Up (Battle-Scarred)` row, while `filter=sticker_combos` returned `200` with an empty set on the current stall; invalid `filter=bogus` hard-failed with `400 invalid filter value`, while invalid `sort_by=bogus` returned `404 the given resource could not be found`
 98. unlike `/listings` and `/me/watchlist`, the current public stall route is not capped at `50` rows per page: on 2026-03-08, `limit=51` returned `200`, and the live audit already uses `GET /users/{id}/stall?limit=500&type=buy_now` successfully for mutation-safe inventory reconciliation
 99. `GET /me/notifications/timeline` currently supports cursor pagination but not meaningful limit control: on 2026-03-08, replaying the response cursor returned an older page with a different first `notification_id`, while both `limit=1` and `limit=5` returned the same `42` rows as the default request; `cursor=0` simply fell back to the current first page rather than failing validation
+100. `GET /me/transactions` is broader than the original SDK typing suggested: on 2026-03-08, browser-auth discovery and direct API probes confirmed meaningful `order=asc|desc` plus `type=deposit|withdrawal|fine|bid_posted|trade_verified`; invalid `type=bogus` hard-failed with `400 "you are not authorized to filter by this transaction type"`, and invalid `order=bogus` hard-failed with `400 "bogus is not a valid order"`
 
 ## Listing Creation Surface
 

@@ -32,6 +32,7 @@ import type {
   CsfloatTradeSteamStatusNewOfferRequest,
   CsfloatTradesParams,
   CsfloatTradesResponse,
+  CsfloatTransactionsParams,
   CsfloatTransactionsResponse,
   CsfloatSimilarBuyOrdersResponse,
   CsfloatUpdateMeRequest,
@@ -174,7 +175,9 @@ export class AccountResource {
     );
   }
 
-  getTransactions(params: CsfloatPageParams = {}): Promise<CsfloatTransactionsResponse> {
+  getTransactions(
+    params: CsfloatTransactionsParams = {},
+  ): Promise<CsfloatTransactionsResponse> {
     return this.client.get<CsfloatTransactionsResponse>("me/transactions", params as QueryParams);
   }
 

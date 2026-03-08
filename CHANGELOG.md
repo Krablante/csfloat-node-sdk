@@ -24,6 +24,7 @@ The format is based on Keep a Changelog.
 14. `account.syncSteamNewOffer()` and `account.syncSteamOffers()` for the browser-confirmed low-level trade sync routes under `/trades/steam-status/*`
 15. `CsfloatStallParams` and expanded `stall.getStall()` typing for the live-confirmed listing-style public stall query surface
 16. cursor-aware `account.getNotifications({ cursor })` support for the live-confirmed notifications timeline pagination surface
+17. `CsfloatTransactionsParams`, `CsfloatTransactionOrder`, and `CsfloatTransactionType` for the live-confirmed `/me/transactions` filtering and ordering surface
 
 ### Changed
 
@@ -46,6 +47,7 @@ The format is based on Keep a Changelog.
 17. expanded the public stall docs after confirming meaningful `sort_by`, `filter`, `type`, `min_ref_qty`, and `keychains` behavior on `/users/{id}/stall`, plus the current absence of a `limit=50` ceiling on that route
 18. clarified notifications timeline pagination semantics: `cursor` is live-meaningful, while `limit` currently appears to be ignored and therefore remains intentionally unexposed in the typed SDK surface
 19. fixed `audit:live` absolute-URL handling so external companion routes such as `loadout-api.csfloat.com` are no longer falsely prefixed with the main CSFloat API base URL during regression runs
+20. widened `account.getTransactions()` from plain page params to the live-confirmed `page`, `limit`, `order`, and `type` surface after browser-auth discovery on the profile transactions tab and direct API validation of the current filter/order values
 
 ## [0.7.0] - 2026-03-08
 

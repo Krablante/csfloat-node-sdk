@@ -288,15 +288,22 @@ describe("AccountResource", () => {
     });
   });
 
-  it("requests transactions with paging params", async () => {
+  it("requests transactions with typed filter params", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);
 
-    await resource.getTransactions({ limit: 1, page: 2 });
+    await resource.getTransactions({
+      limit: 25,
+      page: 1,
+      order: "asc",
+      type: "trade_verified",
+    });
 
     expect(get).toHaveBeenCalledWith("me/transactions", {
-      limit: 1,
-      page: 2,
+      limit: 25,
+      page: 1,
+      order: "asc",
+      type: "trade_verified",
     });
   });
 
