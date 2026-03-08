@@ -319,6 +319,19 @@ export interface CsfloatLoadoutResponse {
   loadout: CsfloatLoadout;
 }
 
+export type CsfloatLoadoutSortBy = "favorites" | "random" | "created_at";
+
+export type CsfloatLoadoutListParams = QueryParams & {
+  sort_by?: CsfloatLoadoutSortBy;
+};
+
+export interface CsfloatLoadoutFavoriteResponse {
+  loadout?: {
+    social_stats?: CsfloatLoadoutSocialStats;
+  };
+  message?: string;
+}
+
 export interface CsfloatLoadoutRecommendationSkinItem {
   type: "skin";
   def_index: number;

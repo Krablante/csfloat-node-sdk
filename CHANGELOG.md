@@ -11,6 +11,7 @@ The format is based on Keep a Changelog.
 1. `listings.placeBid()` for auction max-price bidding via the live-confirmed `POST /listings/{id}/bid` route
 2. `account.deleteAutoBid()` for auction auto-bid cancellation via the live-confirmed `DELETE /me/auto-bids/{id}` route
 3. `loadout.recommend()` for bearer-token loadout recommendations via the live-confirmed `POST https://loadout-api.csfloat.com/v1/recommend` companion route
+4. `loadout.getLoadouts()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()` for the live-confirmed public/bearer companion routes under `https://loadout-api.csfloat.com/v1/loadout`
 
 ### Changed
 
@@ -19,6 +20,7 @@ The format is based on Keep a Changelog.
 3. documented the correct auto-bid removal path `DELETE /me/auto-bids/{id}` and kept the failed delete guesses (`DELETE /auto-bids/{id}` and `DELETE /listings/{id}/bid` both returned `405`) as negative findings
 4. tightened `CsfloatTrade` typing with live-observed `verified_at`, `expires_at`, and explicit state/verification-mode unions
 5. expanded loadout coverage with the bearer-token `recommend` flow, including confirmed skin-only request semantics and optional `def_whitelist` / `def_blacklist` arrays
+6. documented that `GET /v1/loadout` currently honors `sort_by` but appears to ignore `mode` and `page`, while invalid `sort_by` values hard-fail with a validation error
 
 ## [0.6.0] - 2026-03-08
 
