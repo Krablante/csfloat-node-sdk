@@ -341,6 +341,12 @@ const soldStickerCombos = await sdk.account.getWatchlist({
   filter: "sticker_combos",
   category: 2,
 });
+
+const discountedWatchlistAuctions = await sdk.account.getWatchlist({
+  limit: 20,
+  type: "auction",
+  sort_by: "highest_discount",
+});
 ```
 
 `history.getGraph()` also accepts the currently observed `category` query param in addition to `paint_index`, but its exact semantics are still intentionally documented as only partially mapped.

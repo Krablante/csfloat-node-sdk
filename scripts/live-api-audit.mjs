@@ -273,7 +273,11 @@ async function main() {
     ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/watchlist?limit=1&state=listed"],
     ["GET", "/me/watchlist?limit=1&sort_by=most_recent"],
+    ["GET", "/me/watchlist?limit=1&sort_by=highest_discount"],
     ["GET", "/me/watchlist?limit=1&min_ref_qty=20"],
+    ["GET", "/me/watchlist?limit=1&type=auction"],
+    ["GET", "/me/watchlist?limit=1&type=buy_now"],
+    ["GET", "/me/watchlist?limit=1&filter=unique"],
     ...(watchlistStickerFilterQuery
       ? [["GET", `/me/watchlist?limit=1&stickers=${watchlistStickerFilterQuery}`]]
       : []),

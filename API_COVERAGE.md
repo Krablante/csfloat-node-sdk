@@ -96,7 +96,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 |---|---|---|---|---|
 | `/me/trades` | `GET` | implemented | live | returns `{ trades, count }`; supports `limit` |
 | `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; supports `limit` |
-| `/me/watchlist` | `GET` | implemented | live + browser-auth UI | returns `{ data, cursor }`; currently confirmed with `limit`, `state`, `sort_by`, `filter`, `category`, `type`, `min_price`, `min_ref_qty`, `stickers`, `keychains`, and `sticker_option` |
+| `/me/watchlist` | `GET` | implemented | live + browser-auth UI | returns `{ data, cursor }`; currently confirmed with `limit`, `state`, `sort_by`, `filter`, `category`, `type`, `min_price`, `min_ref_qty`, `stickers`, `keychains`, and `sticker_option`; live-meaningful examples include `type=auction|buy_now`, `filter=unique`, and `sort_by=highest_discount|lowest_price` |
 | `/listings?limit=40&min_ref_qty=20` | `GET` | discovered | live + frontend network | special unauthenticated public feed shape used by public pages; general search params still require auth |
 | `/listings?filter=sticker_combos` | `GET` | discovered | live + browser UI + auth API | UI label `Sticker Combos`; requires auth |
 | `/listings?filter=unique` | `GET` | discovered | live + browser UI + auth API | UI label `Unique Items`; requires auth |
@@ -324,6 +324,7 @@ Live-confirmed search behaviors:
 89. direct authenticated live probes on 2026-03-08 confirmed that `GET /me/watchlist` reuses the same JSON attachment-filter contract as `/listings`: `stickers=[{"i":3}]` returned the matching watched `Souvenir M4A1-S | VariCamo (Field-Tested)` row with an applied `{ stickerId: 3, slot: 3 }` payload, and a targeted `keychains=[{"i":83}]` probe returned the matching watched `Souvenir AUG | Spalted Wood (Field-Tested)` row with an applied `{ stickerId: 83, slot: 0, highlight_reel: 807, ... }` payload; `sticker_option=packages` on watchlist is still only weakly mapped because the current account-side probe for `stickers=[{"i":85}]` returned `200` with an empty set rather than a watched package row
 90. `min_ref_qty` is live-meaningful on both `/listings` and `/me/watchlist`: the browser `Exclude Rare Items` toggle maps to `min_ref_qty=20`, higher floors such as `100` further narrow results, and invalid values like `min_ref_qty=bogus` hard-fail with `400 code 18 schema: error converting value for "min_ref_qty"`
 91. current live limit ceilings on 2026-03-08 are `50` for both `/listings` and `/me/watchlist`: `limit=50` returned `200`, while `limit=51` and above returned `400 {"code":4,"message":"limit is too high"}`
+92. the watchlist page currently reuses meaningful market-style sort and listing-mode params beyond `most_recent`: on 2026-03-08, the default page ordering matched `sort_by=best_deal`, `sort_by=highest_discount` reordered the first rows versus default, `sort_by=lowest_price` surfaced the cheapest watched rows first, `type=auction` returned only auction rows, `type=buy_now` returned buy-now rows, and `filter=unique` also returned a distinct watchlist slice
 
 ## Listing Creation Surface
 

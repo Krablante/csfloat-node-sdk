@@ -35,6 +35,7 @@ The format is based on Keep a Changelog.
 10. fixed the schema-derived live-audit probes to read `/schema` sticker/keychain maps correctly instead of treating them as arrays, and upgraded the `sticker_option=packages` regression probe to a positive market case (`sticker_id=85`)
 11. slowed the default `audit:live` pacing to `1250ms` per request and added a single GET retry after `429` responses so the safe live regression pass better matches the intended market pacing
 12. split `audit:live` into `core` vs `extended` scopes so the default script keeps the stable surface while `audit:live:extended` carries the more rate-limit-prone market query burst and candidate sweep
+13. strengthened `/me/watchlist` live coverage with meaningful `type=auction|buy_now`, `filter=unique`, and `sort_by=highest_discount` / `sort_by=lowest_price` confirmations, and kept those checks on the core live-audit path
 
 ## [0.7.0] - 2026-03-08
 
