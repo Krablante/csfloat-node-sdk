@@ -17,6 +17,9 @@ The format is based on Keep a Changelog.
 7. `loadout.cloneLoadout()` as a safe convenience helper over the already validated `getLoadout()` + `createLoadout()` flow
 8. `account.cancelTrades()`, `account.cancelTrade()`, and `account.cancelSale()` for the browser-mapped seller-side trade cancellation layer (`POST /trades/bulk/cancel` and `DELETE /trades/{id}`)
 9. `account.getTrade()` and `account.getTradeBuyerDetails()` for the live-confirmed trade detail routes `GET /trades/{id}` and `GET /trades/{id}/buyer-details`
+10. `account.acceptTrade()` / `account.acceptSale()` now align with the browser-confirmed single-route contract `POST /trades/{id}/accept`, while `account.acceptTrades()` remains the explicit bulk helper
+11. `meta.getNotary()` and `account.createNotaryToken()` for the browser-confirmed notary companion flow
+12. `account.getSimilarBuyOrders()` for the live-confirmed buy-order insight route `POST /buy-orders/similar-orders`
 
 ### Changed
 
@@ -30,6 +33,8 @@ The format is based on Keep a Changelog.
 8. expanded `CsfloatLoadoutListParams` with browser-observed discover params such as `limit`, `months`, `def_index`, and `paint_index`, while keeping `any_filled` documented as only weakly mapped on current live probes
 9. expanded trade coverage notes with the bundle-confirmed `/trades/{id}`, `/trades/{id}/buyer-details`, `cannot-deliver`, `dispute`, `received`, `rollback`, `manual-verification`, and `rollback-verify` routes, while keeping them discovered-only until real happy-path samples appear
 10. promoted `/trades/{id}` and `/trades/{id}/buyer-details` from discovered-only to implemented after capturing a real queued cross-account trade sample at 3 cents
+11. clarified the accept-sale split: single-trade `POST /trades/{id}/accept` is the reliable seller-side happy-path on the main account, while `POST /trades/bulk/accept` remains live but can reject visible queued IDs on some seller states
+12. expanded coverage notes for `/meta/notary`, `/me/notary-token`, `/buy-orders/item`, `/buy-orders/matching-items/floatdb`, `/trades/bulk/received`, `/trades/{id}/report-error`, and `/trades/notary`
 
 ## [0.6.0] - 2026-03-08
 

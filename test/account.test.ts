@@ -38,6 +38,15 @@ describe("AccountResource", () => {
     expect(post).toHaveBeenCalledWith("me/recommender-token", {});
   });
 
+  it("creates a notary token", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.createNotaryToken();
+
+    expect(post).toHaveBeenCalledWith("me/notary-token", {});
+  });
+
   it("accepts trades in bulk", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);
@@ -73,9 +82,7 @@ describe("AccountResource", () => {
 
     await resource.acceptTrade("950524496987687389");
 
-    expect(post).toHaveBeenCalledWith("trades/bulk/accept", {
-      trade_ids: ["950524496987687389"],
-    });
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/accept", {});
   });
 
   it("accepts a sale through the single-trade alias", async () => {
@@ -84,9 +91,7 @@ describe("AccountResource", () => {
 
     await resource.acceptSale("950524496987687389");
 
-    expect(post).toHaveBeenCalledWith("trades/bulk/accept", {
-      trade_ids: ["950524496987687389"],
-    });
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/accept", {});
   });
 
   it("cancels trades in bulk", async () => {
@@ -252,6 +257,19 @@ describe("AccountResource", () => {
     await resource.getBuyOrders();
 
     expect(get).toHaveBeenCalledWith("me/buy-orders", {});
+  });
+
+  it("requests similar buy orders", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.getSimilarBuyOrders({
+      market_hash_name: "AK-47 | Redline (Field-Tested)",
+    });
+
+    expect(post).toHaveBeenCalledWith("buy-orders/similar-orders", {
+      market_hash_name: "AK-47 | Redline (Field-Tested)",
+    });
   });
 
   it("creates a buy order with explicit quantity", async () => {

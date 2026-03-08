@@ -2,6 +2,7 @@ import type { CsfloatHttpClient } from "../client.js";
 import type {
   CsfloatExchangeRatesResponse,
   CsfloatLocationResponse,
+  CsfloatNotaryMetaResponse,
   CsfloatSchemaResponse,
 } from "../types.js";
 
@@ -18,5 +19,9 @@ export class MetaResource {
 
   getLocation(): Promise<CsfloatLocationResponse> {
     return this.client.get<CsfloatLocationResponse>("meta/location");
+  }
+
+  getNotary(): Promise<CsfloatNotaryMetaResponse> {
+    return this.client.get<CsfloatNotaryMetaResponse>("meta/notary");
   }
 }

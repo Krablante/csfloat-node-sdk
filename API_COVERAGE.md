@@ -26,6 +26,7 @@ Status legend:
 | `/schema` | `GET` | implemented | live + public wrapper source | public item schema; both `/schema` and `/schema/` resolve |
 | `/meta/exchange-rates` | `GET` | implemented | live + public wrapper source | public exchange rate map |
 | `/meta/location` | `GET` | implemented | live + public wrapper source | public inferred location data |
+| `/meta/notary` | `GET` | implemented | browser bundle + live | returns current notary availability flags such as `{ rollback:{enabled,background}, accepted:{enabled,background} }` |
 | `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | implemented | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
 | `https://loadout-api.csfloat.com/v1/loadout/{id}` | `GET` | implemented | browser-auth network + live | public loadout detail route; returns `{ loadout: ... }` |
 | `https://loadout-api.csfloat.com/v1/loadout` | `GET` | implemented | bundle semantics + live | public/global loadout list route; confirmed `sort_by=created_at|favorites|random`; currently observed as `{ loadouts: [...] }` |
@@ -51,11 +52,14 @@ Status legend:
 | `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
 | `/buy-orders/{id}` | `PATCH` | implemented | live | confirmed happy-path update with body `{ max_price }` |
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
+| `/buy-orders/similar-orders` | `POST` | implemented | browser bundle + live | safe insight route returning `{ data:[{ market_hash_name, qty, price }] }` for a supplied `market_hash_name` |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
 | `/me/auto-bids/{id}` | `DELETE` | implemented | browser-auth network + live | confirmed happy-path delete with `{"message":"deleted auto-bid"}` |
 | `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
+| `/me/notary-token` | `POST` | implemented | browser bundle + live | returns `{ token, expires_at }` for the notary/companion flow |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
-| `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path accept on a real queued `$0.05` sale with body `{ trade_ids: string[] }` |
+| `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path on at least one seller account; current live retest on the main seller account showed that visible queued trade IDs can still return `invalid trade ids specified`, so treat this as a bulk/helper route with account-state nuance |
+| `/trades/{id}/accept` | `POST` | implemented | browser bundle + live | confirmed happy-path on a real queued cross-account sale (`10` cents) from the main seller account; current live response transitioned the trade to `pending` and returned the updated `CsfloatTrade` payload |
 | `/trades/bulk/cancel` | `POST` | implemented | browser bundle + live invalid probe | bundle-mapped seller-side bulk cancel route; live invalid probe with `{ trade_ids:[\"0\"] }` returned `400 invalid trade ids specified` on the correct path |
 | `/trades/{id}` | `GET` | implemented | browser bundle + live | trade detail route now captured from a real queued cross-account trade; current live sample included `{ buyer, seller, contract, trade_url, trade_token, wait_for_cancel_ping, is_settlement_period }` |
 | `/trades/{id}/buyer-details` | `GET` | implemented | browser bundle + live | buyer-details route now captured from a real queued cross-account trade; current live sample shape `{ steam_level, persona_name, avatar_url }` |
@@ -88,12 +92,17 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
 | `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
+| `/buy-orders/item` | `GET` | discovered | browser bundle + live invalid probe | currently rejects plain `market_hash_name` with `422 invalid inspect link`; likely inspect-link oriented route |
+| `/buy-orders/matching-items/floatdb` | `POST` | discovered | browser bundle + live invalid probe | route exists but currently demands float-expression semantics; plain `market_hash_name` returned `condition and rules are required for an expression` |
 | `/trades/{id}/cannot-deliver` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely seller-side failure path, not executed happy-path due risk |
 | `/trades/{id}/dispute` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; not exercised on a real trade |
 | `/trades/{id}/received` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely buyer-side receipt acknowledgement path |
+| `/trades/bulk/received` | `POST` | discovered | browser bundle + live invalid probe | invalid `trade_ids:["0"]` returned `400 invalid trade ids specified`; likely buyer-side bulk receipt acknowledgement path |
 | `/trades/{id}/rollback` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
 | `/trades/{id}/manual-verification` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
 | `/trades/{id}/rollback-verify` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
+| `/trades/{id}/report-error` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely support/reporting path |
+| `/trades/notary` | `POST` | discovered | browser bundle + live invalid probe | empty payload returned `400 payload is required`; exact contract still unmapped |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
 | `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | accepted string-form `offer_id` payloads and returned success even for `"0"`; exact side effects still unmapped |
 | `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }` with success; empty sync produced no observed trade-state change |

@@ -281,6 +281,16 @@ export interface CsfloatLocationResponse {
   inferred_location?: CsfloatInferredLocation;
 }
 
+export interface CsfloatNotaryRule {
+  enabled?: boolean;
+  background?: boolean;
+}
+
+export interface CsfloatNotaryMetaResponse {
+  rollback?: CsfloatNotaryRule;
+  accepted?: CsfloatNotaryRule;
+}
+
 export interface CsfloatLoadoutItemRef {
   def_index?: number;
   paint_index?: number;
@@ -593,6 +603,11 @@ export interface CsfloatRecommenderTokenResponse {
   expires_at: string;
 }
 
+export interface CsfloatNotaryTokenResponse {
+  token: string;
+  expires_at: string;
+}
+
 export interface CsfloatTransaction {
   id?: string;
   created_at?: string;
@@ -673,10 +688,24 @@ export interface CsfloatBuyOrdersResponse {
   count?: number;
 }
 
+export interface CsfloatSimilarBuyOrder {
+  market_hash_name?: string;
+  qty?: number;
+  price?: number;
+}
+
+export interface CsfloatSimilarBuyOrdersResponse {
+  data: CsfloatSimilarBuyOrder[];
+}
+
 export interface CreateBuyOrderRequest {
   market_hash_name: string;
   max_price: number;
   quantity?: number;
+}
+
+export interface SimilarBuyOrdersRequest {
+  market_hash_name: string;
 }
 
 export interface UpdateBuyOrderRequest {

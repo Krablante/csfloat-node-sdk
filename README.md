@@ -30,6 +30,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 - live-confirmed offer flows: create, counter, cancel, decline, history
 - live-confirmed purchase flows: direct `buyNow`, buy-order create/update/delete, seller-side `acceptSale`
+- live-confirmed support helpers around adjacent account/insight flows such as `meta.getNotary()`, `account.createNotaryToken()`, and `account.getSimilarBuyOrders()`
 - live-confirmed auction flow pieces: bid history, max-price `placeBid()`, and `deleteAutoBid()` cancellation on cheap auctions
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
@@ -59,8 +60,8 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 
 | Area | Status | Methods |
 |---|---|---|
-| Meta | implemented | `meta.getSchema()`, `meta.getExchangeRates()`, `meta.getLocation()` |
-| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.acceptTrades()`, `account.acceptTrade()`, `account.acceptSale()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.cancelSale()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
+| Meta | implemented | `meta.getSchema()`, `meta.getExchangeRates()`, `meta.getLocation()`, `meta.getNotary()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.acceptTrades()`, `account.acceptTrade()`, `account.acceptSale()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.cancelSale()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getSimilarBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.createNotaryToken()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |

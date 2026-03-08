@@ -13,6 +13,7 @@ import type {
   CsfloatMeResponse,
   CsfloatMobileStatusResponse,
   CsfloatNotificationsResponse,
+  CsfloatNotaryTokenResponse,
   CsfloatOffer,
   CsfloatOffersResponse,
   CsfloatPageParams,
@@ -23,9 +24,11 @@ import type {
   CsfloatTradesParams,
   CsfloatTradesResponse,
   CsfloatTransactionsResponse,
+  CsfloatSimilarBuyOrdersResponse,
   CsfloatUpdateMeRequest,
   CreateOfferRequest,
   QueryParams,
+  SimilarBuyOrdersRequest,
   UpdateBuyOrderRequest,
 } from "../types.js";
 
@@ -56,11 +59,11 @@ export class AccountResource {
     return this.client.post<CsfloatTradeBatchResponse>("trades/bulk/accept", body);
   }
 
-  acceptTrade(tradeId: string): Promise<CsfloatTradeBatchResponse> {
-    return this.acceptTrades([tradeId]);
+  acceptTrade(tradeId: string): Promise<CsfloatTrade> {
+    return this.client.post<CsfloatTrade>(`trades/${tradeId}/accept`, {});
   }
 
-  acceptSale(tradeId: string): Promise<CsfloatTradeBatchResponse> {
+  acceptSale(tradeId: string): Promise<CsfloatTrade> {
     return this.acceptTrade(tradeId);
   }
 
@@ -134,6 +137,15 @@ export class AccountResource {
     return this.client.get<CsfloatBuyOrdersResponse>("me/buy-orders", params as QueryParams);
   }
 
+  getSimilarBuyOrders(
+    request: SimilarBuyOrdersRequest,
+  ): Promise<CsfloatSimilarBuyOrdersResponse> {
+    return this.client.post<CsfloatSimilarBuyOrdersResponse>(
+      "buy-orders/similar-orders",
+      request,
+    );
+  }
+
   createBuyOrder(request: CreateBuyOrderRequest): Promise<CsfloatBuyOrder> {
     return this.client.post<CsfloatBuyOrder>("buy-orders", {
       market_hash_name: request.market_hash_name,
@@ -160,6 +172,10 @@ export class AccountResource {
 
   createRecommenderToken(): Promise<CsfloatRecommenderTokenResponse> {
     return this.client.post<CsfloatRecommenderTokenResponse>("me/recommender-token", {});
+  }
+
+  createNotaryToken(): Promise<CsfloatNotaryTokenResponse> {
+    return this.client.post<CsfloatNotaryTokenResponse>("me/notary-token", {});
   }
 
   getMobileStatus(): Promise<CsfloatMobileStatusResponse> {

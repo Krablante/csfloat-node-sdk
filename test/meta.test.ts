@@ -29,4 +29,13 @@ describe("MetaResource", () => {
 
     expect(get).toHaveBeenCalledWith("meta/location");
   });
+
+  it("requests notary meta", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new MetaResource({ get } as never);
+
+    await resource.getNotary();
+
+    expect(get).toHaveBeenCalledWith("meta/notary");
+  });
 });
