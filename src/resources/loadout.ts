@@ -42,6 +42,20 @@ export class LoadoutResource {
     );
   }
 
+  async cloneLoadout(
+    recommenderToken: string,
+    loadoutId: string,
+    name?: string,
+  ): Promise<CsfloatLoadoutResponse> {
+    const source = await this.getLoadout(loadoutId);
+
+    return this.createLoadout(recommenderToken, {
+      name: name ?? `${source.loadout.name ?? "Loadout"} (Clone)`,
+      ct: source.loadout.ct ?? { is_filled: false },
+      t: source.loadout.t ?? { is_filled: false },
+    });
+  }
+
   getFavoriteLoadouts(
     recommenderToken: string,
   ): Promise<CsfloatFavoriteLoadoutsResponse> {

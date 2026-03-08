@@ -71,6 +71,34 @@ describe("LoadoutResource", () => {
     );
   });
 
+  it("clones a public loadout through createLoadout", async () => {
+    const get = vi.fn(async (_path: string) => ({
+      loadout: {
+        name: "Loadout 1",
+        ct: { is_filled: false },
+        t: { is_filled: false },
+      },
+    }));
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const derive = vi.fn(() => ({ post }));
+    const resource = new LoadoutResource({ get, derive } as never);
+
+    await resource.cloneLoadout("abc123", "154023336572224457");
+
+    expect(get).toHaveBeenCalledWith(
+      "https://loadout-api.csfloat.com/v1/loadout/154023336572224457",
+    );
+    expect(derive).toHaveBeenCalledWith({
+      apiKey: "Bearer abc123",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+    expect(post).toHaveBeenCalledWith("loadout", {
+      name: "Loadout 1 (Clone)",
+      ct: { is_filled: false },
+      t: { is_filled: false },
+    });
+  });
+
   it("requests bearer-token favorite loadouts", async () => {
     const get = vi.fn(async (_path: string) => null);
     const derive = vi.fn(() => ({ get }));

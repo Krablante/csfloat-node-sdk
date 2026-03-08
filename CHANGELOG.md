@@ -14,6 +14,7 @@ The format is based on Keep a Changelog.
 4. `loadout.getLoadouts()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()` for the live-confirmed public/bearer companion routes under `https://loadout-api.csfloat.com/v1/loadout`
 5. `loadout.createLoadout()`, `loadout.updateLoadout()`, and `loadout.deleteLoadout()` for the live-confirmed bearer-token CRUD routes under `https://loadout-api.csfloat.com/v1/loadout`
 6. `loadout.getFavoriteLoadouts()`, `loadout.recommendStickers()`, and `loadout.generateRecommendations()` for the next live-confirmed companion routes under `https://loadout-api.csfloat.com/v1`
+7. `loadout.cloneLoadout()` as a safe convenience helper over the already validated `getLoadout()` + `createLoadout()` flow
 
 ### Changed
 
