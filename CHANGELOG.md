@@ -20,6 +20,7 @@ The format is based on Keep a Changelog.
 10. `account.acceptTrade()` / `account.acceptSale()` now align with the browser-confirmed single-route contract `POST /trades/{id}/accept`, while `account.acceptTrades()` remains the explicit bulk helper
 11. `meta.getNotary()` and `account.createNotaryToken()` for the browser-confirmed notary companion flow
 12. `account.getSimilarBuyOrders()` for the live-confirmed buy-order insight route `POST /buy-orders/similar-orders`
+13. `account.getBuyOrdersForInspect()` for the inspect-link oriented `GET /buy-orders/item` route, returning direct `{ expression, qty, price }[]` rows
 
 ### Changed
 
@@ -35,6 +36,7 @@ The format is based on Keep a Changelog.
 10. promoted `/trades/{id}` and `/trades/{id}/buyer-details` from discovered-only to implemented after capturing a real queued cross-account trade sample at 3 cents
 11. clarified the accept-sale split: single-trade `POST /trades/{id}/accept` is the reliable seller-side happy-path on the main account, while `POST /trades/bulk/accept` remains live but can reject visible queued IDs on some seller states
 12. expanded coverage notes for `/meta/notary`, `/me/notary-token`, `/buy-orders/item`, `/buy-orders/matching-items/floatdb`, `/trades/bulk/received`, `/trades/{id}/report-error`, and `/trades/notary`
+13. refined buy-order insight coverage: `/buy-orders/item` is now promoted to implemented based on a real inspect-link happy-path, while `/buy-orders/similar-orders` now documents browser-observed `limit` and advanced-expression semantics without over-claiming SDK support for the raw expression AST
 
 ## [0.6.0] - 2026-03-08
 

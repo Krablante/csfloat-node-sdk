@@ -72,6 +72,8 @@ export type {
   CsfloatInferredLocation,
   CsfloatInventoryItem,
   CsfloatInventoryResponse,
+  CsfloatInspectBuyOrder,
+  CsfloatInspectBuyOrdersResponse,
   CsfloatItem,
   CsfloatGenerateLoadoutRecommendationsRequest,
   CsfloatGenerateLoadoutRecommendationsResponse,

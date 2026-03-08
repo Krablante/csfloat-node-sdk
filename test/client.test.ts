@@ -100,6 +100,28 @@ describe("CsfloatHttpClient", () => {
     });
   });
 
+  it("supports query params on POST requests when a route needs them", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({ apiKey: "secret" });
+
+    await client.post("buy-orders/similar-orders", { market_hash_name: "AK-47 | Redline (Field-Tested)" }, {
+      limit: 10,
+    });
+
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(String(url)).toContain("buy-orders/similar-orders?limit=10");
+    expect(init).toMatchObject({
+      method: "POST",
+    });
+  });
+
   it("classifies account-gated responses", async () => {
     const fetchMock = vi.fn(async () =>
       new Response(

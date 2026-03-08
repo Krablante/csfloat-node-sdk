@@ -688,6 +688,14 @@ export interface CsfloatBuyOrdersResponse {
   count?: number;
 }
 
+export interface CsfloatInspectBuyOrder {
+  expression?: string;
+  qty?: number;
+  price?: number;
+}
+
+export type CsfloatInspectBuyOrdersResponse = CsfloatInspectBuyOrder[];
+
 export interface CsfloatSimilarBuyOrder {
   market_hash_name?: string;
   qty?: number;

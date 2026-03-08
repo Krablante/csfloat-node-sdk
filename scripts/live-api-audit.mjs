@@ -168,6 +168,10 @@ async function main() {
   const steamId =
     config.preferredSteamId ||
     (me.ok && me.data && me.data.user ? String(me.data.user.steam_id) : null);
+  const tradesPreview = await request("GET", "/me/trades?limit=1");
+  const firstTrade = tradesPreview.ok && tradesPreview.data?.trades?.[0]
+    ? tradesPreview.data.trades[0]
+    : null;
   const offers = await request("GET", "/me/offers?limit=1");
   const firstOffer = offers.ok && offers.data?.offers?.[0] ? offers.data.offers[0] : null;
   const offerId = firstOffer ? String(firstOffer.id) : null;
@@ -176,6 +180,10 @@ async function main() {
   const firstListing = listings.ok && listings.data?.data?.[0] ? listings.data.data[0] : null;
   const listingId = firstListing ? String(firstListing.id) : null;
   const marketHashName = firstListing?.item?.market_hash_name || null;
+  const inspectLink =
+    firstTrade?.contract?.item?.inspect_link ||
+    firstListing?.item?.inspect_link ||
+    null;
   const loadouts =
     steamId === null
       ? null
@@ -205,6 +213,7 @@ async function main() {
     ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/notifications/timeline"],
     ["GET", "/me/buy-orders?limit=1"],
+    ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),
     ["GET", "/me/auto-bids"],
     ["GET", "/me/mobile/status"],
     ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),

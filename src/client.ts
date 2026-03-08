@@ -226,8 +226,12 @@ export class CsfloatHttpClient {
     );
   }
 
-  async post<T>(path: string, body: unknown): Promise<T> {
-    return this.request<T>("POST", path, { body });
+  async post<T>(path: string, body: unknown, params?: QueryParams): Promise<T> {
+    return this.request<T>(
+      "POST",
+      path,
+      params === undefined ? { body } : { body, params },
+    );
   }
 
   async patch<T>(path: string, body: unknown): Promise<T> {

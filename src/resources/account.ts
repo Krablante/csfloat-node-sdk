@@ -7,6 +7,7 @@ import type {
   CsfloatBuyOrder,
   CsfloatBuyOrdersResponse,
   CsfloatCursorParams,
+  CsfloatInspectBuyOrdersResponse,
   CsfloatListingsResponse,
   CreateBuyOrderRequest,
   CsfloatMessageResponse,
@@ -137,12 +138,27 @@ export class AccountResource {
     return this.client.get<CsfloatBuyOrdersResponse>("me/buy-orders", params as QueryParams);
   }
 
+  getBuyOrdersForInspect(
+    inspectLink: string,
+    limit = 3,
+  ): Promise<CsfloatInspectBuyOrdersResponse> {
+    return this.client.get<CsfloatInspectBuyOrdersResponse>(
+      "buy-orders/item",
+      {
+        url: inspectLink,
+        limit,
+      },
+    );
+  }
+
   getSimilarBuyOrders(
     request: SimilarBuyOrdersRequest,
+    limit?: number,
   ): Promise<CsfloatSimilarBuyOrdersResponse> {
     return this.client.post<CsfloatSimilarBuyOrdersResponse>(
       "buy-orders/similar-orders",
       request,
+      limit === undefined ? undefined : { limit },
     );
   }
 

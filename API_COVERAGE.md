@@ -52,7 +52,7 @@ Status legend:
 | `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
 | `/buy-orders/{id}` | `PATCH` | implemented | live | confirmed happy-path update with body `{ max_price }` |
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
-| `/buy-orders/similar-orders` | `POST` | implemented | browser bundle + live | safe insight route returning `{ data:[{ market_hash_name, qty, price }] }` for a supplied `market_hash_name` |
+| `/buy-orders/similar-orders` | `POST` | implemented | browser bundle + live | safe insight route returning `{ data:[{ market_hash_name, qty, price }] }`; browser service also passes `limit` as a query param and supports both `{ market_hash_name }` and `{ expression }` bodies, though only the simple `market_hash_name` path is live-validated in the SDK today |
 | `/me/auto-bids` | `GET` | implemented | live + public wrapper source | authenticated auto-bids list |
 | `/me/auto-bids/{id}` | `DELETE` | implemented | browser-auth network + live | confirmed happy-path delete with `{"message":"deleted auto-bid"}` |
 | `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
@@ -92,12 +92,12 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
 | `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
-| `/buy-orders/item` | `GET` | discovered | browser bundle + live invalid probe | currently rejects plain `market_hash_name` with `422 invalid inspect link`; likely inspect-link oriented route |
+| `/buy-orders/item` | `GET` | implemented | browser bundle + live | inspect-link oriented route using query params `{ url:<inspectLink>, limit }`; live happy-path returned an array like `[{ expression, qty, price }]` |
 | `/buy-orders/matching-items/floatdb` | `POST` | discovered | browser bundle + live invalid probe | route exists but currently demands float-expression semantics; plain `market_hash_name` returned `condition and rules are required for an expression` |
 | `/trades/{id}/cannot-deliver` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely seller-side failure path, not executed happy-path due risk |
 | `/trades/{id}/dispute` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; not exercised on a real trade |
-| `/trades/{id}/received` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely buyer-side receipt acknowledgement path |
-| `/trades/bulk/received` | `POST` | discovered | browser bundle + live invalid probe | invalid `trade_ids:["0"]` returned `400 invalid trade ids specified`; likely buyer-side bulk receipt acknowledgement path |
+| `/trades/{id}/received` | `POST` | discovered | browser bundle + live | real pending buyer-side trade returned `400 missing steam offer ID`; route and state gating are clear, but no successful live sample yet |
+| `/trades/bulk/received` | `POST` | discovered | browser bundle + live | bundle-confirmed buyer flow; invalid `trade_ids:["0"]` returned `400 invalid trade ids specified`, and a real pending buyer-side trade returned `400 missing steam offer ID`; no successful live sample yet |
 | `/trades/{id}/rollback` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
 | `/trades/{id}/manual-verification` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
 | `/trades/{id}/rollback-verify` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |

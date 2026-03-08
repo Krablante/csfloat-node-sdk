@@ -259,16 +259,33 @@ describe("AccountResource", () => {
     expect(get).toHaveBeenCalledWith("me/buy-orders", {});
   });
 
+  it("requests buy orders for an inspect link", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getBuyOrdersForInspect(
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S76561198771627775A49574966744D14186480269805151996",
+      3,
+    );
+
+    expect(get).toHaveBeenCalledWith("buy-orders/item", {
+      url: "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S76561198771627775A49574966744D14186480269805151996",
+      limit: 3,
+    });
+  });
+
   it("requests similar buy orders", async () => {
     const post = vi.fn(async (_path: string, _body?: unknown) => null);
     const resource = new AccountResource({ post } as never);
 
     await resource.getSimilarBuyOrders({
       market_hash_name: "AK-47 | Redline (Field-Tested)",
-    });
+    }, 10);
 
     expect(post).toHaveBeenCalledWith("buy-orders/similar-orders", {
       market_hash_name: "AK-47 | Redline (Field-Tested)",
+    }, {
+      limit: 10,
     });
   });
 
