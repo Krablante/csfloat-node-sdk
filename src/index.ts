@@ -122,6 +122,7 @@ export type {
   CsfloatMobileStatusResponse,
   CsfloatNotification,
   CsfloatNotificationsResponse,
+  CsfloatNotificationsParams,
   CsfloatNotaryMetaResponse,
   CsfloatNotaryRule,
   CsfloatNotaryTokenResponse,

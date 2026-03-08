@@ -157,6 +157,9 @@ const recentListedWatchlist = await sdk.account.getWatchlist({
   state: "listed",
   sort_by: "most_recent",
 });
+const olderNotifications = await sdk.account.getNotifications({
+  cursor: "949215210613375538",
+});
 const publicStall = await sdk.stall.getStall(me.user.steam_id, {
   limit: 20,
   sort_by: "lowest_price",
@@ -203,6 +206,7 @@ console.log(
   trades.count,
   sellerTrades.count,
   steamStatusPing.message,
+  olderNotifications.data.length,
   publicStall.total_count,
   inventory.length,
   listings.data.length,
@@ -219,6 +223,8 @@ console.log(
 ```
 
 `account.syncSteamNewOffer()` and `account.syncSteamOffers()` are intentionally exposed as low-level trade sync helpers. The request shapes and `200 {"message":"successfully updated offer state"}` responses are live-confirmed, but exact side effects are still treated conservatively in the docs.
+
+`account.getNotifications()` now accepts the live-confirmed `cursor` pagination param. Current live behavior on 2026-03-08 suggests `limit` is ignored by the backend, so the SDK intentionally keeps this surface cursor-only for now.
 
 `stall.getStall()` now accepts the same practical listing-style query params currently confirmed on public stall pages, including `sort_by`, `filter`, `type`, and `min_ref_qty`.
 

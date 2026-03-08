@@ -17,6 +17,7 @@ import type {
   CsfloatMeResponse,
   CsfloatMobileStatusResponse,
   CsfloatNotificationsResponse,
+  CsfloatNotificationsParams,
   CsfloatNotaryTokenResponse,
   CsfloatOffer,
   CsfloatOffersResponse,
@@ -164,8 +165,13 @@ export class AccountResource {
     return this.client.get<CsfloatOffersResponse>("me/offers-timeline", params as QueryParams);
   }
 
-  getNotifications(): Promise<CsfloatNotificationsResponse> {
-    return this.client.get<CsfloatNotificationsResponse>("me/notifications/timeline");
+  getNotifications(
+    params: CsfloatNotificationsParams = {},
+  ): Promise<CsfloatNotificationsResponse> {
+    return this.client.get<CsfloatNotificationsResponse>(
+      "me/notifications/timeline",
+      params as QueryParams,
+    );
   }
 
   getTransactions(params: CsfloatPageParams = {}): Promise<CsfloatTransactionsResponse> {

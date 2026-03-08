@@ -203,6 +203,11 @@ async function main() {
     watchlistPreview.ok && Array.isArray(watchlistPreview.data?.data)
       ? watchlistPreview.data.data
       : [];
+  const notificationsPreview = await request("GET", "/me/notifications/timeline");
+  const notificationsCursor =
+    notificationsPreview.ok && typeof notificationsPreview.data?.cursor === "string"
+      ? notificationsPreview.data.cursor
+      : null;
   const firstWatchlistStickerId =
     watchlistItems.find((row) => Array.isArray(row.item?.stickers) && row.item.stickers.length > 0)
       ?.item?.stickers?.[0]?.stickerId ?? null;
@@ -285,6 +290,9 @@ async function main() {
       ? [["GET", `/me/watchlist?limit=1&keychains=${watchlistKeychainFilterQuery}`]]
       : []),
     ["GET", "/me/notifications/timeline"],
+    ...(notificationsCursor
+      ? [["GET", `/me/notifications/timeline?cursor=${encodeURIComponent(notificationsCursor)}`]]
+      : []),
     ["GET", "/me/buy-orders?limit=1"],
     ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),
     ["GET", "/me/auto-bids"],

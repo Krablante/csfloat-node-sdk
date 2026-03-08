@@ -278,12 +278,14 @@ describe("AccountResource", () => {
   });
 
   it("requests notifications timeline", async () => {
-    const get = vi.fn(async (_path: string) => null);
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);
 
-    await resource.getNotifications();
+    await resource.getNotifications({ cursor: "949215210613375538" });
 
-    expect(get).toHaveBeenCalledWith("me/notifications/timeline");
+    expect(get).toHaveBeenCalledWith("me/notifications/timeline", {
+      cursor: "949215210613375538",
+    });
   });
 
   it("requests transactions with paging params", async () => {

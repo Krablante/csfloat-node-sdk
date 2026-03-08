@@ -54,7 +54,7 @@ Status legend:
 | `/offers/{id}/history` | `GET` | implemented | live + public wrapper source | historical thread for the offer chain; confirmed with valid declined/counter-offer ids |
 | `/offers/{id}/counter-offer` | `POST` | implemented | live | confirmed happy-path on seller account with body `{ price }` |
 | `/offers/{id}` | `DELETE` | implemented | live | confirmed happy-path cancellation with response `offer canceled`; exact actor/state semantics may vary by thread state |
-| `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline |
+| `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline; current live validation confirms cursor-based pagination while `limit` appears ignored |
 | `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
 | `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
 | `/buy-orders/{id}` | `PATCH` | implemented | live | confirmed happy-path update with body `{ max_price }` |
@@ -332,6 +332,7 @@ Live-confirmed search behaviors:
 96. direct public live probes on 2026-03-08 confirmed that `GET /users/{id}/stall` accepts meaningful listing-style params beyond `limit` and `cursor`: `sort_by=lowest_price|highest_discount|most_recent` all changed the first-page ordering, `filter=unique` narrowed the public stall from `263` to `164` rows, `type=buy_now` returned the active rows while `type=auction` returned an empty set on the current stall, and `min_ref_qty=20` narrowed the total count from `263` to `244`
 97. the public stall route also accepts attachment-style listing filters: on 2026-03-08, `keychains=[{"i":83}]` returned the matching `Souvenir Zeus x27 | Charged Up (Battle-Scarred)` row, while `filter=sticker_combos` returned `200` with an empty set on the current stall; invalid `filter=bogus` hard-failed with `400 invalid filter value`, while invalid `sort_by=bogus` returned `404 the given resource could not be found`
 98. unlike `/listings` and `/me/watchlist`, the current public stall route is not capped at `50` rows per page: on 2026-03-08, `limit=51` returned `200`, and the live audit already uses `GET /users/{id}/stall?limit=500&type=buy_now` successfully for mutation-safe inventory reconciliation
+99. `GET /me/notifications/timeline` currently supports cursor pagination but not meaningful limit control: on 2026-03-08, replaying the response cursor returned an older page with a different first `notification_id`, while both `limit=1` and `limit=5` returned the same `42` rows as the default request; `cursor=0` simply fell back to the current first page rather than failing validation
 
 ## Listing Creation Surface
 

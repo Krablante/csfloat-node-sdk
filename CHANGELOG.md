@@ -23,6 +23,7 @@ The format is based on Keep a Changelog.
 13. `meta.inspectItem()` for the live-confirmed external Float Checker route `GET https://api.csfloat.com/?url=<inspectLink>`
 14. `account.syncSteamNewOffer()` and `account.syncSteamOffers()` for the browser-confirmed low-level trade sync routes under `/trades/steam-status/*`
 15. `CsfloatStallParams` and expanded `stall.getStall()` typing for the live-confirmed listing-style public stall query surface
+16. cursor-aware `account.getNotifications({ cursor })` support for the live-confirmed notifications timeline pagination surface
 
 ### Changed
 
@@ -43,6 +44,7 @@ The format is based on Keep a Changelog.
 15. promoted `/trades/steam-status/new-offer` and `/trades/steam-status/offer` from discovered-only to implemented as explicitly low-level sync helpers after reconfirming their safe request shapes and stable `200 {"message":"successfully updated offer state"}` responses on 2026-03-08
 16. documented that the `/sell` and `/stall/me` browser-auth pages currently stay on already-covered bootstrap routes rather than exposing additional safe backend endpoints
 17. expanded the public stall docs after confirming meaningful `sort_by`, `filter`, `type`, `min_ref_qty`, and `keychains` behavior on `/users/{id}/stall`, plus the current absence of a `limit=50` ceiling on that route
+18. clarified notifications timeline pagination semantics: `cursor` is live-meaningful, while `limit` currently appears to be ignored and therefore remains intentionally unexposed in the typed SDK surface
 
 ## [0.7.0] - 2026-03-08
 
