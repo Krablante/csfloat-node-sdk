@@ -252,6 +252,7 @@ async function main() {
     ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/watchlist?limit=1&state=listed"],
     ["GET", "/me/watchlist?limit=1&sort_by=most_recent"],
+    ["GET", "/me/watchlist?limit=1&min_ref_qty=20"],
     ...(watchlistStickerFilterQuery
       ? [["GET", `/me/watchlist?limit=1&stickers=${watchlistStickerFilterQuery}`]]
       : []),
@@ -337,8 +338,15 @@ async function main() {
     ["GET", "/listings?limit=1&keychain_highlight_reel=1"],
     ["GET", "/listings?limit=1&def_index=507&paint_index=38&min_fade=99&max_fade=100"],
     ["GET", "/listings?limit=1&min_blue=90&max_blue=100"],
+    ["GET", "/listings?limit=1&min_ref_qty=20"],
     ...(stickerFilterQuery ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}`]] : []),
     ...(keychainFilterQuery ? [["GET", `/listings?limit=1&keychains=${keychainFilterQuery}`]] : []),
+    ...(stickerFilterQuery
+      ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}&sticker_option=skins`]]
+      : []),
+    ...(stickerFilterQuery
+      ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}&sticker_option=packages`]]
+      : []),
     // filter enum values — live-confirmed; unauthenticated requests return 403 (not 401)
     ["GET", "/listings?limit=1&filter=sticker_combos"],
     ["GET", "/listings?limit=1&filter=unique"],

@@ -27,6 +27,7 @@ The format is based on Keep a Changelog.
 4. widened `account.getWatchlist()` from `cursor|limit` only to the currently confirmed listing-style watchlist filter surface, including typed `state`
 5. documented the bundle-observed `stickers` / `keychains` query encoding and then promoted `sticker_option` from docs-only to typed support after live paired-filter probes proved meaningful behavior
 6. documented that `/listings` and `/me/watchlist` currently hard-cap `limit` at `50`, and that invalid `min_ref_qty` values hard-fail with schema conversion errors
+7. extended `audit:live` again so the repeatable market/watchlist checks now cover `min_ref_qty` and sticker-filtered `sticker_option=skins|packages` probes
 6. expanded `audit:live` coverage again to keep the live-confirmed JSON `stickers` / `keychains` market filters on the repeatable regression path
 7. documented and audited the sticker- and keychain-filtered watchlist path after confirming that `/me/watchlist?stickers=[...]` and `/me/watchlist?keychains=[...]` reuse the same JSON attachment contract
 
