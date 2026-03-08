@@ -15,6 +15,28 @@ describe("LoadoutResource", () => {
     );
   });
 
+  it("creates a loadout with a bearer token", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const derive = vi.fn(() => ({ post }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.createLoadout("abc123", {
+      name: "SDK Temp",
+      ct: { is_filled: false },
+      t: { is_filled: false },
+    });
+
+    expect(derive).toHaveBeenCalledWith({
+      apiKey: "Bearer abc123",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+    expect(post).toHaveBeenCalledWith("loadout", {
+      name: "SDK Temp",
+      ct: { is_filled: false },
+      t: { is_filled: false },
+    });
+  });
+
   it("requests public user loadouts", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new LoadoutResource({ get } as never);
@@ -61,6 +83,28 @@ describe("LoadoutResource", () => {
     });
   });
 
+  it("updates a loadout with a bearer token", async () => {
+    const put = vi.fn(async (_path: string, _body: unknown) => null);
+    const derive = vi.fn(() => ({ put }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.updateLoadout("abc123", "154023336572224457", {
+      name: "SDK Updated",
+      ct: { is_filled: false },
+      t: { is_filled: false },
+    });
+
+    expect(derive).toHaveBeenCalledWith({
+      apiKey: "Bearer abc123",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+    expect(put).toHaveBeenCalledWith("loadout/154023336572224457", {
+      name: "SDK Updated",
+      ct: { is_filled: false },
+      t: { is_filled: false },
+    });
+  });
+
   it("favorites a loadout with a bearer token", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const derive = vi.fn(() => ({ post }));
@@ -87,5 +131,19 @@ describe("LoadoutResource", () => {
       baseUrl: "https://loadout-api.csfloat.com/v1",
     });
     expect(del).toHaveBeenCalledWith("loadout/154023336572224457/favorite");
+  });
+
+  it("deletes a loadout with a bearer token", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const derive = vi.fn(() => ({ delete: del }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.deleteLoadout("abc123", "154023336572224457");
+
+    expect(derive).toHaveBeenCalledWith({
+      apiKey: "Bearer abc123",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+    expect(del).toHaveBeenCalledWith("loadout/154023336572224457");
   });
 });

@@ -283,6 +283,11 @@ export interface CsfloatLocationResponse {
 
 export interface CsfloatLoadoutItemRef {
   def_index?: number;
+  paint_index?: number;
+  wear_index?: number;
+  isLocked?: boolean;
+  stat_trak?: boolean;
+  stickers?: number[];
 }
 
 export interface CsfloatLoadoutSide {
@@ -330,6 +335,18 @@ export interface CsfloatLoadoutFavoriteResponse {
     social_stats?: CsfloatLoadoutSocialStats;
   };
   message?: string;
+}
+
+export interface CsfloatCreateLoadoutRequest {
+  name: string;
+  ct: CsfloatLoadoutSide;
+  t: CsfloatLoadoutSide;
+}
+
+export interface CsfloatUpdateLoadoutRequest {
+  name: string;
+  ct: CsfloatLoadoutSide;
+  t: CsfloatLoadoutSide;
 }
 
 export interface CsfloatLoadoutRecommendationSkinItem {

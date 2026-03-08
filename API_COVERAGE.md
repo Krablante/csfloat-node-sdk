@@ -29,6 +29,9 @@ Status legend:
 | `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | implemented | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
 | `https://loadout-api.csfloat.com/v1/loadout/{id}` | `GET` | implemented | browser-auth network + live | public loadout detail route; returns `{ loadout: ... }` |
 | `https://loadout-api.csfloat.com/v1/loadout` | `GET` | implemented | bundle semantics + live | public/global loadout list route; confirmed `sort_by=created_at|favorites|random`; currently observed as `{ loadouts: [...] }` |
+| `https://loadout-api.csfloat.com/v1/loadout` | `POST` | implemented | browser-auth network + live | requires `Authorization: Bearer <recommender-token>`; confirmed `201` create with body `{ name, ct, t }` and response `{ loadout: ... }` |
+| `https://loadout-api.csfloat.com/v1/loadout/{id}` | `PUT` | implemented | browser-auth network + live | requires `Authorization: Bearer <recommender-token>`; confirmed `200` update with body `{ name, ct, t }` and response `{ loadout: ... }` |
+| `https://loadout-api.csfloat.com/v1/loadout/{id}` | `DELETE` | implemented | browser-auth network + live | requires `Authorization: Bearer <recommender-token>`; confirmed `200 {"message":"Loadout deleted successfully"}` |
 | `https://loadout-api.csfloat.com/v1/recommend` | `POST` | implemented | browser-auth network + live | requires `Authorization: Bearer <recommender-token>` from `/me/recommender-token`; confirmed skin-only request shape `{ items:[{ type:\"skin\", def_index, paint_index }], count, def_whitelist?, def_blacklist? }` and response `{ count, results:[{ def_index, paint_index, score }] }` |
 | `https://loadout-api.csfloat.com/v1/loadout/{id}/favorite` | `POST` | implemented | bundle semantics + live | requires `Authorization: Bearer <recommender-token>`; returns `{"loadout":{"social_stats":{"favorites":N}},"message":"Loadout added to favorites"}` |
 | `https://loadout-api.csfloat.com/v1/loadout/{id}/favorite` | `DELETE` | implemented | bundle semantics + live | requires `Authorization: Bearer <recommender-token>`; returns `{"loadout":{"social_stats":{"favorites":N}},"message":"Loadout removed from favorites"}` |
@@ -252,6 +255,11 @@ Live-confirmed search behaviors:
 55. `POST https://loadout-api.csfloat.com/v1/loadout/{id}/favorite` and `DELETE https://loadout-api.csfloat.com/v1/loadout/{id}/favorite` both require the same recommender bearer token family; a live toggle on 2026-03-08 returned `{"message":"Loadout added to favorites"}` and `{"message":"Loadout removed from favorites"}`
 56. `mode` and `page` on `GET /v1/loadout` currently look ignored in public probes: `mode=created`, `mode=favorites`, `mode=bogus`, `page=0`, and `page=1` all returned the same first-page ids during the 2026-03-08 check
 57. invalid `sort_by` on `GET /v1/loadout` hard-fails with `400 {"error":"sort_by must be \"favorites\", \"random\", or \"created_at\""}`; older UI-style `date-desc` is not accepted by the companion API
+58. `POST https://loadout-api.csfloat.com/v1/loadout` is a stable bearer-token create route; a live request on 2026-03-08 with `{ "name":"SDK Temp ...", "ct":{ "is_filled": false }, "t":{ "is_filled": false } }` returned `201` and a full `{ "loadout": ... }` payload
+59. `PUT https://loadout-api.csfloat.com/v1/loadout/{id}` is the stable update route; a live request on 2026-03-08 with `{ "name":"... Updated", "ct":{ "is_filled": false }, "t":{ "is_filled": false } }` returned `200` and persisted the renamed loadout
+60. `DELETE https://loadout-api.csfloat.com/v1/loadout/{id}` is the stable delete route; a live request on 2026-03-08 returned `200 {"message":"Loadout deleted successfully"}`
+61. negative method checks on the companion API: `PUT /v1/loadout` and `PATCH /v1/loadout/{id}` both returned `405`, so create/update should be modeled only as `POST /v1/loadout` and `PUT /v1/loadout/{id}`
+62. live loadout item refs can include more than `def_index`: current public list/detail payloads also expose `paint_index`, `wear_index`, `isLocked`, `stat_trak`, and `stickers`
 
 ## Listing Creation Surface
 
