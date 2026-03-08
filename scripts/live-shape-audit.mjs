@@ -148,6 +148,7 @@ async function main() {
   const routes = {
     schema: "/schema",
     schema_browse_stickers: "/schema/browse?type=stickers",
+    schema_item_screenshot: "/schema/images/screenshot?def_index=7&paint_index=490&min_float=0.15&max_float=0.38",
     exchange_rates: "/meta/exchange-rates",
     app_meta: "/meta/app",
     location: "/meta/location",

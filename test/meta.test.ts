@@ -50,6 +50,25 @@ describe("MetaResource", () => {
     });
   });
 
+  it("requests an example screenshot for a schema item", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new MetaResource({ get } as never);
+
+    await resource.getItemExampleScreenshot({
+      def_index: 7,
+      paint_index: 490,
+      min_float: 0.15,
+      max_float: 0.38,
+    });
+
+    expect(get).toHaveBeenCalledWith("schema/images/screenshot", {
+      def_index: 7,
+      paint_index: 490,
+      min_float: 0.15,
+      max_float: 0.38,
+    });
+  });
+
   it("requests notary meta", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new MetaResource({ get } as never);

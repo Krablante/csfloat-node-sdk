@@ -197,6 +197,7 @@ async function main() {
   const knownRoutes = [
     ["GET", "/schema"],
     ["GET", "/schema/browse?type=stickers"],
+    ["GET", "/schema/images/screenshot?def_index=7&paint_index=490&min_float=0.15&max_float=0.38"],
     ["GET", "/meta/exchange-rates"],
     ["GET", "/meta/app"],
     ["GET", "/meta/location"],
@@ -247,6 +248,7 @@ async function main() {
   const publicRoutes = [
     ["GET", "/schema"],
     ["GET", "/schema/browse?type=stickers"],
+    ["GET", "/schema/images/screenshot?def_index=7&paint_index=490&min_float=0.15&max_float=0.38"],
     ["GET", "/meta/exchange-rates"],
     ["GET", "/meta/app"],
     ["GET", "/meta/location"],

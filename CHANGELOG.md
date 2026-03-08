@@ -13,6 +13,7 @@ The format is based on Keep a Changelog.
 3. `account.getPendingDeposits()` for the live-confirmed `GET /me/payments/pending-deposits` route
 4. `listings.createBulkListings()`, `listings.updateBulkListings()`, `listings.deleteBulkListings()`, and `listings.unlistBulkListings()` for the browser-confirmed bulk listing layer under `/listings/bulk-*`
 5. `account.createGsInspectToken()` for the live-confirmed `POST /me/gs-inspect-token` companion-token route
+6. `meta.getItemExampleScreenshot()` for the live-confirmed authenticated `GET /schema/images/screenshot` route
 
 ### Changed
 

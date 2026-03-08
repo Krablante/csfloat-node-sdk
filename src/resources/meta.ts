@@ -5,8 +5,11 @@ import type {
   CsfloatLocationResponse,
   CsfloatNotaryMetaResponse,
   CsfloatSchemaBrowseResponse,
+  CsfloatSchemaScreenshotParams,
+  CsfloatSchemaScreenshotResponse,
   CsfloatSchemaBrowseType,
   CsfloatSchemaResponse,
+  QueryParams,
 } from "../types.js";
 
 export class MetaResource {
@@ -30,6 +33,15 @@ export class MetaResource {
 
   getSchemaBrowse(type: CsfloatSchemaBrowseType): Promise<CsfloatSchemaBrowseResponse> {
     return this.client.get<CsfloatSchemaBrowseResponse>("schema/browse", { type });
+  }
+
+  getItemExampleScreenshot(
+    params: CsfloatSchemaScreenshotParams,
+  ): Promise<CsfloatSchemaScreenshotResponse> {
+    return this.client.get<CsfloatSchemaScreenshotResponse>(
+      "schema/images/screenshot",
+      params as unknown as QueryParams,
+    );
   }
 
   getNotary(): Promise<CsfloatNotaryMetaResponse> {

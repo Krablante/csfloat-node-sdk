@@ -28,6 +28,7 @@ Status legend:
 | `/history/{market_hash_name}/sales` | `GET` | implemented | live | sales history |
 | `/schema` | `GET` | implemented | live + public wrapper source | public item schema; both `/schema` and `/schema/` resolve |
 | `/schema/browse` | `GET` | implemented | browser bundle + live | public grouped browse route; current live validation confirmed `type=stickers` and bundle uses lowercased category labels such as `stickers`, `keychains`, and `music kits` |
+| `/schema/images/screenshot` | `GET` | implemented | browser bundle + live | authenticated example-screenshot route; current live sample returned `{ id, sides:{ playside:{path}, backside:{path} } }` for a schema-targeted item query |
 | `/meta/exchange-rates` | `GET` | implemented | live + public wrapper source | public exchange rate map |
 | `/meta/app` | `GET` | implemented | browser bundle + live | app bootstrap metadata; current live response returned `{ min_required_version: "9.0.0" }` |
 | `/meta/location` | `GET` | implemented | live + public wrapper source | public inferred location data |
@@ -311,6 +312,8 @@ Live-confirmed search behaviors:
 77. `PATCH /listings/bulk-modify` failure modes are already useful for validation: `{ contract_id:"0", price:3 }` returned `500 "failed to fetch listing"`, while `{ contract_id:"0", price:1 }` failed earlier at the server price floor with `422 "minimum allowed price is $0.03 USD"`
 78. `PATCH /listings/bulk-delist` is live and reversible: `{ contract_ids:[...] }` returned `200 {"message":"contracts delisted"}` on the real two-listing batch, and `{ contract_ids:["0"] }` returned `500 "failed to delist contracts"`
 79. `POST /me/gs-inspect-token` is live and returns the same token-style contract as other companion flows: `{ token, expires_at }`; the current browser bundle uses it to authorize external `gs-api.csfloat.com/api/v1/players/equip*` requests, while the SDK intentionally stops at the CSFloat-side token helper for now
+80. `GET /schema/images/screenshot` is live behind authentication: on 2026-03-08, `def_index=7&paint_index=490&min_float=0.15&max_float=0.38` returned `{ id:"1305328935500910839", sides:{ playside:{ path:"m/.../playside.png" }, backside:{ path:"m/.../backside.png" } } }`, while the same request without auth returned `401 code=27 authorization not set`
+81. the browser screenshot flow also has an external generator at `https://s-api.csfloat.com/api/v1/public/screenshot?sig=...&url=...`, but the SDK currently only exposes the CSFloat-side `/schema/images/screenshot` helper because the external path depends on item-level screenshot signatures and is better kept as a documented companion detail for now
 
 ## Listing Creation Surface
 

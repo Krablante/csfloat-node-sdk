@@ -595,6 +595,29 @@ export interface CsfloatSchemaBrowseResponse {
   data: CsfloatSchemaBrowseGroup[];
 }
 
+export interface CsfloatSchemaScreenshotParams {
+  def_index: number;
+  paint_index: number;
+  min_float?: number;
+  max_float?: number;
+  stattrak?: boolean;
+  allow_stickers?: boolean;
+}
+
+export interface CsfloatSchemaScreenshotSide {
+  path?: string;
+  [key: string]: unknown;
+}
+
+export interface CsfloatSchemaScreenshotResponse {
+  id?: string;
+  sides?: {
+    playside?: CsfloatSchemaScreenshotSide;
+    backside?: CsfloatSchemaScreenshotSide;
+  };
+  [key: string]: unknown;
+}
+
 export interface CsfloatTradeSteamOffer {
   id?: string;
   state?: number | string;
