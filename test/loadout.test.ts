@@ -7,11 +7,23 @@ describe("LoadoutResource", () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new LoadoutResource({ get } as never);
 
-    await resource.getLoadouts({ sort_by: "favorites" });
+    await resource.getLoadouts({
+      sort_by: "favorites",
+      limit: 20,
+      months: 1,
+      def_index: 7,
+      paint_index: 490,
+    });
 
     expect(get).toHaveBeenCalledWith(
       "https://loadout-api.csfloat.com/v1/loadout",
-      { sort_by: "favorites" },
+      {
+        sort_by: "favorites",
+        limit: 20,
+        months: 1,
+        def_index: 7,
+        paint_index: 490,
+      },
     );
   });
 
@@ -59,6 +71,20 @@ describe("LoadoutResource", () => {
     );
   });
 
+  it("requests bearer-token favorite loadouts", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const derive = vi.fn(() => ({ get }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.getFavoriteLoadouts("abc123");
+
+    expect(derive).toHaveBeenCalledWith({
+      apiKey: "Bearer abc123",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+    expect(get).toHaveBeenCalledWith("user/favorites");
+  });
+
   it("requests bearer-token recommendations", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const derive = vi.fn(() => ({ post }));
@@ -80,6 +106,52 @@ describe("LoadoutResource", () => {
       count: 5,
       def_whitelist: [7, 9, 13],
       def_blacklist: [],
+    });
+  });
+
+  it("requests bearer-token sticker recommendations", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const derive = vi.fn(() => ({ post }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.recommendStickers("abc123", {
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 10,
+      collection_whitelist: ["Holo"],
+    });
+
+    expect(derive).toHaveBeenCalledWith({
+      apiKey: "Bearer abc123",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+    expect(post).toHaveBeenCalledWith("recommend/stickers", {
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 10,
+      collection_whitelist: ["Holo"],
+    });
+  });
+
+  it("requests bearer-token generated loadout recommendations", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const derive = vi.fn(() => ({ post }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.generateRecommendations("abc123", {
+      items: [{ type: "skin", def_index: 7, paint_index: 490, wear_index: 2 }],
+      def_indexes: [7, 13, 39, 9],
+      faction: "t",
+      max_price: 3000,
+    });
+
+    expect(derive).toHaveBeenCalledWith({
+      apiKey: "Bearer abc123",
+      baseUrl: "https://loadout-api.csfloat.com/v1",
+    });
+    expect(post).toHaveBeenCalledWith("generate", {
+      items: [{ type: "skin", def_index: 7, paint_index: 490, wear_index: 2 }],
+      def_indexes: [7, 13, 39, 9],
+      faction: "t",
+      max_price: 3000,
     });
   });
 

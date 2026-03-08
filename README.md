@@ -33,7 +33,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - live-confirmed auction flow pieces: bid history, max-price `placeBid()`, and `deleteAutoBid()` cancellation on cheap auctions
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
-- public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.createLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
+- public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
 - normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage`
 
 ## Coverage Philosophy
@@ -66,7 +66,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | User stall | implemented | `stall.getStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.placeBid()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
-| Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.createLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
+| Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
@@ -138,13 +138,35 @@ const loadouts = await sdk.loadout.getUserLoadouts(me.user.steam_id);
 const recommender = await sdk.account.createRecommenderToken();
 const featuredLoadouts = await sdk.loadout.getLoadouts({
   sort_by: "favorites",
+  limit: 20,
+  months: 1,
 });
+const myFavoriteLoadouts = await sdk.loadout.getFavoriteLoadouts(
+  recommender.token,
+);
 const recommendations = await sdk.loadout.recommend(recommender.token, {
   items: [{ type: "skin", def_index: 7, paint_index: 490 }],
   def_whitelist: [7, 9, 13],
   def_blacklist: [],
   count: 5,
 });
+const stickerRecommendations = await sdk.loadout.recommendStickers(
+  recommender.token,
+  {
+    items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+    collection_whitelist: ["Holo"],
+    count: 10,
+  },
+);
+const generatedLoadout = await sdk.loadout.generateRecommendations(
+  recommender.token,
+  {
+    items: [{ type: "skin", def_index: 7, paint_index: 490, wear_index: 2 }],
+    def_indexes: [7, 13, 39, 9],
+    faction: "t",
+    max_price: 3000,
+  },
+);
 
 console.log(
   rates.data.usd,
@@ -157,7 +179,10 @@ console.log(
   auctionBid.id,
   loadouts.loadouts.length,
   featuredLoadouts.loadouts[0]?.id,
+  myFavoriteLoadouts.favorites.length,
   recommendations.results[0]?.paint_index,
+  stickerRecommendations.results[0]?.sticker_index,
+  generatedLoadout.total_cost,
 );
 ```
 

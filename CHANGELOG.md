@@ -13,6 +13,7 @@ The format is based on Keep a Changelog.
 3. `loadout.recommend()` for bearer-token loadout recommendations via the live-confirmed `POST https://loadout-api.csfloat.com/v1/recommend` companion route
 4. `loadout.getLoadouts()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()` for the live-confirmed public/bearer companion routes under `https://loadout-api.csfloat.com/v1/loadout`
 5. `loadout.createLoadout()`, `loadout.updateLoadout()`, and `loadout.deleteLoadout()` for the live-confirmed bearer-token CRUD routes under `https://loadout-api.csfloat.com/v1/loadout`
+6. `loadout.getFavoriteLoadouts()`, `loadout.recommendStickers()`, and `loadout.generateRecommendations()` for the next live-confirmed companion routes under `https://loadout-api.csfloat.com/v1`
 
 ### Changed
 
@@ -23,6 +24,7 @@ The format is based on Keep a Changelog.
 5. expanded loadout coverage with the bearer-token `recommend` flow, including confirmed skin-only request semantics and optional `def_whitelist` / `def_blacklist` arrays
 6. documented that `GET /v1/loadout` currently honors `sort_by` but appears to ignore `mode` and `page`, while invalid `sort_by` values hard-fail with a validation error
 7. expanded `CsfloatLoadoutItemRef` typing with live-observed fields from list/detail payloads: `paint_index`, `wear_index`, `isLocked`, `stat_trak`, and `stickers`
+8. expanded `CsfloatLoadoutListParams` with browser-observed discover params such as `limit`, `months`, `def_index`, and `paint_index`, while keeping `any_filled` documented as only weakly mapped on current live probes
 
 ## [0.6.0] - 2026-03-08
 

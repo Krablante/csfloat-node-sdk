@@ -327,6 +327,11 @@ export interface CsfloatLoadoutResponse {
 export type CsfloatLoadoutSortBy = "favorites" | "random" | "created_at";
 
 export type CsfloatLoadoutListParams = QueryParams & {
+  any_filled?: boolean;
+  def_index?: number;
+  limit?: number;
+  months?: number;
+  paint_index?: number;
   sort_by?: CsfloatLoadoutSortBy;
 };
 
@@ -335,6 +340,16 @@ export interface CsfloatLoadoutFavoriteResponse {
     social_stats?: CsfloatLoadoutSocialStats;
   };
   message?: string;
+}
+
+export interface CsfloatLoadoutFavoriteEntry {
+  added_at?: string;
+  loadout?: CsfloatLoadout;
+  loadout_id?: string;
+}
+
+export interface CsfloatFavoriteLoadoutsResponse {
+  favorites: CsfloatLoadoutFavoriteEntry[];
 }
 
 export interface CsfloatCreateLoadoutRequest {
@@ -355,6 +370,11 @@ export interface CsfloatLoadoutRecommendationSkinItem {
   paint_index: number;
 }
 
+export interface CsfloatGenerateLoadoutSkinItem
+  extends CsfloatLoadoutRecommendationSkinItem {
+  wear_index?: number;
+}
+
 export interface CsfloatLoadoutRecommendationRequest {
   items: CsfloatLoadoutRecommendationSkinItem[];
   count: number;
@@ -371,6 +391,51 @@ export interface CsfloatLoadoutRecommendationResult {
 export interface CsfloatLoadoutRecommendationResponse {
   count: number;
   results: CsfloatLoadoutRecommendationResult[];
+}
+
+export interface CsfloatStickerRecommendationRequest {
+  items: CsfloatLoadoutRecommendationSkinItem[];
+  collection_whitelist?: string[];
+  count: number;
+}
+
+export interface CsfloatStickerRecommendationResult {
+  score: number;
+  sticker_index: number;
+}
+
+export interface CsfloatStickerRecommendationResponse {
+  count: number;
+  results: CsfloatStickerRecommendationResult[];
+}
+
+export type CsfloatLoadoutFaction = "ct" | "t";
+
+export interface CsfloatGenerateLoadoutRecommendationsRequest {
+  def_indexes: number[];
+  faction: CsfloatLoadoutFaction;
+  items: CsfloatGenerateLoadoutSkinItem[];
+  max_price?: number;
+}
+
+export interface CsfloatGenerateLoadoutSuggestion {
+  def_index: number;
+  locked?: boolean;
+  paint_index: number;
+  price: number;
+  score: number;
+  wear_index?: number;
+}
+
+export interface CsfloatGenerateLoadoutResult {
+  def_index: number;
+  recommendations: CsfloatGenerateLoadoutSuggestion[];
+}
+
+export interface CsfloatGenerateLoadoutRecommendationsResponse {
+  remaining_budget: number;
+  results: CsfloatGenerateLoadoutResult[];
+  total_cost: number;
 }
 
 export interface CsfloatSchemaCollection {
