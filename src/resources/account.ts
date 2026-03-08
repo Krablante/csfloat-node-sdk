@@ -5,6 +5,7 @@ import type {
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
   CsfloatBuyOrder,
+  CsfloatBuyOrdersParams,
   CsfloatBuyOrdersResponse,
   CsfloatExtensionStatusResponse,
   CsfloatGsInspectTokenResponse,
@@ -189,7 +190,7 @@ export class AccountResource {
     return this.client.get<CsfloatAccountStandingResponse>("me/account-standing");
   }
 
-  getBuyOrders(params: CsfloatPageParams = {}): Promise<CsfloatBuyOrdersResponse> {
+  getBuyOrders(params: CsfloatBuyOrdersParams = {}): Promise<CsfloatBuyOrdersResponse> {
     return this.client.get<CsfloatBuyOrdersResponse>("me/buy-orders", params as QueryParams);
   }
 

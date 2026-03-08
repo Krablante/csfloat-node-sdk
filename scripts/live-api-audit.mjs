@@ -299,7 +299,7 @@ async function main() {
     ...(notificationsCursor
       ? [["GET", `/me/notifications/timeline?cursor=${encodeURIComponent(notificationsCursor)}`]]
       : []),
-    ["GET", "/me/buy-orders?limit=1"],
+    ["GET", "/me/buy-orders?page=0&limit=1&order=desc"],
     ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),
     ["GET", "/me/auto-bids"],
     ["GET", "/me/mobile/status"],

@@ -55,7 +55,7 @@ Status legend:
 | `/offers/{id}/counter-offer` | `POST` | implemented | live | confirmed happy-path on seller account with body `{ price }` |
 | `/offers/{id}` | `DELETE` | implemented | live | confirmed happy-path cancellation with response `offer canceled`; exact actor/state semantics may vary by thread state |
 | `/me/notifications/timeline` | `GET` | implemented | live + public wrapper source | authenticated notifications timeline; current live validation confirms cursor-based pagination while `limit` appears ignored |
-| `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }` |
+| `/me/buy-orders` | `GET` | implemented | live + public wrapper source | returns `{ orders, count }`; current live validation confirms `page`, `limit`, and validated `order=asc|desc`, with the current profile UI emitting `order=desc` |
 | `/buy-orders` | `POST` | implemented | live + public wrapper source | confirmed happy-path create using `market_hash_name` + `max_price`; `quantity` defaults to `1` when omitted |
 | `/buy-orders/{id}` | `PATCH` | implemented | live | confirmed happy-path update with body `{ max_price }` |
 | `/buy-orders/{id}` | `DELETE` | implemented | live + public wrapper source | confirmed happy-path delete with `successfully removed the order` |
@@ -335,6 +335,7 @@ Live-confirmed search behaviors:
 99. `GET /me/notifications/timeline` currently supports cursor pagination but not meaningful limit control: on 2026-03-08, replaying the response cursor returned an older page with a different first `notification_id`, while both `limit=1` and `limit=5` returned the same `42` rows as the default request; `cursor=0` simply fell back to the current first page rather than failing validation
 100. `GET /me/transactions` is broader than the original SDK typing suggested: on 2026-03-08, browser-auth discovery and direct API probes confirmed meaningful `order=asc|desc` plus `type=deposit|withdrawal|fine|bid_posted|trade_verified`; invalid `type=bogus` hard-failed with `400 "you are not authorized to filter by this transaction type"`, and invalid `order=bogus` hard-failed with `400 "bogus is not a valid order"`
 101. `GET /me/offers` is currently page-oriented rather than cursor-oriented on the live profile UI: on 2026-03-08, `/profile` used `GET /me/offers?page=0&limit=10`, direct API probes confirmed `page=0` and `page=1` are accepted, `limit=1` narrows the result set, invalid `page=bogus` hard-fails with `400 "failed to deserialize query params"`, and `cursor=abc` appears ignored on the current backend
+102. `GET /me/buy-orders` is also page-oriented on the live profile UI: on 2026-03-08, `/profile` used `GET /me/buy-orders?page=0&limit=10&order=desc`, direct API probes confirmed `order=asc|desc` is accepted, invalid `order=bogus` hard-fails with `400 "\"bogus\" is not a valid order"`, and invalid `page=bogus` hard-fails with `400 schema: error converting value for "page"`; the current accounts had zero active orders, so the actual asc/desc ordering difference remains only weakly mapped
 
 ## Listing Creation Surface
 

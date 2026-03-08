@@ -237,6 +237,8 @@ console.log(
 
 `account.getOffers()` now accepts the current profile-UI pagination shape for `/me/offers`: `page` and `limit` are live-meaningful, while the older `cursor` param currently appears to be ignored by the backend and is only kept as a backward-compatible low-level field in the typed params.
 
+`account.getBuyOrders()` now accepts the current profile-UI page contract for `/me/buy-orders`: `page`, `limit`, and a validated `order=asc|desc`. The current accounts used during 2026-03-08 validation had zero active buy orders, so the ordering effect remains documented conservatively even though the backend validates the field and the UI emits `order=desc`.
+
 `stall.getStall()` now accepts the same practical listing-style query params currently confirmed on public stall pages, including `sort_by`, `filter`, `type`, and `min_ref_qty`.
 
 By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.

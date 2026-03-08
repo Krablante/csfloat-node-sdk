@@ -334,11 +334,12 @@ describe("AccountResource", () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);
 
-    await resource.getBuyOrders({ limit: 5, page: 0 });
+    await resource.getBuyOrders({ limit: 5, page: 0, order: "desc" });
 
     expect(get).toHaveBeenCalledWith("me/buy-orders", {
       limit: 5,
       page: 0,
+      order: "desc",
     });
   });
 

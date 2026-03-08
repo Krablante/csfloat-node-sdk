@@ -11,7 +11,8 @@ export type CsfloatTradeRole = LooseString<"seller" | "buyer">;
 export type CsfloatTradeState = LooseString<
   "queued" | "pending" | "failed" | "verified" | "cancelled"
 >;
-export type CsfloatTransactionOrder = LooseString<"asc" | "desc">;
+export type CsfloatOrder = LooseString<"asc" | "desc">;
+export type CsfloatTransactionOrder = CsfloatOrder;
 export type CsfloatTransactionType = LooseString<
   "deposit" | "withdrawal" | "fine" | "bid_posted" | "trade_verified"
 >;
@@ -47,6 +48,10 @@ export interface CsfloatCursorParams {
 
 export interface CsfloatOffersParams extends CsfloatPageParams {
   cursor?: string;
+}
+
+export interface CsfloatBuyOrdersParams extends CsfloatPageParams {
+  order?: CsfloatOrder;
 }
 
 export interface CsfloatNotificationsParams {
