@@ -567,6 +567,10 @@ export interface BuyNowRequest {
   total_price: number;
 }
 
+export interface PlaceBidRequest {
+  max_price: number;
+}
+
 export interface CsfloatAutoBid {
   id?: string;
   created_at?: string;

@@ -8,10 +8,12 @@ import type {
   CreateListingRequest,
   CreateAuctionListingRequest,
   CreateBuyNowListingRequest,
+  CsfloatAutoBid,
   CsfloatListing,
   CsfloatListingsResponse,
   CsfloatListParams,
   CsfloatMessageResponse,
+  PlaceBidRequest,
   CsfloatPriceListEntry,
   QueryParams,
   UpdateListingRequest,
@@ -67,6 +69,10 @@ export class ListingsResource {
 
   buyNow(request: BuyNowRequest): Promise<CsfloatMessageResponse> {
     return this.client.post<CsfloatMessageResponse>("listings/buy", request);
+  }
+
+  placeBid(listingId: string, request: PlaceBidRequest): Promise<CsfloatAutoBid> {
+    return this.client.post<CsfloatAutoBid>(`listings/${listingId}/bid`, request);
   }
 
   buyListing(contractId: string, totalPrice: number): Promise<CsfloatMessageResponse> {

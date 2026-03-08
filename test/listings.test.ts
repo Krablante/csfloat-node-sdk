@@ -200,4 +200,25 @@ describe("ListingsResource", () => {
       total_price: 3,
     });
   });
+
+  it("places a max-price auction bid", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => ({
+      id: "950549984967789614",
+      created_at: "2026-03-08T00:26:16.781463974Z",
+      max_price: 9,
+      contract_id: "945821907352158315",
+    }));
+    const resource = new ListingsResource({
+      ...client,
+      post,
+    } as never);
+
+    await resource.placeBid("945821907352158315", {
+      max_price: 9,
+    });
+
+    expect(post).toHaveBeenCalledWith("listings/945821907352158315/bid", {
+      max_price: 9,
+    });
+  });
 });

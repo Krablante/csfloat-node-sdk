@@ -30,6 +30,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 - live-confirmed offer flows: create, counter, cancel, decline, history
 - live-confirmed purchase flows: direct `buyNow`, buy-order create/update/delete, seller-side `acceptSale`
+- live-confirmed auction flow pieces: bid history and max-price `placeBid()` on cheap auctions
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
 - public companion `loadout-api.csfloat.com` support via `loadout.getUserLoadouts()` and `loadout.getLoadout()`
@@ -63,7 +64,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()` |
-| Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
+| Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.placeBid()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
 | Loadout API | implemented | `loadout.getUserLoadouts()`, `loadout.getLoadout()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
@@ -124,6 +125,9 @@ const listings = await sdk.listings.getListings({
   type: "buy_now",
 });
 const priceList = await sdk.listings.getPriceList();
+const auctionBid = await sdk.listings.placeBid("945821907352158315", {
+  max_price: 9,
+});
 const sellerTrades = await sdk.account.getTrades({
   state: "queued,pending",
   role: "seller",
@@ -140,6 +144,7 @@ console.log(
   inventory.length,
   listings.data.length,
   priceList[0]?.market_hash_name,
+  auctionBid.id,
   loadouts.loadouts.length,
 );
 ```

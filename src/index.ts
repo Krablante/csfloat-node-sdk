@@ -45,6 +45,7 @@ export type {
   Category,
   BuyNowRequest,
   CounterOfferRequest,
+  PlaceBidRequest,
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
   CsfloatBid,

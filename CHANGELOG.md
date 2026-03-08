@@ -6,6 +6,15 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+### Added
+
+1. `listings.placeBid()` for auction max-price bidding via the live-confirmed `POST /listings/{id}/bid` route
+
+### Changed
+
+1. expanded coverage notes for browser-auth auction flows, including the fact that item-page `history` maps to `GET /listings/{id}/bids` and both `Bid` / `Auto Bid` converge on the same max-price bid route
+2. documented the currently unmapped auto-bid removal/update semantics and the failed delete guesses (`DELETE /auto-bids/{id}` and `DELETE /listings/{id}/bid` both returned `405`)
+
 ## [0.6.0] - 2026-03-08
 
 ### Added
