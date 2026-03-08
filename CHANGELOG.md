@@ -25,7 +25,7 @@ The format is based on Keep a Changelog.
 4. widened `account.getWatchlist()` from `cursor|limit` only to the currently confirmed listing-style watchlist filter surface, including typed `state`
 5. documented the bundle-observed `stickers` / `keychains` query encoding and kept `sticker_option` docs-only because current live probes did not prove meaningful behavior
 6. expanded `audit:live` coverage again to keep the live-confirmed JSON `stickers` / `keychains` market filters on the repeatable regression path
-7. documented and audited the sticker-filtered watchlist path after confirming that `/me/watchlist?stickers=[...]` reuses the same JSON attachment contract
+7. documented and audited the sticker- and keychain-filtered watchlist path after confirming that `/me/watchlist?stickers=[...]` and `/me/watchlist?keychains=[...]` reuse the same JSON attachment contract
 
 ## [0.7.0] - 2026-03-08
 

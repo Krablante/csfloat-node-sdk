@@ -175,6 +175,25 @@ async function main() {
   const offers = await request("GET", "/me/offers?limit=1");
   const firstOffer = offers.ok && offers.data?.offers?.[0] ? offers.data.offers[0] : null;
   const offerId = firstOffer ? String(firstOffer.id) : null;
+  const watchlistPreview = await request("GET", "/me/watchlist?limit=40");
+  const watchlistItems =
+    watchlistPreview.ok && Array.isArray(watchlistPreview.data?.data)
+      ? watchlistPreview.data.data
+      : [];
+  const firstWatchlistStickerId =
+    watchlistItems.find((row) => Array.isArray(row.item?.stickers) && row.item.stickers.length > 0)
+      ?.item?.stickers?.[0]?.stickerId ?? null;
+  const firstWatchlistKeychainId =
+    watchlistItems.find((row) => Array.isArray(row.item?.keychains) && row.item.keychains.length > 0)
+      ?.item?.keychains?.[0]?.stickerId ?? null;
+  const watchlistStickerFilterQuery =
+    firstWatchlistStickerId === null
+      ? null
+      : encodeURIComponent(JSON.stringify([{ i: firstWatchlistStickerId }]));
+  const watchlistKeychainFilterQuery =
+    firstWatchlistKeychainId === null
+      ? null
+      : encodeURIComponent(JSON.stringify([{ i: firstWatchlistKeychainId }]));
   const schemaPreview = await request("GET", "/schema");
   const firstStickerIndex =
     schemaPreview.ok && schemaPreview.data?.stickers?.[0]?.sticker_index
@@ -233,7 +252,12 @@ async function main() {
     ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/watchlist?limit=1&state=listed"],
     ["GET", "/me/watchlist?limit=1&sort_by=most_recent"],
-    ...(stickerFilterQuery ? [["GET", `/me/watchlist?limit=1&stickers=${stickerFilterQuery}`]] : []),
+    ...(watchlistStickerFilterQuery
+      ? [["GET", `/me/watchlist?limit=1&stickers=${watchlistStickerFilterQuery}`]]
+      : []),
+    ...(watchlistKeychainFilterQuery
+      ? [["GET", `/me/watchlist?limit=1&keychains=${watchlistKeychainFilterQuery}`]]
+      : []),
     ["GET", "/me/notifications/timeline"],
     ["GET", "/me/buy-orders?limit=1"],
     ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),
