@@ -21,6 +21,7 @@ The format is based on Keep a Changelog.
 11. `CSFLOAT_STICKER_SEARCH_OPTIONS` for the current live-confirmed sticker attachment search modes (`skins` and `packages`)
 12. `npm run audit:live:extended` for the heavier market-filter and candidate-route live sweep
 13. `meta.inspectItem()` for the live-confirmed external Float Checker route `GET https://api.csfloat.com/?url=<inspectLink>`
+14. `account.syncSteamNewOffer()` and `account.syncSteamOffers()` for the browser-confirmed low-level trade sync routes under `/trades/steam-status/*`
 
 ### Changed
 
@@ -38,6 +39,7 @@ The format is based on Keep a Changelog.
 12. split `audit:live` into `core` vs `extended` scopes so the default script keeps the stable surface while `audit:live:extended` carries the more rate-limit-prone market query burst and candidate sweep
 13. strengthened `/me/watchlist` live coverage with meaningful `type=auction|buy_now`, `filter=unique`, and `sort_by=highest_discount` / `sort_by=lowest_price` confirmations, and kept those checks on the core live-audit path
 14. taught the HTTP client to support derived external companion calls with custom default headers and optional authorization suppression, which is now used for the origin-gated checker lookup surface
+15. promoted `/trades/steam-status/new-offer` and `/trades/steam-status/offer` from discovered-only to implemented as explicitly low-level sync helpers after reconfirming their safe request shapes and stable `200 {"message":"successfully updated offer state"}` responses on 2026-03-08
 
 ## [0.7.0] - 2026-03-08
 

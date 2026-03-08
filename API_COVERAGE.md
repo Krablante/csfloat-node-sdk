@@ -118,8 +118,8 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/trades/{id}/report-error` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely support/reporting path |
 | `/trades/notary` | `POST` | discovered | browser bundle + live invalid probe | empty payload returned `400 payload is required`; exact contract still unmapped |
 | `/me/verify-sms` | `POST` | discovered | live + public wrapper source | invalid phone number returned Twilio validation error |
-| `/trades/steam-status/new-offer` | `POST` | discovered | live + public wrapper source | accepted string-form `offer_id` payloads and returned success even for `"0"`; exact side effects still unmapped |
-| `/trades/steam-status/offer` | `POST` | discovered | live + public wrapper source | accepted `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }` with success; empty sync produced no observed trade-state change |
+| `/trades/steam-status/new-offer` | `POST` | implemented | live + public wrapper source | low-level Steam sync route keyed by string-form `{ offer_id }`; safe live probes returned `200 {"message":"successfully updated offer state"}` even for `"0"`, but business side effects remain partially unmapped |
+| `/trades/steam-status/offer` | `POST` | implemented | live + public wrapper source | low-level Steam sync route accepting `{ sent_offers }` and optional `{ trade_id }`; safe live probes returned `200 {"message":"successfully updated offer state"}`, while empty-array syncs produced no observed trade-state change |
 | `/me` with `trade_url` PATCH field | `PATCH` | discovered | live + public wrapper source | invalid payload returned `missing partner id or token in trade url`, confirming field-level validation for `trade_url` |
 ## Likely Stale Or Wrapper-Only Routes
 
@@ -278,8 +278,8 @@ Live-confirmed search behaviors:
 42. `POST /trades/bulk/accept` is the confirmed `accept sale` route for queued seller trades; on a real `$0.05` queued sale it returned `{ data: [trade] }`, transitioned the trade from `queued` to `pending`, and populated `accepted_at`, `trade_url`, `trade_token`, and `steam_offer` timing fields
 43. `GET /listings/price-list` is a public market-wide price index that returned `24653` entries during the 2026-03-07 live check; each entry currently exposes `market_hash_name`, `quantity`, and `min_price`
 44. currently observed query params on `/listings/price-list` such as `market_hash_name` and `limit` appear to be silently ignored; exact filtering/pagination semantics are not yet mapped
-45. `POST /trades/steam-status/new-offer` appears to key off a string `offer_id` field, not `trade_id`; `{ offer_id: "0" }` returned success while `{ trade_id: "0" }` returned `invalid offer id format`
-46. `POST /trades/steam-status/offer` accepts `sent_offers` and optional `trade_id` payloads, but an empty-array sync produced no observed state change on the current pending trade, so it remains discovered-only
+45. `POST /trades/steam-status/new-offer` keys off a string `offer_id` field, not `trade_id`; `{ offer_id: "0" }` returned `200 {"message":"successfully updated offer state"}` while `{ trade_id: "0" }` returned `invalid offer id format`
+46. `POST /trades/steam-status/offer` accepts `sent_offers` and optional `trade_id` payloads; both `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }` returned `200 {"message":"successfully updated offer state"}`, while the empty-array sync produced no observed trade-state change on the current pending trade
 47. browser-auth discovery on `/profile/trades` showed that the UI uses two concrete trade queries: `/me/trades?state=queued,pending&limit=5000` for active seller-side work and `/me/trades?role=seller&state=failed,cancelled,verified&limit=30&page=0` for history
 48. browser-auth discovery on `/profile/offers` uses `/me/offers-timeline?limit=40` plus direct `/offers/{id}/history` fetches for the selected thread
 49. browser-auth discovery on `/stall/me` triggers `POST /me/recommender-token`, which returns `{ token, expires_at }`, and also calls the external public route `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts`

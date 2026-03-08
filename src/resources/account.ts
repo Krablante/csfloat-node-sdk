@@ -27,6 +27,8 @@ import type {
   CsfloatTrade,
   CsfloatTradeBatchResponse,
   CsfloatTradeBuyerDetails,
+  CsfloatTradeSteamOfferSyncRequest,
+  CsfloatTradeSteamStatusNewOfferRequest,
   CsfloatTradesParams,
   CsfloatTradesResponse,
   CsfloatTransactionsResponse,
@@ -56,6 +58,32 @@ export class AccountResource {
 
   getTradeBuyerDetails(tradeId: string): Promise<CsfloatTradeBuyerDetails> {
     return this.client.get<CsfloatTradeBuyerDetails>(`trades/${tradeId}/buyer-details`);
+  }
+
+  /**
+   * Low-level Steam-offer sync helper for the browser-observed new-offer route.
+   * Current live validation confirms `{ offer_id } -> 200 {"message":"successfully updated offer state" }`
+   * even for `"0"`, but exact side effects remain partially unmapped.
+   */
+  syncSteamNewOffer(
+    offerId: string | number | CsfloatTradeSteamStatusNewOfferRequest,
+  ): Promise<CsfloatMessageResponse> {
+    const body = typeof offerId === "string" || typeof offerId === "number"
+      ? { offer_id: String(offerId) }
+      : offerId;
+
+    return this.client.post<CsfloatMessageResponse>("trades/steam-status/new-offer", body);
+  }
+
+  /**
+   * Low-level Steam-offer sync helper for the browser-observed offer-status route.
+   * Current live validation confirms `{ sent_offers: [] }` and `{ trade_id, sent_offers: [] }`
+   * return `200 {"message":"successfully updated offer state" }`.
+   */
+  syncSteamOffers(
+    request: CsfloatTradeSteamOfferSyncRequest,
+  ): Promise<CsfloatMessageResponse> {
+    return this.client.post<CsfloatMessageResponse>("trades/steam-status/offer", request);
   }
 
   acceptTrades(tradeIds: string[] | AcceptTradesRequest): Promise<CsfloatTradeBatchResponse> {

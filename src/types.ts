@@ -828,6 +828,15 @@ export interface AcceptTradesRequest {
   trade_ids: string[];
 }
 
+export interface CsfloatTradeSteamStatusNewOfferRequest {
+  offer_id: string;
+}
+
+export interface CsfloatTradeSteamOfferSyncRequest {
+  trade_id?: string;
+  sent_offers: unknown[];
+}
+
 export interface CreateOfferRequest {
   contract_id: string;
   price: number;

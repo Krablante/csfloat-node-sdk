@@ -96,6 +96,32 @@ describe("AccountResource", () => {
     expect(get).toHaveBeenCalledWith("trades/950574621256714680/buyer-details");
   });
 
+  it("syncs a new steam offer by id", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.syncSteamNewOffer("0");
+
+    expect(post).toHaveBeenCalledWith("trades/steam-status/new-offer", {
+      offer_id: "0",
+    });
+  });
+
+  it("syncs steam offers with the low-level payload", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.syncSteamOffers({
+      trade_id: "950777578141122832",
+      sent_offers: [],
+    });
+
+    expect(post).toHaveBeenCalledWith("trades/steam-status/offer", {
+      trade_id: "950777578141122832",
+      sent_offers: [],
+    });
+  });
+
   it("accepts a single trade", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);
