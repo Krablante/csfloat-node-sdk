@@ -32,6 +32,7 @@ import type {
   CsfloatTransactionsResponse,
   CsfloatSimilarBuyOrdersResponse,
   CsfloatUpdateMeRequest,
+  CsfloatWatchlistParams,
   CreateOfferRequest,
   QueryParams,
   SimilarBuyOrdersRequest,
@@ -126,7 +127,7 @@ export class AccountResource {
   }
 
   getWatchlist(
-    params: Pick<CsfloatCursorParams, "cursor" | "limit"> = {},
+    params: CsfloatWatchlistParams = {},
   ): Promise<CsfloatListingsResponse> {
     return this.client.get<CsfloatListingsResponse>("me/watchlist", params as QueryParams);
   }

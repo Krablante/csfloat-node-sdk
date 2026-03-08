@@ -209,11 +209,26 @@ describe("AccountResource", () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);
 
-    await resource.getWatchlist({ limit: 20, cursor: "next-page" });
+    await resource.getWatchlist({
+      limit: 20,
+      cursor: "next-page",
+      state: "listed",
+      sort_by: "most_recent",
+      filter: "sticker_combos",
+      category: 2,
+      type: "auction",
+      min_price: 100,
+    });
 
     expect(get).toHaveBeenCalledWith("me/watchlist", {
       limit: 20,
       cursor: "next-page",
+      state: "listed",
+      sort_by: "most_recent",
+      filter: "sticker_combos",
+      category: 2,
+      type: "auction",
+      min_price: 100,
     });
   });
 

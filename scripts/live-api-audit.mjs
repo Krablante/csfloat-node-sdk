@@ -214,6 +214,8 @@ async function main() {
     ["GET", "/me/offers-timeline?limit=1"],
     ...(offerId ? [["GET", `/offers/${offerId}`], ["GET", `/offers/${offerId}/history`]] : []),
     ["GET", "/me/watchlist?limit=1"],
+    ["GET", "/me/watchlist?limit=1&state=listed"],
+    ["GET", "/me/watchlist?limit=1&sort_by=most_recent"],
     ["GET", "/me/notifications/timeline"],
     ["GET", "/me/buy-orders?limit=1"],
     ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),

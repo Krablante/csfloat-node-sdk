@@ -144,6 +144,11 @@ const sellerTrades = await sdk.account.getTrades({
   limit: 30,
   page: 0,
 });
+const recentListedWatchlist = await sdk.account.getWatchlist({
+  limit: 10,
+  state: "listed",
+  sort_by: "most_recent",
+});
 const loadouts = await sdk.loadout.getUserLoadouts(me.user.steam_id);
 const recommender = await sdk.account.createRecommenderToken();
 const featuredLoadouts = await sdk.loadout.getLoadouts({
@@ -279,6 +284,18 @@ const scopedSearch = await sdk.listings.getListings(
     "FN",
   ),
 );
+```
+
+`account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
+
+```ts
+const soldStickerCombos = await sdk.account.getWatchlist({
+  limit: 20,
+  state: "sold",
+  sort_by: "most_recent",
+  filter: "sticker_combos",
+  category: 2,
+});
 ```
 
 `history.getGraph()` also accepts the currently observed `category` query param in addition to `paint_index`, but its exact semantics are still intentionally documented as only partially mapped.

@@ -33,6 +33,7 @@ export type QueryParams = Record<
 >;
 
 export type CsfloatListingsFilter = LooseString<"sticker_combos" | "unique">;
+export type CsfloatWatchlistState = LooseString<"listed" | "sold" | "delisted">;
 
 export interface CsfloatCursorParams {
   cursor?: string;
@@ -934,6 +935,10 @@ export interface CsfloatListParams {
   max_fade?: number;
   sort_by?: SortBy;
   user_id?: string;
+}
+
+export interface CsfloatWatchlistParams extends CsfloatListParams {
+  state?: CsfloatWatchlistState;
 }
 
 export interface CreateBuyNowListingRequest {

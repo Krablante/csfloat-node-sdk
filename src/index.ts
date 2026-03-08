@@ -169,6 +169,8 @@ export type {
   CsfloatUserLoadoutsResponse,
   CsfloatUserStatistics,
   CsfloatCursorParams,
+  CsfloatWatchlistParams,
+  CsfloatWatchlistState,
   ListingType,
   SortBy,
   SimilarBuyOrdersRequest,

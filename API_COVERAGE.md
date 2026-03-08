@@ -96,7 +96,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 |---|---|---|---|---|
 | `/me/trades` | `GET` | implemented | live | returns `{ trades, count }`; supports `limit` |
 | `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; supports `limit` |
-| `/me/watchlist` | `GET` | implemented | live | returns `{ data, cursor }`; supports `limit` |
+| `/me/watchlist` | `GET` | implemented | live + browser-auth UI | returns `{ data, cursor }`; currently confirmed with `limit`, `state`, `sort_by`, `filter`, `category`, `type`, and `min_price` |
 | `/listings?limit=40&min_ref_qty=20` | `GET` | discovered | live + frontend network | special unauthenticated public feed shape used by public pages; general search params still require auth |
 | `/listings?filter=sticker_combos` | `GET` | discovered | live + browser UI + auth API | UI label `Sticker Combos`; requires auth |
 | `/listings?filter=unique` | `GET` | discovered | live + browser UI + auth API | UI label `Unique Items`; requires auth |
@@ -314,6 +314,10 @@ Live-confirmed search behaviors:
 79. `POST /me/gs-inspect-token` is live and returns the same token-style contract as other companion flows: `{ token, expires_at }`; the current browser bundle uses it to authorize external `gs-api.csfloat.com/api/v1/players/equip*` requests, while the SDK intentionally stops at the CSFloat-side token helper for now
 80. `GET /schema/images/screenshot` is live behind authentication: on 2026-03-08, `def_index=7&paint_index=490&min_float=0.15&max_float=0.38` returned `{ id:"1305328935500910839", sides:{ playside:{ path:"m/.../playside.png" }, backside:{ path:"m/.../backside.png" } } }`, while the same request without auth returned `401 code=27 authorization not set`
 81. the browser screenshot flow also has an external generator at `https://s-api.csfloat.com/api/v1/public/screenshot?sig=...&url=...`, but the SDK currently only exposes the CSFloat-side `/schema/images/screenshot` helper because the external path depends on item-level screenshot signatures and is better kept as a documented companion detail for now
+82. browser-auth discovery on `/profile/watchlist` confirmed that the watchlist page serializes filters into URL/query params on the same listing-style surface: `Listed` -> `state=listed`, `Newest` -> `sort_by=most_recent`, `Sticker Combos` -> `filter=sticker_combos`, and `StatTrak™` -> `category=2`
+83. direct authenticated live probes on 2026-03-08 confirmed that `GET /me/watchlist` accepts at least `state`, `sort_by`, `filter`, `category`, `type`, and `min_price`; `state=listed|sold|delisted` all return `200`, while `state=bogus` hard-fails with `400 code 18` and `schema: error converting value for "state". Details: invalid state`
+84. current live watchlist state semantics are meaningful on the main account: `state=sold` returned only `sold` rows, `state=delisted` returned only `delisted` rows, and `sort_by=most_recent` changed the first-page ordering versus the default watchlist sort
+85. current raw HTTP market-search probes on 2026-03-08 returned `403 "You need to be logged in to search listings"` for explicit `/listings?...` queries such as `sort_by`, `category`, `min_price`, `type`, and `filter`; the browser still bootstraps a default listing feed in page context, so unauthenticated market search should be treated as guarded/unstable rather than a clean public API contract
 
 ## Listing Creation Surface
 
