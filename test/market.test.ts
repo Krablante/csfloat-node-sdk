@@ -11,6 +11,7 @@ import {
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   CSFLOAT_CATEGORY_PRESETS,
+  CSFLOAT_STICKER_SEARCH_OPTIONS,
   getCategoryParams,
   withWearPreset,
 } from "../src/market.js";
@@ -23,6 +24,7 @@ describe("market helpers", () => {
       souvenir: 3,
       highlight: 4,
     });
+    expect(CSFLOAT_STICKER_SEARCH_OPTIONS).toEqual(["skins", "packages"]);
     expect(CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY).toBe(20);
   });
 

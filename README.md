@@ -271,6 +271,7 @@ import {
   buildReferenceQuantityFilter,
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
+  CSFLOAT_STICKER_SEARCH_OPTIONS,
   getCategoryParams,
   withWearPreset,
 } from "csfloat-node-sdk";
@@ -295,8 +296,14 @@ Low-level applied-attachment filters can also be serialized for market/watchlist
 ```ts
 const appliedStickerSearch = await sdk.listings.getListings({
   limit: 10,
-  sticker_option: "skins",
+  sticker_option: CSFLOAT_STICKER_SEARCH_OPTIONS[0],
   ...buildStickerFilters([{ sticker_id: 3, slot: 1 }]),
+});
+
+const souvenirPackageSearch = await sdk.listings.getListings({
+  limit: 10,
+  sticker_option: CSFLOAT_STICKER_SEARCH_OPTIONS[1],
+  ...buildStickerFilters([{ sticker_id: 85 }]),
 });
 
 const charmSearch = await sdk.listings.getListings({
@@ -321,6 +328,8 @@ const excludeRareItems = await sdk.listings.getListings({
   }),
 });
 ```
+
+`sticker_option: "packages"` is live-meaningful on market searches when paired with sticker filters; for example, sticker ids `85` and `96` currently surface `EMS One 2014 Souvenir Package` listings.
 
 `account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
 

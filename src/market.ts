@@ -5,6 +5,7 @@ import type {
   CsfloatListParams,
   CsfloatListingCategoryFilter,
   CsfloatListingsFilter,
+  CsfloatStickerSearchOption,
   SortBy,
 } from "./types.js";
 import type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
@@ -25,6 +26,11 @@ export const CSFLOAT_CATEGORY_PRESETS: Record<
 export const CSFLOAT_FILTER_OPTIONS: readonly CsfloatListingsFilter[] = [
   "sticker_combos",
   "unique",
+];
+
+export const CSFLOAT_STICKER_SEARCH_OPTIONS: readonly CsfloatStickerSearchOption[] = [
+  "skins",
+  "packages",
 ];
 
 export const CSFLOAT_SORT_OPTIONS: readonly SortBy[] = [

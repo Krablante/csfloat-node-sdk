@@ -18,6 +18,7 @@ The format is based on Keep a Changelog.
 8. `buildStickerFilters()` and `buildKeychainFilters()` for the live-confirmed JSON-encoded applied attachment filters on market/watchlist queries
 9. typed low-level `sticker_option` support on listing/watchlist query params after confirming `skins|packages` behavior on sticker-filtered searches
 10. `CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY` and `buildReferenceQuantityFilter()` for the live-confirmed `min_ref_qty` listing/watchlist filter used by the `Exclude Rare Items` UI toggle
+11. `CSFLOAT_STICKER_SEARCH_OPTIONS` for the current live-confirmed sticker attachment search modes (`skins` and `packages`)
 
 ### Changed
 
@@ -28,8 +29,10 @@ The format is based on Keep a Changelog.
 5. documented the bundle-observed `stickers` / `keychains` query encoding and then promoted `sticker_option` from docs-only to typed support after live paired-filter probes proved meaningful behavior
 6. documented that `/listings` and `/me/watchlist` currently hard-cap `limit` at `50`, and that invalid `min_ref_qty` values hard-fail with schema conversion errors
 7. extended `audit:live` again so the repeatable market/watchlist checks now cover `min_ref_qty` and sticker-filtered `sticker_option=skins|packages` probes
-6. expanded `audit:live` coverage again to keep the live-confirmed JSON `stickers` / `keychains` market filters on the repeatable regression path
-7. documented and audited the sticker- and keychain-filtered watchlist path after confirming that `/me/watchlist?stickers=[...]` and `/me/watchlist?keychains=[...]` reuse the same JSON attachment contract
+8. expanded `audit:live` coverage again to keep the live-confirmed JSON `stickers` / `keychains` market filters on the repeatable regression path
+9. documented and audited the sticker- and keychain-filtered watchlist path after confirming that `/me/watchlist?stickers=[...]` and `/me/watchlist?keychains=[...]` reuse the same JSON attachment contract
+10. fixed the schema-derived live-audit probes to read `/schema` sticker/keychain maps correctly instead of treating them as arrays, and upgraded the `sticker_option=packages` regression probe to a positive market case (`sticker_id=85`)
+11. slowed the default `audit:live` pacing to `1250ms` per request and added a single GET retry after `429` responses so the safe live regression pass better matches the intended market pacing
 
 ## [0.7.0] - 2026-03-08
 

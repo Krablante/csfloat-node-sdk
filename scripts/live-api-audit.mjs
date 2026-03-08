@@ -44,7 +44,7 @@ function getConfig() {
     allowLiveMutations: process.env.ALLOW_LIVE_MUTATIONS === "1",
     allowRiskyProbes: process.env.ALLOW_RISKY_PROBES === "1",
     preferredSteamId: process.env.CSFLOAT_STEAM_ID || fileEnv.CSFLOAT_STEAM_ID || null,
-    requestDelayMs: Number(process.env.CSFLOAT_REQUEST_DELAY_MS || 750),
+    requestDelayMs: Number(process.env.CSFLOAT_REQUEST_DELAY_MS || 1250),
   };
 }
 
@@ -74,6 +74,20 @@ function errorSummary(payload) {
   return String(payload).slice(0, 200);
 }
 
+function firstNumericRecordKey(record) {
+  if (!record || typeof record !== "object" || Array.isArray(record)) {
+    return null;
+  }
+
+  const [firstKey] = Object.keys(record);
+  if (!firstKey) {
+    return null;
+  }
+
+  const parsed = Number(firstKey);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 async function main() {
   const config = getConfig();
   let lastRequestAt = 0;
@@ -95,8 +109,31 @@ async function main() {
     return response;
   }
 
+  async function fetchJson(url, init) {
+    let response = await pacedFetch(url, init);
+
+    if (response.status === 429 && init.method === "GET") {
+      await new Promise((resolve) => setTimeout(resolve, Math.max(config.requestDelayMs * 4, 5000)));
+      response = await pacedFetch(url, init);
+    }
+
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = text;
+    }
+
+    return {
+      status: response.status,
+      ok: response.ok,
+      data,
+    };
+  }
+
   async function request(method, route, body) {
-    const response = await pacedFetch(`${config.baseUrl}${route}`, {
+    const result = await fetchJson(`${config.baseUrl}${route}`, {
       method,
       headers: {
         Authorization: config.apiKey,
@@ -106,25 +143,15 @@ async function main() {
       body: body ? JSON.stringify(body) : undefined,
     });
 
-    const text = await response.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = text;
-    }
-
     return {
       method,
       route,
-      status: response.status,
-      ok: response.ok,
-      data,
+      ...result,
     };
   }
 
   async function publicRequest(method, route, body) {
-    const response = await pacedFetch(`${config.baseUrl}${route}`, {
+    const result = await fetchJson(`${config.baseUrl}${route}`, {
       method,
       headers: {
         Accept: "application/json",
@@ -133,20 +160,10 @@ async function main() {
       body: body ? JSON.stringify(body) : undefined,
     });
 
-    const text = await response.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = text;
-    }
-
     return {
       method,
       route,
-      status: response.status,
-      ok: response.ok,
-      data,
+      ...result,
     };
   }
 
@@ -196,17 +213,15 @@ async function main() {
       : encodeURIComponent(JSON.stringify([{ i: firstWatchlistKeychainId }]));
   const schemaPreview = await request("GET", "/schema");
   const firstStickerIndex =
-    schemaPreview.ok && schemaPreview.data?.stickers?.[0]?.sticker_index
-      ? Number(schemaPreview.data.stickers[0].sticker_index)
-      : null;
+    schemaPreview.ok ? firstNumericRecordKey(schemaPreview.data?.stickers) : null;
   const firstKeychainIndex =
-    schemaPreview.ok && schemaPreview.data?.keychains?.[0]?.keychain_index
-      ? Number(schemaPreview.data.keychains[0].keychain_index)
-      : null;
+    schemaPreview.ok ? firstNumericRecordKey(schemaPreview.data?.keychains) : null;
   const stickerFilterQuery =
     firstStickerIndex === null
       ? null
       : encodeURIComponent(JSON.stringify([{ i: firstStickerIndex }]));
+  // Live-confirmed positive probe (2026-03-08): sticker ids 85 and 96 surface souvenir packages.
+  const packageProbeStickerFilterQuery = encodeURIComponent(JSON.stringify([{ i: 85 }]));
   const keychainFilterQuery =
     firstKeychainIndex === null
       ? null
@@ -344,9 +359,7 @@ async function main() {
     ...(stickerFilterQuery
       ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}&sticker_option=skins`]]
       : []),
-    ...(stickerFilterQuery
-      ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}&sticker_option=packages`]]
-      : []),
+    ["GET", `/listings?limit=1&stickers=${packageProbeStickerFilterQuery}&sticker_option=packages`],
     // filter enum values — live-confirmed; unauthenticated requests return 403 (not 401)
     ["GET", "/listings?limit=1&filter=sticker_combos"],
     ["GET", "/listings?limit=1&filter=unique"],
