@@ -233,6 +233,7 @@ async function main() {
     ["GET", "/me/watchlist?limit=1"],
     ["GET", "/me/watchlist?limit=1&state=listed"],
     ["GET", "/me/watchlist?limit=1&sort_by=most_recent"],
+    ...(stickerFilterQuery ? [["GET", `/me/watchlist?limit=1&stickers=${stickerFilterQuery}`]] : []),
     ["GET", "/me/notifications/timeline"],
     ["GET", "/me/buy-orders?limit=1"],
     ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),

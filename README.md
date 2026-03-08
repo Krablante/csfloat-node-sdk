@@ -300,6 +300,11 @@ const charmSearch = await sdk.listings.getListings({
   limit: 10,
   ...buildKeychainFilters([{ keychain_index: 1 }]),
 });
+
+const watchedStickerItems = await sdk.account.getWatchlist({
+  limit: 10,
+  ...buildStickerFilters([{ sticker_id: 3 }]),
+});
 ```
 
 `account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
