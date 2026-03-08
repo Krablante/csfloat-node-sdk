@@ -175,6 +175,7 @@ const publicStall = await sdk.stall.getStall(me.user.steam_id, {
 const loadouts = await sdk.loadout.getUserLoadouts(me.user.steam_id);
 const recommender = await sdk.account.createRecommenderToken();
 const featuredLoadouts = await sdk.loadout.getLoadouts({
+  any_filled: true,
   sort_by: "favorites",
   limit: 20,
   months: 1,

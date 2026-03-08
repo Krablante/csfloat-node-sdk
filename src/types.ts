@@ -397,7 +397,7 @@ export interface CsfloatLoadoutResponse {
 export type CsfloatLoadoutSortBy = "favorites" | "random" | "created_at";
 
 export type CsfloatLoadoutListParams = QueryParams & {
-  any_filled?: boolean;
+  any_filled?: true;
   def_index?: number;
   limit?: number;
   months?: number;

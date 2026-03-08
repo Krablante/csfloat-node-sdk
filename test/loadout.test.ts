@@ -8,6 +8,7 @@ describe("LoadoutResource", () => {
     const resource = new LoadoutResource({ get } as never);
 
     await resource.getLoadouts({
+      any_filled: true,
       sort_by: "favorites",
       limit: 20,
       months: 1,
@@ -18,6 +19,7 @@ describe("LoadoutResource", () => {
     expect(get).toHaveBeenCalledWith(
       "https://loadout-api.csfloat.com/v1/loadout",
       {
+        any_filled: true,
         sort_by: "favorites",
         limit: 20,
         months: 1,

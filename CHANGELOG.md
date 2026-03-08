@@ -59,6 +59,7 @@ The format is based on Keep a Changelog.
 25. aligned the repeatable live audit with the current allowed scope by removing stale `verify-sms`, report-flow, floatdb-adjacent, and Stripe-connect probes from the default sweep
 26. strengthened the live-backed attachment-filter story by adding a repeatable `custom_sticker_id` market probe and documenting the currently working `stickers=[{"c":"C10204271498"}]` search contract
 27. expanded the public market/homepage coverage again by adding repeatable unauthenticated probes for the current `Top Deals`, `Newest Items`, and `Unique Items` homepage feed variants
+28. tightened the public loadout-discover typing by narrowing `any_filled` to the only live-accepted value (`true`) and adding the current discover-mode `GET /v1/loadout?sort_by=favorites&limit=20&months=1&any_filled=true` route to the repeatable live audit
 
 ## [0.7.0] - 2026-03-08
 
