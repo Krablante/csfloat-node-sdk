@@ -402,6 +402,15 @@ describe("AccountResource", () => {
     expect(get).toHaveBeenCalledWith("me/payments/max-withdrawable");
   });
 
+  it("requests pending deposits", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getPendingDeposits();
+
+    expect(get).toHaveBeenCalledWith("me/payments/pending-deposits");
+  });
+
   it("requests pending withdrawals", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ get } as never);

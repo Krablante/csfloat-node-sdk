@@ -24,7 +24,9 @@ Status legend:
 | `/me/inventory` | `GET` | implemented | live + python clone | authenticated inventory |
 | `/history/{market_hash_name}/sales` | `GET` | implemented | live | sales history |
 | `/schema` | `GET` | implemented | live + public wrapper source | public item schema; both `/schema` and `/schema/` resolve |
+| `/schema/browse` | `GET` | implemented | browser bundle + live | public grouped browse route; current live validation confirmed `type=stickers` and bundle uses lowercased category labels such as `stickers`, `keychains`, and `music kits` |
 | `/meta/exchange-rates` | `GET` | implemented | live + public wrapper source | public exchange rate map |
+| `/meta/app` | `GET` | implemented | browser bundle + live | app bootstrap metadata; current live response returned `{ min_required_version: "9.0.0" }` |
 | `/meta/location` | `GET` | implemented | live + public wrapper source | public inferred location data |
 | `/meta/notary` | `GET` | implemented | browser bundle + live | returns current notary availability flags such as `{ rollback:{enabled,background}, accepted:{enabled,background} }` |
 | `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | implemented | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
@@ -58,6 +60,7 @@ Status legend:
 | `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
 | `/me/notary-token` | `POST` | implemented | browser bundle + live | returns `{ token, expires_at }` for the notary/companion flow |
 | `/me/payments/max-withdrawable` | `GET` | implemented | live + browser bundle | returns `{ max_withdrawable }` for the current account payout state |
+| `/me/payments/pending-deposits` | `GET` | implemented | browser bundle + live | authenticated pending-deposit list; current live sample returned `[]`, while bundle/UI usage reads fields such as `created`, `amount`, `currency`, and `payment_method_types` |
 | `/me/pending-withdrawals` | `GET` | implemented | live + browser bundle | returns the authenticated pending-withdrawal list; current live sample was an empty array |
 | `/me/pending-withdrawals/{id}` | `DELETE` | implemented | live invalid probe + browser bundle | invalid probe on `id=0` returned `200` with an empty body, confirming the route/method despite the currently opaque response shape |
 | `/me/extension/status` | `GET` | implemented | live + browser bundle | returns extension version/permission metadata for the authenticated account |
@@ -296,6 +299,9 @@ Live-confirmed search behaviors:
 69. `POST https://loadout-api.csfloat.com/v1/recommend/stickers` is live and safe: `{ "items":[{ "type":"skin", "def_index":7, "paint_index":490 }], "count":10, "collection_whitelist":["Holo"] }` returned `200` with `{ "results":[{ "sticker_index", "score" }, ...] }`
 70. `POST https://loadout-api.csfloat.com/v1/generate` is live and returns slot-level recommendations; a safe request on 2026-03-08 with `{ "items":[{ "type":"skin", "def_index":7, "paint_index":490, "wear_index":2 }], "def_indexes":[7,13,39,9], "faction":"t", "max_price":3000 }` returned `200` with `{ "remaining_budget":30, "total_cost":2970, "results":[...] }`
 71. `POST /v1/generate` hard-validates faction and budget: mismatched `def_indexes` can return `ct-only` / `t-only` errors, and too-small `max_price` can return `Locked items cost (...) exceeds budget (...)`
+72. `GET /meta/app` is live and currently returns a minimal bootstrap payload `{ min_required_version }`; on 2026-03-08 the value was `"9.0.0"`
+73. `GET /schema/browse` is live and groups schema-adjacent browse items under `{ data:[{ type, user_visible_type, items:[...] }] }`; `type=stickers` returned tournament-era sticker buckets such as `DreamHack 2013` and `Katowice 2014`
+74. the browser bundle lowercases schema browse category labels directly before calling `/schema/browse`, so the currently known query values are `rifles`, `pistols`, `smgs`, `heavy`, `knives`, `gloves`, `agents`, `containers`, `stickers`, `keychains`, `patches`, `collectibles`, and `music kits`
 
 ## Listing Creation Surface
 

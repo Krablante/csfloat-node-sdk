@@ -21,6 +21,15 @@ describe("MetaResource", () => {
     expect(get).toHaveBeenCalledWith("meta/exchange-rates");
   });
 
+  it("requests app meta", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new MetaResource({ get } as never);
+
+    await resource.getApp();
+
+    expect(get).toHaveBeenCalledWith("meta/app");
+  });
+
   it("requests inferred location", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new MetaResource({ get } as never);
@@ -28,6 +37,17 @@ describe("MetaResource", () => {
     await resource.getLocation();
 
     expect(get).toHaveBeenCalledWith("meta/location");
+  });
+
+  it("requests schema browse groups for a known category", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new MetaResource({ get } as never);
+
+    await resource.getSchemaBrowse("stickers");
+
+    expect(get).toHaveBeenCalledWith("schema/browse", {
+      type: "stickers",
+    });
   });
 
   it("requests notary meta", async () => {

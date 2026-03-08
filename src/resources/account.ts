@@ -20,6 +20,7 @@ import type {
   CsfloatOffer,
   CsfloatOffersResponse,
   CsfloatPageParams,
+  CsfloatPendingDeposit,
   CsfloatPendingWithdrawal,
   CsfloatRecommenderTokenResponse,
   CsfloatTrade,
@@ -211,6 +212,10 @@ export class AccountResource {
 
   getMaxWithdrawable(): Promise<CsfloatMaxWithdrawableResponse> {
     return this.client.get<CsfloatMaxWithdrawableResponse>("me/payments/max-withdrawable");
+  }
+
+  getPendingDeposits(): Promise<CsfloatPendingDeposit[]> {
+    return this.client.get<CsfloatPendingDeposit[]>("me/payments/pending-deposits");
   }
 
   getPendingWithdrawals(): Promise<CsfloatPendingWithdrawal[]> {

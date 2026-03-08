@@ -6,6 +6,17 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+### Added
+
+1. `meta.getApp()` for the live-confirmed `GET /meta/app` route, currently returning app bootstrap metadata such as `min_required_version`
+2. `meta.getSchemaBrowse()` for the live-confirmed `GET /schema/browse` route, including typed category names like `stickers`, `keychains`, and `music kits`
+3. `account.getPendingDeposits()` for the live-confirmed `GET /me/payments/pending-deposits` route
+
+### Changed
+
+1. expanded `API_COVERAGE.md` with the newly confirmed `/meta/app`, `/schema/browse`, and `/me/payments/pending-deposits` surfaces
+2. expanded live audit coverage to keep app meta, schema browse, and pending deposits on the repeatable safe-read path
+
 ## [0.7.0] - 2026-03-08
 
 ### Added

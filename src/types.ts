@@ -277,6 +277,11 @@ export interface CsfloatExchangeRatesResponse {
   data: Record<string, number>;
 }
 
+export interface CsfloatAppMetaResponse {
+  min_required_version?: string;
+  [key: string]: unknown;
+}
+
 export interface CsfloatLocationResponse {
   inferred_location?: CsfloatInferredLocation;
 }
@@ -548,6 +553,44 @@ export interface CsfloatSchemaResponse {
   highlight_reels?: Record<string, CsfloatSchemaHighlightReel>;
 }
 
+export type CsfloatSchemaBrowseType =
+  | "rifles"
+  | "pistols"
+  | "smgs"
+  | "heavy"
+  | "knives"
+  | "gloves"
+  | "agents"
+  | "containers"
+  | "stickers"
+  | "keychains"
+  | "patches"
+  | "collectibles"
+  | "music kits";
+
+export interface CsfloatSchemaBrowseItem {
+  def_index?: number;
+  market_hash_name?: string;
+  rarity?: number | null;
+  image?: string | null;
+  price?: number | null;
+  sticker_index?: number;
+  keychain_index?: number;
+  patch_index?: number;
+  music_kit_index?: number;
+  [key: string]: unknown;
+}
+
+export interface CsfloatSchemaBrowseGroup {
+  type?: string;
+  user_visible_type?: string;
+  items: CsfloatSchemaBrowseItem[];
+}
+
+export interface CsfloatSchemaBrowseResponse {
+  data: CsfloatSchemaBrowseGroup[];
+}
+
 export interface CsfloatTradeSteamOffer {
   id?: string;
   state?: number | string;
@@ -769,6 +812,14 @@ export interface CsfloatExtensionStatusResponse {
 
 export interface CsfloatMaxWithdrawableResponse {
   max_withdrawable?: number;
+}
+
+export interface CsfloatPendingDeposit {
+  amount?: number;
+  created?: number | string;
+  currency?: string;
+  payment_method_types?: string[];
+  [key: string]: unknown;
 }
 
 export interface CsfloatMobileStatusResponse {

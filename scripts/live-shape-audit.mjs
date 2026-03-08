@@ -147,7 +147,9 @@ async function main() {
 
   const routes = {
     schema: "/schema",
+    schema_browse_stickers: "/schema/browse?type=stickers",
     exchange_rates: "/meta/exchange-rates",
+    app_meta: "/meta/app",
     location: "/meta/location",
     me: "/me",
     inventory: "/me/inventory",
@@ -160,6 +162,7 @@ async function main() {
     notifications: "/me/notifications/timeline",
     buy_orders: "/me/buy-orders?limit=10",
     auto_bids: "/me/auto-bids",
+    pending_deposits: "/me/payments/pending-deposits",
     mobile_status: "/me/mobile/status",
     user: `/users/${steamId}`,
     stall: `/users/${steamId}/stall?limit=10&type=buy_now`,

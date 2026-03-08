@@ -196,7 +196,9 @@ async function main() {
 
   const knownRoutes = [
     ["GET", "/schema"],
+    ["GET", "/schema/browse?type=stickers"],
     ["GET", "/meta/exchange-rates"],
+    ["GET", "/meta/app"],
     ["GET", "/meta/location"],
     ["GET", "/meta/notary"],
     ["GET", "/listings/price-list"],
@@ -216,6 +218,7 @@ async function main() {
     ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),
     ["GET", "/me/auto-bids"],
     ["GET", "/me/mobile/status"],
+    ["GET", "/me/payments/pending-deposits"],
     ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),
     ["GET", "/listings?limit=1&type=buy_now"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
@@ -243,7 +246,9 @@ async function main() {
 
   const publicRoutes = [
     ["GET", "/schema"],
+    ["GET", "/schema/browse?type=stickers"],
     ["GET", "/meta/exchange-rates"],
+    ["GET", "/meta/app"],
     ["GET", "/meta/location"],
     ["GET", "/meta/notary"],
     ["GET", "/listings/price-list"],
