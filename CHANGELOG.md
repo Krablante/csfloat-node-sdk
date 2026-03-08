@@ -6,6 +6,8 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-03-08
+
 ### Added
 
 1. `meta.getApp()` for the live-confirmed `GET /meta/app` route, currently returning app bootstrap metadata such as `min_required_version`
