@@ -2,6 +2,14 @@ export { CsfloatHttpClient } from "./client.js";
 export { CsfloatSdk } from "./sdk.js";
 export { CsfloatSdkError, isCsfloatSdkError } from "./errors.js";
 export {
+  buildLoadoutListParams,
+  buildLoadoutSkinSearchParams,
+  CSFLOAT_DISCOVER_LOADOUT_PARAMS,
+  CSFLOAT_LOADOUT_MAX_LIMIT,
+  CSFLOAT_LOADOUT_SORT_OPTIONS,
+  getDiscoverLoadoutParams,
+} from "./loadout.js";
+export {
   buildBlueRange,
   buildFadeRange,
   buildFloatRange,
@@ -41,6 +49,7 @@ export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
 export type { CsfloatClientOptions, CsfloatFetch } from "./client.js";
 export type { CsfloatErrorKind, CsfloatSdkErrorOptions } from "./errors.js";
+export type { CsfloatLoadoutSkinSearchParams } from "./loadout.js";
 export type {
   CsfloatBlueRangeParams,
   CsfloatCategoryPreset,

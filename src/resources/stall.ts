@@ -1,5 +1,11 @@
 import type { CsfloatHttpClient } from "../client.js";
-import type { CsfloatListingsResponse, CsfloatStallParams, QueryParams } from "../types.js";
+import { paginateCursor } from "../pagination.js";
+import type {
+  CsfloatListing,
+  CsfloatListingsResponse,
+  CsfloatStallParams,
+  QueryParams,
+} from "../types.js";
 
 export type GetStallParams = CsfloatStallParams;
 
@@ -11,5 +17,16 @@ export class StallResource {
       `users/${userId}/stall`,
       params as QueryParams,
     );
+  }
+
+  iterateStall(userId: string, params: Omit<GetStallParams, "cursor"> = {}) {
+    return paginateCursor<CsfloatListingsResponse, CsfloatListing>({
+      loadPage: (cursor) =>
+        this.getStall(
+          userId,
+          cursor === undefined ? { ...params } : { ...params, cursor },
+        ),
+      getItems: (page) => page.data,
+    });
   }
 }

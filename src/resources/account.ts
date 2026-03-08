@@ -1,4 +1,5 @@
 import type { CsfloatHttpClient } from "../client.js";
+import { paginateCursor } from "../pagination.js";
 import type {
   AcceptTradesRequest,
   CounterOfferRequest,
@@ -10,6 +11,7 @@ import type {
   CsfloatExtensionStatusResponse,
   CsfloatGsInspectTokenResponse,
   CsfloatInspectBuyOrdersResponse,
+  CsfloatListing,
   CsfloatListingsResponse,
   CsfloatMaxWithdrawableResponse,
   CreateBuyOrderRequest,
@@ -161,6 +163,16 @@ export class AccountResource {
     params: CsfloatWatchlistParams = {},
   ): Promise<CsfloatListingsResponse> {
     return this.client.get<CsfloatListingsResponse>("me/watchlist", params as QueryParams);
+  }
+
+  iterateWatchlist(params: Omit<CsfloatWatchlistParams, "cursor"> = {}) {
+    return paginateCursor<CsfloatListingsResponse, CsfloatListing>({
+      loadPage: (cursor) =>
+        this.getWatchlist(
+          cursor === undefined ? { ...params } : { ...params, cursor },
+        ),
+      getItems: (page) => page.data,
+    });
   }
 
   getOffersTimeline(params: Pick<CsfloatPageParams, "limit"> = {}): Promise<CsfloatOffersResponse> {

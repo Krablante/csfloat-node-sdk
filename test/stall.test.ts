@@ -27,4 +27,31 @@ describe("StallResource", () => {
       keychains: JSON.stringify([{ i: 83 }]),
     });
   });
+
+  it("iterates a public stall through cursor pagination", async () => {
+    const get = vi
+      .fn()
+      .mockResolvedValueOnce({
+        data: [{ id: "s1" }, { id: "s2" }],
+        cursor: "page-2",
+      })
+      .mockResolvedValueOnce({
+        data: [{ id: "s3" }],
+      });
+    const resource = new StallResource({ get } as never);
+
+    const ids: string[] = [];
+    for await (const listing of resource.iterateStall("76561198771627775", { limit: 20 })) {
+      ids.push(String((listing as { id?: string }).id));
+    }
+
+    expect(ids).toEqual(["s1", "s2", "s3"]);
+    expect(get).toHaveBeenNthCalledWith(1, "users/76561198771627775/stall", {
+      limit: 20,
+    });
+    expect(get).toHaveBeenNthCalledWith(2, "users/76561198771627775/stall", {
+      limit: 20,
+      cursor: "page-2",
+    });
+  });
 });

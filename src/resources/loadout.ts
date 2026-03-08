@@ -1,4 +1,9 @@
 import type { CsfloatHttpClient } from "../client.js";
+import {
+  buildLoadoutSkinSearchParams,
+  getDiscoverLoadoutParams,
+} from "../loadout.js";
+import type { CsfloatLoadoutSkinSearchParams } from "../loadout.js";
 import type {
   CsfloatCreateLoadoutRequest,
   CsfloatFavoriteLoadoutsResponse,
@@ -27,6 +32,26 @@ export class LoadoutResource {
     return this.client.get<CsfloatUserLoadoutsResponse>(
       `${LOADOUT_API_BASE_URL}/loadout`,
       params,
+    );
+  }
+
+  getDiscoverLoadouts(
+    params: Omit<CsfloatLoadoutListParams, "any_filled"> = {},
+  ): Promise<CsfloatUserLoadoutsResponse> {
+    return this.getLoadouts(getDiscoverLoadoutParams(params));
+  }
+
+  getSkinLoadouts(
+    defIndex: number,
+    paintIndex: number,
+    params: Omit<CsfloatLoadoutSkinSearchParams, "def_index" | "paint_index"> = {},
+  ): Promise<CsfloatUserLoadoutsResponse> {
+    return this.getLoadouts(
+      buildLoadoutSkinSearchParams({
+        ...params,
+        def_index: defIndex,
+        paint_index: paintIndex,
+      }),
     );
   }
 

@@ -1,8 +1,102 @@
 import { describe, expect, it, vi } from "vitest";
 
+import {
+  buildLoadoutListParams,
+  buildLoadoutSkinSearchParams,
+  CSFLOAT_DISCOVER_LOADOUT_PARAMS,
+  CSFLOAT_LOADOUT_MAX_LIMIT,
+  CSFLOAT_LOADOUT_SORT_OPTIONS,
+  getDiscoverLoadoutParams,
+} from "../src/loadout.js";
 import { LoadoutResource } from "../src/resources/loadout.js";
 
 describe("LoadoutResource", () => {
+  it("exports stable loadout helper constants", () => {
+    expect(CSFLOAT_LOADOUT_SORT_OPTIONS).toEqual([
+      "favorites",
+      "random",
+      "created_at",
+    ]);
+    expect(CSFLOAT_DISCOVER_LOADOUT_PARAMS).toEqual({
+      any_filled: true,
+      limit: 100,
+      months: 1,
+      sort_by: "favorites",
+    });
+    expect(CSFLOAT_LOADOUT_MAX_LIMIT).toBe(200);
+  });
+
+  it("builds discover loadout params", () => {
+    expect(getDiscoverLoadoutParams()).toEqual({
+      any_filled: true,
+      limit: 100,
+      months: 1,
+      sort_by: "favorites",
+    });
+    expect(getDiscoverLoadoutParams({ limit: 20, def_index: 7, paint_index: 490 })).toEqual({
+      any_filled: true,
+      limit: 20,
+      months: 1,
+      sort_by: "favorites",
+      def_index: 7,
+      paint_index: 490,
+    });
+  });
+
+  it("builds validated loadout list params", () => {
+    expect(
+      buildLoadoutListParams({
+        any_filled: true,
+        def_index: 7,
+        limit: 20,
+        months: 3,
+        paint_index: 490,
+        sort_by: "favorites",
+      }),
+    ).toEqual({
+      any_filled: true,
+      def_index: 7,
+      limit: 20,
+      months: 3,
+      paint_index: 490,
+      sort_by: "favorites",
+    });
+  });
+
+  it("builds validated paired skin search params", () => {
+    expect(
+      buildLoadoutSkinSearchParams({
+        def_index: 7,
+        paint_index: 490,
+        months: 1,
+      }),
+    ).toEqual({
+      def_index: 7,
+      paint_index: 490,
+      months: 1,
+    });
+  });
+
+  it("rejects invalid loadout helper params", () => {
+    expect(() =>
+      buildLoadoutListParams({
+        def_index: 7,
+      } as never),
+    ).toThrow("def_index and paint_index must be provided together");
+
+    expect(() =>
+      buildLoadoutListParams({
+        limit: 201,
+      }),
+    ).toThrow("limit must be between 1 and 200");
+
+    expect(() =>
+      buildLoadoutListParams({
+        months: 0,
+      }),
+    ).toThrow("months must be an integer greater than or equal to 1");
+  });
+
   it("requests public loadout lists", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new LoadoutResource({ get } as never);
@@ -25,6 +119,51 @@ describe("LoadoutResource", () => {
         months: 1,
         def_index: 7,
         paint_index: 490,
+      },
+    );
+  });
+
+  it("requests discover loadouts with the public discover defaults", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new LoadoutResource({ get } as never);
+
+    await resource.getDiscoverLoadouts({
+      limit: 20,
+      def_index: 7,
+      paint_index: 490,
+    });
+
+    expect(get).toHaveBeenCalledWith(
+      "https://loadout-api.csfloat.com/v1/loadout",
+      {
+        any_filled: true,
+        sort_by: "favorites",
+        limit: 20,
+        months: 1,
+        def_index: 7,
+        paint_index: 490,
+      },
+    );
+  });
+
+  it("requests paired skin loadouts with validated skin params", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new LoadoutResource({ get } as never);
+
+    await resource.getSkinLoadouts(7, 490, {
+      limit: 20,
+      months: 1,
+      sort_by: "favorites",
+    });
+
+    expect(get).toHaveBeenCalledWith(
+      "https://loadout-api.csfloat.com/v1/loadout",
+      {
+        def_index: 7,
+        limit: 20,
+        months: 1,
+        paint_index: 490,
+        sort_by: "favorites",
       },
     );
   });

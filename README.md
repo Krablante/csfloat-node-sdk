@@ -39,7 +39,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - live-confirmed public/account helpers around app bootstrap, schema media, checker lookup, and payments, including `meta.getApp()`, `meta.getSchemaBrowse()`, `meta.getItemExampleScreenshot()`, `meta.inspectItem()`, and `account.getPendingDeposits()`
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
-- public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
+- public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
 - normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage`
 
 ## Coverage Philosophy
@@ -66,13 +66,13 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Area | Status | Methods |
 |---|---|---|
 | Meta | implemented | `meta.getSchema()`, `meta.getSchemaBrowse()`, `meta.getItemExampleScreenshot()`, `meta.inspectItem()`, `meta.getExchangeRates()`, `meta.getApp()`, `meta.getLocation()`, `meta.getNotary()` |
-| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.syncSteamNewOffer()`, `account.syncSteamOffers()`, `account.acceptTrades()`, `account.markTradesReceived()`, `account.acceptTrade()`, `account.acceptSale()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.cancelSale()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.exportTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getBuyOrdersForInspect()`, `account.getSimilarBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, `account.getMaxWithdrawable()`, `account.getPendingDeposits()`, `account.getPendingWithdrawals()`, `account.deletePendingWithdrawal()`, `account.getExtensionStatus()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.syncSteamNewOffer()`, `account.syncSteamOffers()`, `account.acceptTrades()`, `account.markTradesReceived()`, `account.acceptTrade()`, `account.acceptSale()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.cancelSale()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.iterateWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.exportTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getBuyOrdersForInspect()`, `account.getSimilarBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, `account.getMaxWithdrawable()`, `account.getPendingDeposits()`, `account.getPendingWithdrawals()`, `account.deletePendingWithdrawal()`, `account.getExtensionStatus()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
-| User stall | implemented | `stall.getStall()` |
+| User stall | implemented | `stall.getStall()`, `stall.iterateStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.placeBid()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.createBulkListings()`, `listings.updateBulkListings()`, `listings.deleteBulkListings()`, `listings.unlistBulkListings()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
-| Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
+| Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
@@ -174,9 +174,12 @@ const publicStall = await sdk.stall.getStall(me.user.steam_id, {
 });
 const loadouts = await sdk.loadout.getUserLoadouts(me.user.steam_id);
 const recommender = await sdk.account.createRecommenderToken();
-const featuredLoadouts = await sdk.loadout.getLoadouts({
-  any_filled: true,
-  sort_by: "favorites",
+const featuredLoadouts = await sdk.loadout.getDiscoverLoadouts({
+  limit: 20,
+  def_index: 7,
+  paint_index: 490,
+});
+const ak47Loadouts = await sdk.loadout.getSkinLoadouts(7, 490, {
   limit: 20,
   months: 1,
 });
@@ -223,11 +226,44 @@ console.log(
   auctionBid.id,
   loadouts.loadouts.length,
   featuredLoadouts.loadouts[0]?.id,
+  ak47Loadouts.loadouts[0]?.id,
   myFavoriteLoadouts.favorites.length,
   recommendations.results[0]?.paint_index,
   stickerRecommendations.results[0]?.sticker_index,
   generatedLoadout.total_cost,
 );
+```
+
+`loadout.getDiscoverLoadouts()` is the higher-level helper for the current public discover contract (`sort_by=favorites&months=1&any_filled=true`), and `loadout.getSkinLoadouts(defIndex, paintIndex, params?)` is the paired helper for the live-confirmed skin-scoped loadout search contract. If you want the raw params instead, `CSFLOAT_DISCOVER_LOADOUT_PARAMS`, `CSFLOAT_LOADOUT_SORT_OPTIONS`, `CSFLOAT_LOADOUT_MAX_LIMIT`, `buildLoadoutListParams()`, `buildLoadoutSkinSearchParams()`, and `getDiscoverLoadoutParams()` are also exported.
+
+```ts
+import {
+  buildLoadoutListParams,
+  buildLoadoutSkinSearchParams,
+  CSFLOAT_LOADOUT_MAX_LIMIT,
+  getDiscoverLoadoutParams,
+} from "csfloat-node-sdk";
+
+const discoverLoadouts = await sdk.loadout.getLoadouts(
+  getDiscoverLoadoutParams({ limit: 20 }),
+);
+
+const ak47Loadouts = await sdk.loadout.getSkinLoadouts(7, 490, {
+  limit: 20,
+  months: 1,
+});
+
+const validatedSkinQuery = buildLoadoutSkinSearchParams({
+  def_index: 7,
+  paint_index: 490,
+  limit: 20,
+  months: 1,
+});
+
+const cappedDiscoverQuery = buildLoadoutListParams({
+  ...getDiscoverLoadoutParams(),
+  limit: CSFLOAT_LOADOUT_MAX_LIMIT,
+});
 ```
 
 `account.syncSteamNewOffer()` and `account.syncSteamOffers()` are intentionally exposed as low-level trade sync helpers. The request shapes and `200 {"message":"successfully updated offer state"}` responses are live-confirmed, but exact side effects are still treated conservatively in the docs.
@@ -398,6 +434,19 @@ const soldWatchlist = await sdk.account.getWatchlist({
   limit: 10,
   state: CSFLOAT_WATCHLIST_STATES[1],
 });
+for await (const listing of sdk.account.iterateWatchlist({
+  limit: 5,
+  state: "listed",
+})) {
+  console.log(listing.id);
+}
+for await (const listing of sdk.stall.iterateStall(me.user.steam_id, {
+  limit: 100,
+  type: "buy_now",
+})) {
+  console.log(listing.id);
+  break;
+}
 
 const publicUniqueFeed = await sdk.listings.getListings({
   ...getHomepageFeedParams("unique"),

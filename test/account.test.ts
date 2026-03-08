@@ -268,6 +268,35 @@ describe("AccountResource", () => {
     });
   });
 
+  it("iterates authenticated watchlist pages", async () => {
+    const get = vi
+      .fn()
+      .mockResolvedValueOnce({
+        data: [{ id: "w1" }, { id: "w2" }],
+        cursor: "page-2",
+      })
+      .mockResolvedValueOnce({
+        data: [{ id: "w3" }],
+      });
+    const resource = new AccountResource({ get } as never);
+
+    const ids: string[] = [];
+    for await (const listing of resource.iterateWatchlist({ limit: 5, state: "listed" })) {
+      ids.push(String((listing as { id?: string }).id));
+    }
+
+    expect(ids).toEqual(["w1", "w2", "w3"]);
+    expect(get).toHaveBeenNthCalledWith(1, "me/watchlist", {
+      limit: 5,
+      state: "listed",
+    });
+    expect(get).toHaveBeenNthCalledWith(2, "me/watchlist", {
+      limit: 5,
+      state: "listed",
+      cursor: "page-2",
+    });
+  });
+
   it("requests offers timeline", async () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);
