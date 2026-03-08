@@ -7,74 +7,50 @@
 [![License: MIT](https://img.shields.io/github/license/Krablante/csfloat-node-sdk)](./LICENSE)
 [![Issues](https://img.shields.io/github/issues/Krablante/csfloat-node-sdk)](https://github.com/Krablante/csfloat-node-sdk/issues)
 
-Unofficial Node.js / TypeScript SDK for the CSFloat API.
+Maintainer-grade Node.js / TypeScript SDK for the **currently known** CSFloat API surface.
 
-This repository aims to provide a clean, typed, public SDK around the **currently known** CSFloat API surface, with honest coverage claims, maintainable abstractions, and release-quality OSS hygiene from day one.
+`csfloat-node-sdk` is built to do two things well at the same time:
 
-It is also intended to become one of the most comprehensive public maps of the currently accessible CSFloat API surface, consolidating official docs, public wrapper discovery, live endpoint validation, and practical SDK ergonomics in one maintainer-grade repository.
+1. provide a practical TypeScript SDK for real account, market, offer, trade, listing, and buy-order workflows
+2. act as a strong public coverage reference for what the CSFloat ecosystem actually exposes in practice
 
-Status: public release, actively maintained, and expanding coverage of the currently known CSFloat API surface.
+The project is intentionally conservative about claims. Anything called `implemented` or highlighted in the README has been wired into the SDK and validated against live traffic, browser-auth discovery, or both.
 
-> The goal is simple: ship a maintainer-grade TypeScript SDK plus the strongest public CSFloat API reference we can responsibly validate.
+> The goal is simple: ship the strongest public TypeScript SDK and coverage reference we can responsibly validate for CSFloat.
 
-## At A Glance
+## Why This Repository Matters
 
-- broad, live-validated CSFloat API coverage with explicit docs instead of vague claims
-- TypeScript-first SDK surface for real account, market, and listing workflows
-- safer transport defaults with built-in retry/backoff for transient GET failures
-- query helpers for search-heavy use cases, including wear presets and market scan params
-- release-ready repository hygiene: CI, changelog, contributing guide, security policy, and coverage matrix
+- broad live-validated CSFloat API coverage with explicit notes for `implemented`, `discovered`, `gated`, and `stale` behavior
+- practical write workflows, not just read-only wrappers
+- safer transport defaults with retry/backoff, typed errors, and custom transport hooks
+- search and market-scan helpers for the parts of the API that people actually use
+- release-quality OSS hygiene: CI, tests, changelog, contributing guide, security policy, and a maintained coverage matrix
 
-## Why This Exists
+## What’s In The Current Generation
 
-There are community wrappers around the CSFloat API, but the ecosystem still benefits from a stronger TypeScript-first implementation with:
+- live-confirmed offer flows: create, counter, cancel, decline, history
+- live-confirmed purchase flows: direct `buyNow`, buy-order create/update/delete, seller-side `acceptSale`
+- public market helpers: `price-list`, wear presets, range builders, category helpers
+- browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
+- public companion `loadout-api.csfloat.com` support via `loadout.getUserLoadouts()` and `loadout.getLoadout()`
+- normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage`
 
-1. explicit request and response typing
-2. authenticated account and listing workflows
-3. async pagination for global listing scans
-4. clean examples and coverage docs
-5. a repository that is ready for real maintenance, review, and release workflows
-6. a consolidated public reference for the widest responsibly validated CSFloat API surface we can document
+## Coverage Philosophy
 
-## Why This Repository Stands Out
+This repository is not a thin wrapper around a few obvious endpoints.
 
-1. TypeScript-first SDK surface
-2. `fetch`-based transport with no runtime dependency bloat
-3. schema, meta, account, inventory, user, stall, listing, and history resources in one package
-4. mutation helpers for create/update/delete listing flows and validated account-side write helpers
-5. generic cursor pagination helper
-6. live-confirmed search support for `sort_by`, `filter`, `source`, `min_ref_qty`, `category`, `collection`, `rarity`, `paint_seed`, `min_price`, `max_price`, `min_float`, and `max_float`
-7. live-confirmed advanced market filters for `min_fade`, `max_fade`, `min_blue`, `max_blue`, `music_kit_index`, and `keychain_highlight_reel`
-8. live-confirmed watchlist toggle helpers for `POST/DELETE /listings/{id}/watchlist`
-9. live-confirmed wear preset helpers for `FN`, `MW`, `FT`, `WW`, and `BS`
-10. GitHub Actions CI
-11. release-facing OSS files (`CHANGELOG`, `CONTRIBUTING`, `SECURITY`, `API_COVERAGE`)
-12. repeatable live API audit script for validation and endpoint discovery
+It is a maintainer-oriented SDK and reference project built from:
 
-## Positioning
+1. official documentation
+2. public wrapper/source discovery
+3. repeatable live API probes
+4. browser-auth network inspection when the web app reveals additional stable surface
 
-This repository is not trying to be another thin wrapper around a couple of obvious endpoints.
-
-It is being built as a serious public SDK and documentation hub for the broadest responsibly confirmed CSFloat API surface we can verify in practice. That means:
+That means:
 
 1. no pretending to cover routes we have not validated
 2. no hiding uncertainty around undocumented behavior
-3. no separating SDK ergonomics from endpoint discovery and coverage notes
-
-If you want a CSFloat package that is both usable in code and useful as a public API reference, that is the standard this repository is targeting.
-
-## Coverage Statement
-
-This SDK covers the **currently known** CSFloat API surface based on:
-
-1. official documentation
-2. source discovery from public wrappers
-3. live validation against real account workflows
-
-The intent is not just to expose a few popular endpoints, but to centralize the broadest responsibly confirmed public and authenticated CSFloat API surface in one OSS repository.
-
-Confirmed market query support now includes live-tested `sort_by`, `filter`, `source`, `min_ref_qty`, `category`, `collection`, `rarity`, `min_price`, `max_price`, `paint_seed`, `min_fade`, `max_fade`, `min_blue`, `max_blue`, `music_kit_index`, and `keychain_highlight_reel` behavior for listing scans. Exact `source` semantics are still being mapped, so the SDK exposes it as a raw working parameter rather than a finalized enum.
-Wear filtering via `min_float` / `max_float` is also live-confirmed, and the SDK exports ready-to-use preset helpers matching the CSFloat search UI.
+3. no separating endpoint discovery from SDK ergonomics
 
 See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support matrix.
 

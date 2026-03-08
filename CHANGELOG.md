@@ -6,6 +6,8 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-03-08
+
 ### Added
 
 1. `account.createOffer()` for buyer-side offer creation via `POST /offers`
