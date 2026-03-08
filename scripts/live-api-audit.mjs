@@ -386,6 +386,7 @@ async function main() {
     ["POST", "/me/mobile/status", {}],
     ["POST", "/me/recommender-token", {}],
     ["POST", "/me/notary-token", {}],
+    ["POST", "/me/gs-inspect-token", {}],
     ["POST", "/buy-orders/similar-orders", { market_hash_name: "AK-47 | Redline (Field-Tested)" }],
     ["POST", "/buy-orders/matching-items/floatdb", { market_hash_name: "AK-47 | Redline (Field-Tested)" }],
     ["POST", "/listings/950170960026273280/bit", { max_price: 1 }],

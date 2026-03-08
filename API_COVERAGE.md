@@ -62,6 +62,7 @@ Status legend:
 | `/me/auto-bids/{id}` | `DELETE` | implemented | browser-auth network + live | confirmed happy-path delete with `{"message":"deleted auto-bid"}` |
 | `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
 | `/me/notary-token` | `POST` | implemented | browser bundle + live | returns `{ token, expires_at }` for the notary/companion flow |
+| `/me/gs-inspect-token` | `POST` | implemented | browser bundle + live | returns `{ token, expires_at }` for the external `gs-api.csfloat.com` inspect/equip companion flow |
 | `/me/payments/max-withdrawable` | `GET` | implemented | live + browser bundle | returns `{ max_withdrawable }` for the current account payout state |
 | `/me/payments/pending-deposits` | `GET` | implemented | browser bundle + live | authenticated pending-deposit list; current live sample returned `[]`, while bundle/UI usage reads fields such as `created`, `amount`, `currency`, and `payment_method_types` |
 | `/me/pending-withdrawals` | `GET` | implemented | live + browser bundle | returns the authenticated pending-withdrawal list; current live sample was an empty array |
@@ -309,6 +310,7 @@ Live-confirmed search behaviors:
 76. `PATCH /listings/bulk-modify` is live and currently confirmed with price-only updates: `{ modifications:[{ contract_id, price }] }` returned `{ data:[updated listings...] }` on the same two-listing batch
 77. `PATCH /listings/bulk-modify` failure modes are already useful for validation: `{ contract_id:"0", price:3 }` returned `500 "failed to fetch listing"`, while `{ contract_id:"0", price:1 }` failed earlier at the server price floor with `422 "minimum allowed price is $0.03 USD"`
 78. `PATCH /listings/bulk-delist` is live and reversible: `{ contract_ids:[...] }` returned `200 {"message":"contracts delisted"}` on the real two-listing batch, and `{ contract_ids:["0"] }` returned `500 "failed to delist contracts"`
+79. `POST /me/gs-inspect-token` is live and returns the same token-style contract as other companion flows: `{ token, expires_at }`; the current browser bundle uses it to authorize external `gs-api.csfloat.com/api/v1/players/equip*` requests, while the SDK intentionally stops at the CSFloat-side token helper for now
 
 ## Listing Creation Surface
 

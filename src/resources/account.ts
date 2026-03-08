@@ -8,6 +8,7 @@ import type {
   CsfloatBuyOrdersResponse,
   CsfloatCursorParams,
   CsfloatExtensionStatusResponse,
+  CsfloatGsInspectTokenResponse,
   CsfloatInspectBuyOrdersResponse,
   CsfloatListingsResponse,
   CsfloatMaxWithdrawableResponse,
@@ -208,6 +209,10 @@ export class AccountResource {
 
   createNotaryToken(): Promise<CsfloatNotaryTokenResponse> {
     return this.client.post<CsfloatNotaryTokenResponse>("me/notary-token", {});
+  }
+
+  createGsInspectToken(): Promise<CsfloatGsInspectTokenResponse> {
+    return this.client.post<CsfloatGsInspectTokenResponse>("me/gs-inspect-token", {});
   }
 
   getMaxWithdrawable(): Promise<CsfloatMaxWithdrawableResponse> {

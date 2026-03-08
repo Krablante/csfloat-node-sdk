@@ -655,6 +655,11 @@ export interface CsfloatNotaryTokenResponse {
   expires_at: string;
 }
 
+export interface CsfloatGsInspectTokenResponse {
+  token: string;
+  expires_at: string;
+}
+
 export interface CsfloatTransaction {
   id?: string;
   created_at?: string;

@@ -47,6 +47,15 @@ describe("AccountResource", () => {
     expect(post).toHaveBeenCalledWith("me/notary-token", {});
   });
 
+  it("creates a gs inspect token", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.createGsInspectToken();
+
+    expect(post).toHaveBeenCalledWith("me/gs-inspect-token", {});
+  });
+
   it("accepts trades in bulk", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);

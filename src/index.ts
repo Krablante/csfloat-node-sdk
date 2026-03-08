@@ -82,6 +82,7 @@ export type {
   CsfloatGenerateLoadoutResult,
   CsfloatGenerateLoadoutSkinItem,
   CsfloatGenerateLoadoutSuggestion,
+  CsfloatGsInspectTokenResponse,
   CsfloatListing,
   CsfloatListingBatchResponse,
   CsfloatListingsResponse,
