@@ -312,9 +312,11 @@ import {
   buildReferenceQuantityFilter,
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
+  CSFLOAT_HOMEPAGE_FEED_PRESETS,
   CSFLOAT_LISTING_TYPES,
   CSFLOAT_STICKER_SEARCH_OPTIONS,
   CSFLOAT_WATCHLIST_STATES,
+  getHomepageFeedParams,
   getCategoryParams,
   withWearPreset,
 } from "csfloat-node-sdk";
@@ -396,11 +398,18 @@ const soldWatchlist = await sdk.account.getWatchlist({
   limit: 10,
   state: CSFLOAT_WATCHLIST_STATES[1],
 });
+
+const publicUniqueFeed = await sdk.listings.getListings({
+  ...getHomepageFeedParams("unique"),
+  limit: 10,
+});
 ```
 
 `sticker_option: "packages"` is live-meaningful on market searches when paired with sticker filters; for example, sticker ids `85` and `96` currently surface `EMS One 2014 Souvenir Package` listings. The lower-level `custom_sticker_id` form is also live-meaningful: on 2026-03-08, `buildStickerFilters([{ custom_sticker_id: "C10204271498" }])` returned coldzera autograph rows on the public market.
 
 The public homepage currently reuses three stable unauthenticated market-feed variants: `Top Deals` -> `GET /listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500`, `Newest Items` -> the same feed with `sort_by=most_recent`, and `Unique Items` -> the same `Newest` feed plus `filter=unique`.
+
+`getHomepageFeedParams()` and `CSFLOAT_HOMEPAGE_FEED_PRESETS` expose those current public feed contracts directly, so consumers can start from the live-backed preset and then override `limit` or other safe params as needed.
 
 `account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
 

@@ -344,6 +344,7 @@ Live-confirmed search behaviors:
 104. the current public homepage bootstraps a highlighted buy-now feed via `GET /listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500`; browser replay and direct unauthenticated live probes both returned `200` on 2026-03-08, so this param combination is now tracked as a stable public page feed rather than just an incidental listing query
 105. the current cart/checkout UI does not map to a dedicated CSFloat `/cart` or `/checkout` API route: the live bundle on 2026-03-08 stores cart state under local storage key `checkout_cart_contracts`, refreshes entries through existing listing detail reads, and the item-card `buyNow()` path still delegates to the already-covered purchase flow (`purchaseContracts(...)` / `POST /listings/buy`); no separate cart backend endpoint was promoted from this pass
 106. browser-observed homepage radio states are currently backed by three distinct public feed queries on 2026-03-08: `Top Deals` -> `GET /listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500`, `Newest Items` -> the same route plus `sort_by=most_recent`, and `Unique Items` -> the same `Newest` route plus `filter=unique`; all three replayed directly without auth and returned `200`
+107. the SDK now exposes these public homepage feed combinations as `getHomepageFeedParams()` / `CSFLOAT_HOMEPAGE_FEED_PRESETS` instead of forcing consumers to hand-copy the current query-string contract
 
 ## Listing Creation Surface
 

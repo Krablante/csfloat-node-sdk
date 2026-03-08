@@ -29,6 +29,7 @@ The format is based on Keep a Changelog.
 19. `CsfloatOrder`, `CsfloatBuyOrdersParams`, and expanded `account.getBuyOrders()` typing for the browser-confirmed page/order surface on `/me/buy-orders`
 20. `buildKeychainPatternRange()` and `CsfloatKeychainPatternRangeParams` for the live-confirmed charm pattern range search surface
 21. `CSFLOAT_LISTING_TYPES` and `CSFLOAT_WATCHLIST_STATES` for the current live-confirmed enum-like `type` / `state` values used across market and watchlist queries
+22. `getHomepageFeedParams()` and `CSFLOAT_HOMEPAGE_FEED_PRESETS` for the current live-confirmed public homepage market-feed combinations (`top_deals`, `newest`, `unique`)
 
 ### Changed
 

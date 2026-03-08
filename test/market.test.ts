@@ -12,9 +12,11 @@ import {
   buildStickerFilters,
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   CSFLOAT_CATEGORY_PRESETS,
+  CSFLOAT_HOMEPAGE_FEED_PRESETS,
   CSFLOAT_LISTING_TYPES,
   CSFLOAT_STICKER_SEARCH_OPTIONS,
   CSFLOAT_WATCHLIST_STATES,
+  getHomepageFeedParams,
   getCategoryParams,
   withWearPreset,
 } from "../src/market.js";
@@ -31,10 +33,40 @@ describe("market helpers", () => {
     expect(CSFLOAT_STICKER_SEARCH_OPTIONS).toEqual(["skins", "packages"]);
     expect(CSFLOAT_WATCHLIST_STATES).toEqual(["listed", "sold", "delisted"]);
     expect(CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY).toBe(20);
+    expect(CSFLOAT_HOMEPAGE_FEED_PRESETS.top_deals).toEqual({
+      limit: 5,
+      min_ref_qty: 20,
+      type: "buy_now",
+      min_price: 500,
+    });
   });
 
   it("builds category params", () => {
     expect(getCategoryParams("souvenir")).toEqual({ category: 3 });
+  });
+
+  it("builds homepage feed presets", () => {
+    expect(getHomepageFeedParams("top_deals")).toEqual({
+      limit: 5,
+      min_ref_qty: 20,
+      type: "buy_now",
+      min_price: 500,
+    });
+    expect(getHomepageFeedParams("newest")).toEqual({
+      limit: 5,
+      min_ref_qty: 20,
+      type: "buy_now",
+      min_price: 500,
+      sort_by: "most_recent",
+    });
+    expect(getHomepageFeedParams("unique")).toEqual({
+      limit: 5,
+      min_ref_qty: 20,
+      type: "buy_now",
+      min_price: 500,
+      sort_by: "most_recent",
+      filter: "unique",
+    });
   });
 
   it("merges wear presets into listing params", () => {

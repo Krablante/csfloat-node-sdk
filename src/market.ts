@@ -14,6 +14,7 @@ import type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 import { getWearParams } from "./wear.js";
 
 export type CsfloatCategoryPreset = "normal" | "stattrak" | "souvenir" | "highlight";
+export type CsfloatHomepageFeedPreset = "top_deals" | "newest" | "unique";
 
 export const CSFLOAT_CATEGORY_PRESETS: Record<
   CsfloatCategoryPreset,
@@ -45,6 +46,36 @@ export const CSFLOAT_WATCHLIST_STATES: readonly CsfloatWatchlistState[] = [
   "sold",
   "delisted",
 ];
+
+export const CSFLOAT_HOMEPAGE_FEED_PRESETS: Record<
+  CsfloatHomepageFeedPreset,
+  Pick<
+    CsfloatListParams,
+    "limit" | "min_ref_qty" | "type" | "min_price" | "sort_by" | "filter"
+  >
+> = {
+  top_deals: {
+    limit: 5,
+    min_ref_qty: 20,
+    type: "buy_now",
+    min_price: 500,
+  },
+  newest: {
+    limit: 5,
+    min_ref_qty: 20,
+    type: "buy_now",
+    min_price: 500,
+    sort_by: "most_recent",
+  },
+  unique: {
+    limit: 5,
+    min_ref_qty: 20,
+    type: "buy_now",
+    min_price: 500,
+    sort_by: "most_recent",
+    filter: "unique",
+  },
+};
 
 export const CSFLOAT_SORT_OPTIONS: readonly SortBy[] = [
   "lowest_price",
@@ -130,6 +161,17 @@ export function getCategoryParams(
 ): Pick<CsfloatListParams, "category"> {
   return {
     category: CSFLOAT_CATEGORY_PRESETS[preset],
+  };
+}
+
+export function getHomepageFeedParams(
+  preset: CsfloatHomepageFeedPreset,
+): Pick<
+  CsfloatListParams,
+  "limit" | "min_ref_qty" | "type" | "min_price" | "sort_by" | "filter"
+> {
+  return {
+    ...CSFLOAT_HOMEPAGE_FEED_PRESETS[preset],
   };
 }
 
