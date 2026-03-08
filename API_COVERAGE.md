@@ -96,7 +96,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | Endpoint | Method | SDK Status | Validation Source | Notes |
 |---|---|---|---|---|
 | `/me/trades` | `GET` | implemented | live | returns `{ trades, count }`; supports `limit` |
-| `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; supports `limit` |
+| `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; current live validation confirms meaningful `page` + `limit`, while legacy `cursor` appears ignored |
 | `/me/watchlist` | `GET` | implemented | live + browser-auth UI | returns `{ data, cursor }`; currently confirmed with `limit`, `state`, `sort_by`, `filter`, `category`, `type`, `min_price`, `min_ref_qty`, `stickers`, `keychains`, and `sticker_option`; live-meaningful examples include `type=auction|buy_now`, `filter=unique`, and `sort_by=highest_discount|lowest_price` |
 | `/listings?limit=40&min_ref_qty=20` | `GET` | discovered | live + frontend network | special unauthenticated public feed shape used by public pages; general search params still require auth |
 | `/listings?filter=sticker_combos` | `GET` | discovered | live + browser UI + auth API | UI label `Sticker Combos`; requires auth |
@@ -334,6 +334,7 @@ Live-confirmed search behaviors:
 98. unlike `/listings` and `/me/watchlist`, the current public stall route is not capped at `50` rows per page: on 2026-03-08, `limit=51` returned `200`, and the live audit already uses `GET /users/{id}/stall?limit=500&type=buy_now` successfully for mutation-safe inventory reconciliation
 99. `GET /me/notifications/timeline` currently supports cursor pagination but not meaningful limit control: on 2026-03-08, replaying the response cursor returned an older page with a different first `notification_id`, while both `limit=1` and `limit=5` returned the same `42` rows as the default request; `cursor=0` simply fell back to the current first page rather than failing validation
 100. `GET /me/transactions` is broader than the original SDK typing suggested: on 2026-03-08, browser-auth discovery and direct API probes confirmed meaningful `order=asc|desc` plus `type=deposit|withdrawal|fine|bid_posted|trade_verified`; invalid `type=bogus` hard-failed with `400 "you are not authorized to filter by this transaction type"`, and invalid `order=bogus` hard-failed with `400 "bogus is not a valid order"`
+101. `GET /me/offers` is currently page-oriented rather than cursor-oriented on the live profile UI: on 2026-03-08, `/profile` used `GET /me/offers?page=0&limit=10`, direct API probes confirmed `page=0` and `page=1` are accepted, `limit=1` narrows the result set, invalid `page=bogus` hard-fails with `400 "failed to deserialize query params"`, and `cursor=abc` appears ignored on the current backend
 
 ## Listing Creation Surface
 

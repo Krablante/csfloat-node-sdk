@@ -45,6 +45,10 @@ export interface CsfloatCursorParams {
   limit?: number;
 }
 
+export interface CsfloatOffersParams extends CsfloatPageParams {
+  cursor?: string;
+}
+
 export interface CsfloatNotificationsParams {
   cursor?: string;
 }

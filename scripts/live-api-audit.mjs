@@ -199,7 +199,7 @@ async function main() {
   const firstTrade = tradesPreview.ok && tradesPreview.data?.trades?.[0]
     ? tradesPreview.data.trades[0]
     : null;
-  const offers = await request("GET", "/me/offers?limit=1");
+  const offers = await request("GET", "/me/offers?page=0&limit=1");
   const firstOffer = offers.ok && offers.data?.offers?.[0] ? offers.data.offers[0] : null;
   const offerId = firstOffer ? String(firstOffer.id) : null;
   const watchlistPreview = await request("GET", "/me/watchlist?limit=40");
@@ -278,7 +278,7 @@ async function main() {
     ["GET", "/me/transactions?page=0&limit=10&order=asc"],
     ["GET", "/me/transactions?page=0&limit=10&order=desc&type=deposit"],
     ["GET", "/me/trades?limit=1"],
-    ["GET", "/me/offers?limit=1"],
+    ["GET", "/me/offers?page=0&limit=1"],
     ["GET", "/me/offers-timeline?limit=1"],
     ...(offerId ? [["GET", `/offers/${offerId}`], ["GET", `/offers/${offerId}/history`]] : []),
     ["GET", "/me/watchlist?limit=1"],

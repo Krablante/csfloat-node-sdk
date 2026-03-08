@@ -6,7 +6,6 @@ import type {
   CsfloatAutoBid,
   CsfloatBuyOrder,
   CsfloatBuyOrdersResponse,
-  CsfloatCursorParams,
   CsfloatExtensionStatusResponse,
   CsfloatGsInspectTokenResponse,
   CsfloatInspectBuyOrdersResponse,
@@ -20,6 +19,7 @@ import type {
   CsfloatNotificationsParams,
   CsfloatNotaryTokenResponse,
   CsfloatOffer,
+  CsfloatOffersParams,
   CsfloatOffersResponse,
   CsfloatPageParams,
   CsfloatPendingDeposit,
@@ -128,7 +128,7 @@ export class AccountResource {
     return this.cancelTrade(tradeId);
   }
 
-  getOffers(params: CsfloatCursorParams = {}): Promise<CsfloatOffersResponse> {
+  getOffers(params: CsfloatOffersParams = {}): Promise<CsfloatOffersResponse> {
     return this.client.get<CsfloatOffersResponse>("me/offers", params as QueryParams);
   }
 

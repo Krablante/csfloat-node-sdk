@@ -22,10 +22,12 @@ describe("AccountResource", () => {
     const get = vi.fn(async (_path: string, _params?: unknown) => null);
     const resource = new AccountResource({ get } as never);
 
-    await resource.getOffers({ limit: 1 });
+    await resource.getOffers({ limit: 10, page: 0, cursor: "legacy-cursor" });
 
     expect(get).toHaveBeenCalledWith("me/offers", {
-      limit: 1,
+      limit: 10,
+      page: 0,
+      cursor: "legacy-cursor",
     });
   });
 

@@ -25,6 +25,7 @@ The format is based on Keep a Changelog.
 15. `CsfloatStallParams` and expanded `stall.getStall()` typing for the live-confirmed listing-style public stall query surface
 16. cursor-aware `account.getNotifications({ cursor })` support for the live-confirmed notifications timeline pagination surface
 17. `CsfloatTransactionsParams`, `CsfloatTransactionOrder`, and `CsfloatTransactionType` for the live-confirmed `/me/transactions` filtering and ordering surface
+18. `CsfloatOffersParams` and expanded `account.getOffers()` typing for the live-confirmed page-based `/me/offers` surface
 
 ### Changed
 
@@ -48,6 +49,7 @@ The format is based on Keep a Changelog.
 18. clarified notifications timeline pagination semantics: `cursor` is live-meaningful, while `limit` currently appears to be ignored and therefore remains intentionally unexposed in the typed SDK surface
 19. fixed `audit:live` absolute-URL handling so external companion routes such as `loadout-api.csfloat.com` are no longer falsely prefixed with the main CSFloat API base URL during regression runs
 20. widened `account.getTransactions()` from plain page params to the live-confirmed `page`, `limit`, `order`, and `type` surface after browser-auth discovery on the profile transactions tab and direct API validation of the current filter/order values
+21. widened `account.getOffers()` from `limit`-only/cursor-oriented typing to the current live profile-UI surface where `page` and `limit` are meaningful, while the old `cursor` param now remains documented as backward-compatible but currently ignored
 
 ## [0.7.0] - 2026-03-08
 

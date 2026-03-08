@@ -235,6 +235,8 @@ console.log(
 
 `account.getTransactions()` now accepts the live-confirmed `order` and `type` query params in addition to `page` and `limit`. Current UI/API validation on 2026-03-08 confirmed `order=asc|desc` plus `type=deposit|withdrawal|fine|bid_posted|trade_verified`.
 
+`account.getOffers()` now accepts the current profile-UI pagination shape for `/me/offers`: `page` and `limit` are live-meaningful, while the older `cursor` param currently appears to be ignored by the backend and is only kept as a backward-compatible low-level field in the typed params.
+
 `stall.getStall()` now accepts the same practical listing-style query params currently confirmed on public stall pages, including `sort_by`, `filter`, `type`, and `min_ref_qty`.
 
 By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.

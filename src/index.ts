@@ -127,6 +127,7 @@ export type {
   CsfloatNotaryRule,
   CsfloatNotaryTokenResponse,
   CsfloatOffer,
+  CsfloatOffersParams,
   CsfloatOfferState,
   CsfloatOfferType,
   CsfloatOffersResponse,
