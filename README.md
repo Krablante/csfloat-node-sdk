@@ -350,9 +350,11 @@ import {
   CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   CSFLOAT_HOMEPAGE_FEED_PRESETS,
   CSFLOAT_LISTING_TYPES,
+  CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS,
   CSFLOAT_STICKER_SEARCH_OPTIONS,
   CSFLOAT_WATCHLIST_STATES,
   getHomepageFeedParams,
+  getPublicMarketPageParams,
   getCategoryParams,
   withWearPreset,
 } from "csfloat-node-sdk";
@@ -452,6 +454,12 @@ const publicUniqueFeed = await sdk.listings.getListings({
   ...getHomepageFeedParams("unique"),
   limit: 10,
 });
+const publicMarketPage = await sdk.listings.getListings(
+  getPublicMarketPageParams(),
+);
+const samePublicMarketPage = await sdk.listings.getListings({
+  ...CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS,
+});
 ```
 
 `sticker_option: "packages"` is live-meaningful on market searches when paired with sticker filters; for example, sticker ids `85` and `96` currently surface `EMS One 2014 Souvenir Package` listings. The lower-level `custom_sticker_id` form is also live-meaningful: on 2026-03-08, `buildStickerFilters([{ custom_sticker_id: "C10204271498" }])` returned coldzera autograph rows on the public market.
@@ -459,6 +467,8 @@ const publicUniqueFeed = await sdk.listings.getListings({
 The public homepage currently reuses three stable unauthenticated market-feed variants: `Top Deals` -> `GET /listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500`, `Newest Items` -> the same feed with `sort_by=most_recent`, and `Unique Items` -> the same `Newest` feed plus `filter=unique`.
 
 `getHomepageFeedParams()` and `CSFLOAT_HOMEPAGE_FEED_PRESETS` expose those current public feed contracts directly, so consumers can start from the live-backed preset and then override `limit` or other safe params as needed.
+
+The unauthenticated `/search` page is stricter than the homepage feed toggles: the current public page bootstrap is exactly `GET /listings?limit=40&min_ref_qty=20`, and adding `sort_by`, `filter`, `type`, or `min_price` to that public baseline currently flips the route into auth-gated `403` behavior. `getPublicMarketPageParams()` and `CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS` expose that exact current public page contract directly.
 
 `account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
 

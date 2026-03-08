@@ -77,6 +77,13 @@ export const CSFLOAT_HOMEPAGE_FEED_PRESETS: Record<
   },
 };
 
+export const CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS: Readonly<
+  Pick<CsfloatListParams, "limit" | "min_ref_qty">
+> = {
+  limit: 40,
+  min_ref_qty: 20,
+};
+
 export const CSFLOAT_SORT_OPTIONS: readonly SortBy[] = [
   "lowest_price",
   "highest_price",
@@ -172,6 +179,15 @@ export function getHomepageFeedParams(
 > {
   return {
     ...CSFLOAT_HOMEPAGE_FEED_PRESETS[preset],
+  };
+}
+
+export function getPublicMarketPageParams(): Pick<
+  CsfloatListParams,
+  "limit" | "min_ref_qty"
+> {
+  return {
+    ...CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS,
   };
 }
 

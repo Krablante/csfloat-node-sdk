@@ -14,9 +14,11 @@ import {
   CSFLOAT_CATEGORY_PRESETS,
   CSFLOAT_HOMEPAGE_FEED_PRESETS,
   CSFLOAT_LISTING_TYPES,
+  CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS,
   CSFLOAT_STICKER_SEARCH_OPTIONS,
   CSFLOAT_WATCHLIST_STATES,
   getHomepageFeedParams,
+  getPublicMarketPageParams,
   getCategoryParams,
   withWearPreset,
 } from "../src/market.js";
@@ -38,6 +40,10 @@ describe("market helpers", () => {
       min_ref_qty: 20,
       type: "buy_now",
       min_price: 500,
+    });
+    expect(CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS).toEqual({
+      limit: 40,
+      min_ref_qty: 20,
     });
   });
 
@@ -66,6 +72,13 @@ describe("market helpers", () => {
       min_price: 500,
       sort_by: "most_recent",
       filter: "unique",
+    });
+  });
+
+  it("builds the public market page params", () => {
+    expect(getPublicMarketPageParams()).toEqual({
+      limit: 40,
+      min_ref_qty: 20,
     });
   });
 

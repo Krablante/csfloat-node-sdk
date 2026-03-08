@@ -33,6 +33,7 @@ The format is based on Keep a Changelog.
 23. `loadout.getDiscoverLoadouts()`, `getDiscoverLoadoutParams()`, `CSFLOAT_DISCOVER_LOADOUT_PARAMS`, and `CSFLOAT_LOADOUT_SORT_OPTIONS` for the current live-confirmed public discover-mode companion surface
 24. `buildLoadoutListParams()`, `buildLoadoutSkinSearchParams()`, `CSFLOAT_LOADOUT_MAX_LIMIT`, and `loadout.getSkinLoadouts()` for the current live-confirmed loadout search boundary and paired skin-search contract
 25. `account.iterateWatchlist()` and `stall.iterateStall()` as live-backed cursor helpers for the current watchlist and public stall pagination surface
+26. `getPublicMarketPageParams()` and `CSFLOAT_PUBLIC_MARKET_PAGE_PARAMS` for the exact live-confirmed unauthenticated `/search` page bootstrap query
 
 ### Changed
 
