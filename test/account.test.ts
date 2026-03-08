@@ -58,6 +58,17 @@ describe("AccountResource", () => {
     });
   });
 
+  it("marks trades as received in bulk", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.markTradesReceived(["950579360988006321"]);
+
+    expect(post).toHaveBeenCalledWith("trades/bulk/received", {
+      trade_ids: ["950579360988006321"],
+    });
+  });
+
   it("requests a single trade by id", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ get } as never);

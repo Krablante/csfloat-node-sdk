@@ -97,7 +97,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/trades/{id}/cannot-deliver` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely seller-side failure path, not executed happy-path due risk |
 | `/trades/{id}/dispute` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; not exercised on a real trade |
 | `/trades/{id}/received` | `POST` | discovered | browser bundle + live | real pending buyer-side trade returned `400 missing steam offer ID`; route and state gating are clear, but no successful live sample yet |
-| `/trades/bulk/received` | `POST` | discovered | browser bundle + live | bundle-confirmed buyer flow; invalid `trade_ids:["0"]` returned `400 invalid trade ids specified`, and a real pending buyer-side trade returned `400 missing steam offer ID`; no successful live sample yet |
+| `/trades/bulk/received` | `POST` | implemented | browser bundle + live | bundle-confirmed buyer flow using `{ trade_ids }`; invalid `trade_ids:["0"]` returned `400 invalid trade ids specified`, and a real pending buyer-side trade returned `400 missing steam offer ID` until a Steam offer exists |
 | `/trades/{id}/rollback` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
 | `/trades/{id}/manual-verification` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |
 | `/trades/{id}/rollback-verify` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; semantics still unmapped |

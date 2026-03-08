@@ -21,6 +21,7 @@ The format is based on Keep a Changelog.
 11. `meta.getNotary()` and `account.createNotaryToken()` for the browser-confirmed notary companion flow
 12. `account.getSimilarBuyOrders()` for the live-confirmed buy-order insight route `POST /buy-orders/similar-orders`
 13. `account.getBuyOrdersForInspect()` for the inspect-link oriented `GET /buy-orders/item` route, returning direct `{ expression, qty, price }[]` rows
+14. `account.markTradesReceived()` for the buyer-side bulk receipt route `POST /trades/bulk/received`
 
 ### Changed
 
@@ -37,6 +38,7 @@ The format is based on Keep a Changelog.
 11. clarified the accept-sale split: single-trade `POST /trades/{id}/accept` is the reliable seller-side happy-path on the main account, while `POST /trades/bulk/accept` remains live but can reject visible queued IDs on some seller states
 12. expanded coverage notes for `/meta/notary`, `/me/notary-token`, `/buy-orders/item`, `/buy-orders/matching-items/floatdb`, `/trades/bulk/received`, `/trades/{id}/report-error`, and `/trades/notary`
 13. refined buy-order insight coverage: `/buy-orders/item` is now promoted to implemented based on a real inspect-link happy-path, while `/buy-orders/similar-orders` now documents browser-observed `limit` and advanced-expression semantics without over-claiming SDK support for the raw expression AST
+14. promoted `/trades/bulk/received` to implemented based on bundle-confirmed payload shape `{ trade_ids }` plus real buyer-side state-gated validation (`missing steam offer ID` until a Steam offer exists)
 
 ## [0.6.0] - 2026-03-08
 

@@ -60,6 +60,14 @@ export class AccountResource {
     return this.client.post<CsfloatTradeBatchResponse>("trades/bulk/accept", body);
   }
 
+  markTradesReceived(tradeIds: string[] | AcceptTradesRequest): Promise<CsfloatTrade[]> {
+    const body = Array.isArray(tradeIds)
+      ? { trade_ids: tradeIds }
+      : tradeIds;
+
+    return this.client.post<CsfloatTrade[]>("trades/bulk/received", body);
+  }
+
   acceptTrade(tradeId: string): Promise<CsfloatTrade> {
     return this.client.post<CsfloatTrade>(`trades/${tradeId}/accept`, {});
   }
