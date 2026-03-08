@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   findSchemaPaintsByIndex,
+  getCsfloatScreenshotUrls,
   getSchemaCollection,
   getSchemaPaint,
   getSchemaRarityByValue,
@@ -10,8 +11,9 @@ import {
   listSchemaMusicKits,
   listSchemaPaints,
   listSchemaWeapons,
+  toCsfloatScreenshotUrl,
 } from "../src/schema.js";
-import type { CsfloatSchemaResponse } from "../src/types.js";
+import type { CsfloatSchemaResponse, CsfloatSchemaScreenshotResponse } from "../src/types.js";
 
 const schema: CsfloatSchemaResponse = {
   collections: [
@@ -73,6 +75,14 @@ const schema: CsfloatSchemaResponse = {
   },
 };
 
+const screenshot: CsfloatSchemaScreenshotResponse = {
+  id: "1305328935500910839",
+  sides: {
+    playside: { path: "m/1305328935500910839/playside.png" },
+    backside: { path: "m/1305328935500910839/backside.png" },
+  },
+};
+
 describe("schema helpers", () => {
   it("resolves collections and rarities", () => {
     expect(getSchemaCollection(schema, "set_cobblestone")?.name).toBe(
@@ -124,5 +134,15 @@ describe("schema helpers", () => {
         paint: schema.weapons["7"]!.paints["282"]!,
       },
     ]);
+  });
+
+  it("builds absolute screenshot urls from relative screenshot paths", () => {
+    expect(toCsfloatScreenshotUrl("m/1305328935500910839/playside.png")).toBe(
+      "https://csfloat.pics/m/1305328935500910839/playside.png",
+    );
+    expect(getCsfloatScreenshotUrls(screenshot)).toEqual({
+      playside: "https://csfloat.pics/m/1305328935500910839/playside.png",
+      backside: "https://csfloat.pics/m/1305328935500910839/backside.png",
+    });
   });
 });

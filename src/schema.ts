@@ -5,8 +5,11 @@ import type {
   CsfloatSchemaPaint,
   CsfloatSchemaRarity,
   CsfloatSchemaResponse,
+  CsfloatSchemaScreenshotResponse,
   CsfloatSchemaWeapon,
 } from "./types.js";
+
+const CSFLOAT_PICS_BASE_URL = "https://csfloat.pics/";
 
 export interface CsfloatSchemaRecordEntry<T> {
   key: string;
@@ -18,6 +21,11 @@ export interface CsfloatSchemaPaintMatch {
   weapon_name: string;
   paint_key: string;
   paint: CsfloatSchemaPaint;
+}
+
+export interface CsfloatScreenshotUrls {
+  playside?: string;
+  backside?: string;
 }
 
 function listRecordEntries<T>(
@@ -105,4 +113,20 @@ export function findSchemaPaintsByIndex(
   }
 
   return matches;
+}
+
+export function toCsfloatScreenshotUrl(path: string): string {
+  return new URL(path.replace(/^\/+/, ""), CSFLOAT_PICS_BASE_URL).toString();
+}
+
+export function getCsfloatScreenshotUrls(
+  screenshot: CsfloatSchemaScreenshotResponse,
+): CsfloatScreenshotUrls {
+  const playsidePath = screenshot.sides?.playside?.path;
+  const backsidePath = screenshot.sides?.backside?.path;
+
+  return {
+    ...(playsidePath ? { playside: toCsfloatScreenshotUrl(playsidePath) } : {}),
+    ...(backsidePath ? { backside: toCsfloatScreenshotUrl(backsidePath) } : {}),
+  };
 }

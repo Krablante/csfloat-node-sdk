@@ -16,6 +16,7 @@ export { paginateCursor } from "./pagination.js";
 export { LoadoutResource } from "./resources/loadout.js";
 export {
   findSchemaPaintsByIndex,
+  getCsfloatScreenshotUrls,
   getSchemaCollection,
   getSchemaPaint,
   getSchemaRarityByValue,
@@ -24,6 +25,7 @@ export {
   listSchemaMusicKits,
   listSchemaPaints,
   listSchemaWeapons,
+  toCsfloatScreenshotUrl,
 } from "./schema.js";
 export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
@@ -36,6 +38,7 @@ export type {
   CsfloatPriceRangeParams,
 } from "./market.js";
 export type {
+  CsfloatScreenshotUrls,
   CsfloatSchemaPaintMatch,
   CsfloatSchemaRecordEntry,
 } from "./schema.js";
