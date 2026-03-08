@@ -77,4 +77,25 @@ describe("MetaResource", () => {
 
     expect(get).toHaveBeenCalledWith("meta/notary");
   });
+
+  it("requests external inspect-link item details with the checker origin header", async () => {
+    const deriveGet = vi.fn(async (_path: string, _params?: unknown) => null);
+    const derive = vi.fn(() => ({
+      get: deriveGet,
+    }));
+    const resource = new MetaResource({ derive } as never);
+
+    await resource.inspectItem("steam://inspect-link");
+
+    expect(derive).toHaveBeenCalledWith({
+      baseUrl: "https://api.csfloat.com",
+      sendAuthorization: false,
+      defaultHeaders: {
+        Origin: "https://csfloat.com",
+      },
+    });
+    expect(deriveGet).toHaveBeenCalledWith("", {
+      url: "steam://inspect-link",
+    });
+  });
 });

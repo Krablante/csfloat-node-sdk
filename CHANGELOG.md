@@ -20,6 +20,7 @@ The format is based on Keep a Changelog.
 10. `CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY` and `buildReferenceQuantityFilter()` for the live-confirmed `min_ref_qty` listing/watchlist filter used by the `Exclude Rare Items` UI toggle
 11. `CSFLOAT_STICKER_SEARCH_OPTIONS` for the current live-confirmed sticker attachment search modes (`skins` and `packages`)
 12. `npm run audit:live:extended` for the heavier market-filter and candidate-route live sweep
+13. `meta.inspectItem()` for the live-confirmed external Float Checker route `GET https://api.csfloat.com/?url=<inspectLink>`
 
 ### Changed
 
@@ -36,6 +37,7 @@ The format is based on Keep a Changelog.
 11. slowed the default `audit:live` pacing to `1250ms` per request and added a single GET retry after `429` responses so the safe live regression pass better matches the intended market pacing
 12. split `audit:live` into `core` vs `extended` scopes so the default script keeps the stable surface while `audit:live:extended` carries the more rate-limit-prone market query burst and candidate sweep
 13. strengthened `/me/watchlist` live coverage with meaningful `type=auction|buy_now`, `filter=unique`, and `sort_by=highest_discount` / `sort_by=lowest_price` confirmations, and kept those checks on the core live-audit path
+14. taught the HTTP client to support derived external companion calls with custom default headers and optional authorization suppression, which is now used for the origin-gated checker lookup surface
 
 ## [0.7.0] - 2026-03-08
 

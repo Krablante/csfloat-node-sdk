@@ -30,12 +30,25 @@ function extractErrorCode(details: unknown): string | undefined {
 }
 
 function extractApiMessage(details: unknown): string | undefined {
-  if (!details || typeof details !== "object" || !("message" in details)) {
+  if (!details || typeof details !== "object") {
     return undefined;
   }
 
-  const message = details.message;
-  return typeof message === "string" && message.length > 0 ? message : undefined;
+  if ("message" in details) {
+    const message = details.message;
+    if (typeof message === "string" && message.length > 0) {
+      return message;
+    }
+  }
+
+  if ("error" in details) {
+    const error = details.error;
+    if (typeof error === "string" && error.length > 0) {
+      return error;
+    }
+  }
+
+  return undefined;
 }
 
 function classifyApiError(
@@ -161,6 +174,8 @@ export type CsfloatFetch = typeof fetch;
 export interface CsfloatClientOptions {
   apiKey: string;
   baseUrl?: string;
+  defaultHeaders?: Record<string, string>;
+  sendAuthorization?: boolean;
   timeoutMs?: number;
   userAgent?: string;
   maxRetries?: number;
@@ -174,6 +189,8 @@ export interface CsfloatClientOptions {
 export class CsfloatHttpClient {
   private readonly apiKey: string;
   private readonly baseUrl: string;
+  private readonly defaultHeaders: Record<string, string>;
+  private readonly sendAuthorization: boolean;
   private readonly timeoutMs: number;
   private readonly userAgent: string;
   private readonly maxRetries: number;
@@ -190,6 +207,8 @@ export class CsfloatHttpClient {
 
     this.apiKey = options.apiKey;
     this.baseUrl = options.baseUrl ?? "https://csfloat.com/api/v1";
+    this.defaultHeaders = { ...(options.defaultHeaders ?? {}) };
+    this.sendAuthorization = options.sendAuthorization ?? true;
     this.timeoutMs = options.timeoutMs ?? 15_000;
     this.userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
     this.maxRetries = options.maxRetries ?? DEFAULT_MAX_RETRIES;
@@ -204,6 +223,11 @@ export class CsfloatHttpClient {
     return new CsfloatHttpClient({
       apiKey: options.apiKey ?? this.apiKey,
       baseUrl: options.baseUrl ?? this.baseUrl,
+      defaultHeaders: {
+        ...this.defaultHeaders,
+        ...(options.defaultHeaders ?? {}),
+      },
+      sendAuthorization: options.sendAuthorization ?? this.sendAuthorization,
       timeoutMs: options.timeoutMs ?? this.timeoutMs,
       userAgent: options.userAgent ?? this.userAgent,
       maxRetries: options.maxRetries ?? this.maxRetries,
@@ -268,9 +292,10 @@ export class CsfloatHttpClient {
         const init: RequestInit & { dispatcher?: unknown } = {
           method,
           headers: {
-            Authorization: this.apiKey,
-            "Content-Type": "application/json",
             "User-Agent": this.userAgent,
+            ...this.defaultHeaders,
+            ...(this.sendAuthorization ? { Authorization: this.apiKey } : {}),
+            "Content-Type": "application/json",
           },
           signal: controller.signal,
         };

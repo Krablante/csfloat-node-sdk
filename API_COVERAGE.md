@@ -33,6 +33,7 @@ Status legend:
 | `/meta/app` | `GET` | implemented | browser bundle + live | app bootstrap metadata; current live response returned `{ min_required_version: "9.0.0" }` |
 | `/meta/location` | `GET` | implemented | live + public wrapper source | public inferred location data |
 | `/meta/notary` | `GET` | implemented | browser bundle + live | returns current notary availability flags such as `{ rollback:{enabled,background}, accepted:{enabled,background} }` |
+| `https://api.csfloat.com/?url={inspectLink}` | `GET` | implemented | browser tool network + live | external Float Checker companion route; currently requires `Origin: https://csfloat.com` and returns `{ iteminfo:{ defindex, paintindex, floatvalue, paintseed, full_item_name, ... } }` |
 | `https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts` | `GET` | implemented | browser-auth network + live | public external CSFloat loadout service; returns `{ loadouts: [...] }` |
 | `https://loadout-api.csfloat.com/v1/loadout/{id}` | `GET` | implemented | browser-auth network + live | public loadout detail route; returns `{ loadout: ... }` |
 | `https://loadout-api.csfloat.com/v1/loadout` | `GET` | implemented | bundle semantics + live | public/global loadout list route; confirmed `sort_by=created_at|favorites|random`; currently observed as `{ loadouts: [...] }` |
@@ -325,6 +326,7 @@ Live-confirmed search behaviors:
 90. `min_ref_qty` is live-meaningful on both `/listings` and `/me/watchlist`: the browser `Exclude Rare Items` toggle maps to `min_ref_qty=20`, higher floors such as `100` further narrow results, and invalid values like `min_ref_qty=bogus` hard-fail with `400 code 18 schema: error converting value for "min_ref_qty"`
 91. current live limit ceilings on 2026-03-08 are `50` for both `/listings` and `/me/watchlist`: `limit=50` returned `200`, while `limit=51` and above returned `400 {"code":4,"message":"limit is too high"}`
 92. the watchlist page currently reuses meaningful market-style sort and listing-mode params beyond `most_recent`: on 2026-03-08, the default page ordering matched `sort_by=best_deal`, `sort_by=highest_discount` reordered the first rows versus default, `sort_by=lowest_price` surfaced the cheapest watched rows first, `type=auction` returned only auction rows, `type=buy_now` returned buy-now rows, and `filter=unique` also returned a distinct watchlist slice
+93. the `/checker` page uses an external companion route rather than `/api/v1`: on 2026-03-08, browser-auth network and direct live replay confirmed `GET https://api.csfloat.com/?url=<inspectLink>` with `Origin: https://csfloat.com` returning `{ iteminfo:{ origin, quality, rarity, paintseed, defindex, paintindex, floatvalue, min, max, weapon_type, item_name, rarity_name, quality_name, wear_name, full_item_name, s, a, d, m } }`; the same request without a valid `Origin` header returned `400 {"error":"Invalid Origin"}`
 
 ## Listing Creation Surface
 

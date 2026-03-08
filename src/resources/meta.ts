@@ -2,6 +2,7 @@ import type { CsfloatHttpClient } from "../client.js";
 import type {
   CsfloatAppMetaResponse,
   CsfloatExchangeRatesResponse,
+  CsfloatInspectResponse,
   CsfloatLocationResponse,
   CsfloatNotaryMetaResponse,
   CsfloatSchemaBrowseResponse,
@@ -11,6 +12,8 @@ import type {
   CsfloatSchemaResponse,
   QueryParams,
 } from "../types.js";
+
+const CSFLOAT_INSPECT_API_BASE_URL = "https://api.csfloat.com";
 
 export class MetaResource {
   constructor(private readonly client: CsfloatHttpClient) {}
@@ -46,5 +49,19 @@ export class MetaResource {
 
   getNotary(): Promise<CsfloatNotaryMetaResponse> {
     return this.client.get<CsfloatNotaryMetaResponse>("meta/notary");
+  }
+
+  inspectItem(inspectLink: string): Promise<CsfloatInspectResponse> {
+    return this.client
+      .derive({
+        baseUrl: CSFLOAT_INSPECT_API_BASE_URL,
+        sendAuthorization: false,
+        defaultHeaders: {
+          Origin: "https://csfloat.com",
+        },
+      })
+      .get<CsfloatInspectResponse>("", {
+        url: inspectLink,
+      });
   }
 }

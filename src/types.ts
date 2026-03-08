@@ -302,6 +302,33 @@ export interface CsfloatNotaryMetaResponse {
   accepted?: CsfloatNotaryRule;
 }
 
+export interface CsfloatInspectItemInfo {
+  origin?: number;
+  quality?: number;
+  rarity?: number;
+  paintseed?: number;
+  defindex?: number;
+  paintindex?: number;
+  floatvalue?: number;
+  min?: number;
+  max?: number;
+  weapon_type?: string;
+  item_name?: string;
+  rarity_name?: string;
+  quality_name?: string;
+  wear_name?: string;
+  full_item_name?: string;
+  s?: string;
+  a?: string;
+  d?: string;
+  m?: string;
+  [key: string]: unknown;
+}
+
+export interface CsfloatInspectResponse {
+  iteminfo: CsfloatInspectItemInfo;
+}
+
 export interface CsfloatLoadoutItemRef {
   def_index?: number;
   paint_index?: number;

@@ -76,6 +76,28 @@ describe("CsfloatHttpClient", () => {
     });
   });
 
+  it("uses fallback api error text from an error field when message is absent", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ code: 13, error: "Invalid Origin" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({ apiKey: "secret" });
+
+    await expect(client.get("checker")).rejects.toMatchObject<CsfloatSdkError>({
+      status: 400,
+      kind: "validation",
+      apiMessage: "Invalid Origin",
+      details: {
+        code: 13,
+        error: "Invalid Origin",
+      },
+    });
+  });
+
   it("classifies role-gated responses", async () => {
     const fetchMock = vi.fn(async () =>
       new Response(
@@ -318,5 +340,45 @@ describe("CsfloatHttpClient", () => {
         }),
       }),
     );
+  });
+
+  it("can derive a child client with custom headers and no authorization", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ iteminfo: { floatvalue: 0.1 } }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    const client = new CsfloatHttpClient({
+      apiKey: "secret",
+      fetch: fetchMock as typeof fetch,
+      userAgent: "csfloat-node-sdk/test",
+    });
+
+    const derived = client.derive({
+      baseUrl: "https://api.csfloat.com",
+      sendAuthorization: false,
+      defaultHeaders: {
+        Origin: "https://csfloat.com",
+      },
+    });
+
+    await derived.get("", {
+      url: "steam://inspect-link",
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL("https://api.csfloat.com/?url=steam%3A%2F%2Finspect-link"),
+      expect.objectContaining({
+        method: "GET",
+        headers: expect.objectContaining({
+          Origin: "https://csfloat.com",
+          "User-Agent": "csfloat-node-sdk/test",
+        }),
+      }),
+    );
+
+    const [, init] = fetchMock.mock.calls[0];
+    expect(init.headers).not.toHaveProperty("Authorization");
   });
 });

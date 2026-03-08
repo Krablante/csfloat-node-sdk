@@ -82,6 +82,8 @@ export type {
   CsfloatFirebaseMessaging,
   CsfloatHistoryGraphParams,
   CsfloatHistoryGraphPoint,
+  CsfloatInspectItemInfo,
+  CsfloatInspectResponse,
   CsfloatInferredLocation,
   CsfloatInventoryItem,
   CsfloatInventoryResponse,
