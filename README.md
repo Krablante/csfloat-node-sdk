@@ -399,6 +399,8 @@ const soldWatchlist = await sdk.account.getWatchlist({
 
 `sticker_option: "packages"` is live-meaningful on market searches when paired with sticker filters; for example, sticker ids `85` and `96` currently surface `EMS One 2014 Souvenir Package` listings. The lower-level `custom_sticker_id` form is also live-meaningful: on 2026-03-08, `buildStickerFilters([{ custom_sticker_id: "C10204271498" }])` returned coldzera autograph rows on the public market.
 
+The public homepage currently reuses three stable unauthenticated market-feed variants: `Top Deals` -> `GET /listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500`, `Newest Items` -> the same feed with `sort_by=most_recent`, and `Unique Items` -> the same `Newest` feed plus `filter=unique`.
+
 `account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
 
 ```ts

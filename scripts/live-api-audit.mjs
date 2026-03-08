@@ -352,6 +352,8 @@ async function main() {
     ...(loadoutId ? [["GET", `https://loadout-api.csfloat.com/v1/loadout/${loadoutId}`]] : []),
     ["GET", "/listings?limit=40&min_ref_qty=20"],
     ["GET", "/listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500"],
+    ["GET", "/listings?limit=5&sort_by=most_recent&min_ref_qty=20&type=buy_now&min_price=500"],
+    ["GET", "/listings?limit=5&sort_by=most_recent&filter=unique&min_ref_qty=20&type=buy_now&min_price=500"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
     ...(steamId
       ? [
