@@ -20,7 +20,7 @@ Status legend:
 | `/listings/{id}` | `DELETE` | implemented | live + python clone | unlist / delist behavior |
 | `/users/{id}` | `GET` | implemented | python clone + live | public user profile |
 | `/users/{id}/stall` | `GET` | implemented | python clone + live | public user stall |
-| `/me` | `GET` | implemented | live + python clone | authenticated account |
+| `/me` | `GET` | implemented | live + python clone | authenticated account; current profile `Earnings` card is derived from `user.statistics.total_sales` and `user.statistics.total_purchases` in this payload, not from a separate earnings endpoint |
 | `/me/inventory` | `GET` | implemented | live + python clone | authenticated inventory |
 | `/history/{market_hash_name}/sales` | `GET` | implemented | live | sales history |
 | `/schema` | `GET` | implemented | live + public wrapper source | public item schema; both `/schema` and `/schema/` resolve |
@@ -57,7 +57,12 @@ Status legend:
 | `/me/auto-bids/{id}` | `DELETE` | implemented | browser-auth network + live | confirmed happy-path delete with `{"message":"deleted auto-bid"}` |
 | `/me/recommender-token` | `POST` | implemented | live + browser-auth network | returns `{ token, expires_at }` |
 | `/me/notary-token` | `POST` | implemented | browser bundle + live | returns `{ token, expires_at }` for the notary/companion flow |
+| `/me/payments/max-withdrawable` | `GET` | implemented | live + browser bundle | returns `{ max_withdrawable }` for the current account payout state |
+| `/me/pending-withdrawals` | `GET` | implemented | live + browser bundle | returns the authenticated pending-withdrawal list; current live sample was an empty array |
+| `/me/pending-withdrawals/{id}` | `DELETE` | implemented | live invalid probe + browser bundle | invalid probe on `id=0` returned `200` with an empty body, confirming the route/method despite the currently opaque response shape |
+| `/me/extension/status` | `GET` | implemented | live + browser bundle | returns extension version/permission metadata for the authenticated account |
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
+| `/me/transactions/export` | `GET` | implemented | live + browser bundle | returns CSV text for a full past month via `year` + `month`; current-month exports reject with `400 full month must be in the past` |
 | `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path on at least one seller account; current live retest on the main seller account showed that visible queued trade IDs can still return `invalid trade ids specified`, so treat this as a bulk/helper route with account-state nuance |
 | `/trades/{id}/accept` | `POST` | implemented | browser bundle + live | confirmed happy-path on a real queued cross-account sale (`10` cents) from the main seller account; current live response transitioned the trade to `pending` and returned the updated `CsfloatTrade` payload |
 | `/trades/bulk/cancel` | `POST` | implemented | browser bundle + live invalid probe | bundle-mapped seller-side bulk cancel route; live invalid probe with `{ trade_ids:[\"0\"] }` returned `400 invalid trade ids specified` on the correct path |

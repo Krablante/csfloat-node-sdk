@@ -6,6 +6,8 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-03-08
+
 ### Added
 
 1. `listings.placeBid()` for auction max-price bidding via the live-confirmed `POST /listings/{id}/bid` route
@@ -22,6 +24,8 @@ The format is based on Keep a Changelog.
 12. `account.getSimilarBuyOrders()` for the live-confirmed buy-order insight route `POST /buy-orders/similar-orders`
 13. `account.getBuyOrdersForInspect()` for the inspect-link oriented `GET /buy-orders/item` route, returning direct `{ expression, qty, price }[]` rows
 14. `account.markTradesReceived()` for the buyer-side bulk receipt route `POST /trades/bulk/received`
+15. `account.exportTransactions()` for the live-confirmed monthly CSV export route `GET /me/transactions/export`
+16. `account.getMaxWithdrawable()`, `account.getPendingWithdrawals()`, `account.deletePendingWithdrawal()`, and `account.getExtensionStatus()` for the newly validated account payout/extension routes under `/me/*`
 
 ### Changed
 

@@ -7,8 +7,10 @@ import type {
   CsfloatBuyOrder,
   CsfloatBuyOrdersResponse,
   CsfloatCursorParams,
+  CsfloatExtensionStatusResponse,
   CsfloatInspectBuyOrdersResponse,
   CsfloatListingsResponse,
+  CsfloatMaxWithdrawableResponse,
   CreateBuyOrderRequest,
   CsfloatMessageResponse,
   CsfloatMeResponse,
@@ -18,6 +20,7 @@ import type {
   CsfloatOffer,
   CsfloatOffersResponse,
   CsfloatPageParams,
+  CsfloatPendingWithdrawal,
   CsfloatRecommenderTokenResponse,
   CsfloatTrade,
   CsfloatTradeBatchResponse,
@@ -138,6 +141,10 @@ export class AccountResource {
     return this.client.get<CsfloatTransactionsResponse>("me/transactions", params as QueryParams);
   }
 
+  exportTransactions(year: number, month: number): Promise<string> {
+    return this.client.get<string>("me/transactions/export", { year, month });
+  }
+
   getAccountStanding(): Promise<CsfloatAccountStandingResponse> {
     return this.client.get<CsfloatAccountStandingResponse>("me/account-standing");
   }
@@ -200,6 +207,26 @@ export class AccountResource {
 
   createNotaryToken(): Promise<CsfloatNotaryTokenResponse> {
     return this.client.post<CsfloatNotaryTokenResponse>("me/notary-token", {});
+  }
+
+  getMaxWithdrawable(): Promise<CsfloatMaxWithdrawableResponse> {
+    return this.client.get<CsfloatMaxWithdrawableResponse>("me/payments/max-withdrawable");
+  }
+
+  getPendingWithdrawals(): Promise<CsfloatPendingWithdrawal[]> {
+    return this.client.get<CsfloatPendingWithdrawal[]>("me/pending-withdrawals");
+  }
+
+  deletePendingWithdrawal(
+    withdrawalId: string | number,
+  ): Promise<CsfloatMessageResponse | null> {
+    return this.client.delete<CsfloatMessageResponse | null>(
+      `me/pending-withdrawals/${withdrawalId}`,
+    );
+  }
+
+  getExtensionStatus(): Promise<CsfloatExtensionStatusResponse> {
+    return this.client.get<CsfloatExtensionStatusResponse>("me/extension/status");
   }
 
   getMobileStatus(): Promise<CsfloatMobileStatusResponse> {

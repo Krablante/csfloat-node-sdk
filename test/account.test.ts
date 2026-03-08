@@ -240,6 +240,18 @@ describe("AccountResource", () => {
     });
   });
 
+  it("exports transactions for a past month", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.exportTransactions(2026, 2);
+
+    expect(get).toHaveBeenCalledWith("me/transactions/export", {
+      year: 2026,
+      month: 2,
+    });
+  });
+
   it("requests account standing", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ get } as never);
@@ -379,6 +391,42 @@ describe("AccountResource", () => {
     await resource.getMobileStatus();
 
     expect(get).toHaveBeenCalledWith("me/mobile/status");
+  });
+
+  it("requests max withdrawable balance", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getMaxWithdrawable();
+
+    expect(get).toHaveBeenCalledWith("me/payments/max-withdrawable");
+  });
+
+  it("requests pending withdrawals", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getPendingWithdrawals();
+
+    expect(get).toHaveBeenCalledWith("me/pending-withdrawals");
+  });
+
+  it("deletes a pending withdrawal", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ delete: del } as never);
+
+    await resource.deletePendingWithdrawal("0");
+
+    expect(del).toHaveBeenCalledWith("me/pending-withdrawals/0");
+  });
+
+  it("requests extension status", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getExtensionStatus();
+
+    expect(get).toHaveBeenCalledWith("me/extension/status");
   });
 
   it("patches generic me settings", async () => {

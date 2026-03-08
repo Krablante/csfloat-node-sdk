@@ -755,6 +755,22 @@ export interface CsfloatAccountStandingResponse {
   recent_restrictions?: unknown[];
 }
 
+export interface CsfloatExtensionStatusResponse {
+  created_at?: string;
+  updated_at?: string;
+  version?: string;
+  steam_community_permission?: boolean;
+  steam_powered_permission?: boolean;
+  user_agent?: string;
+  access_token_steam_id?: string;
+  status?: string;
+  message?: string;
+}
+
+export interface CsfloatMaxWithdrawableResponse {
+  max_withdrawable?: number;
+}
+
 export interface CsfloatMobileStatusResponse {
   created_at?: string;
   updated_at?: string;
@@ -768,6 +784,11 @@ export interface CsfloatMobileStatusResponse {
 
 export interface CsfloatMessageResponse {
   message: string;
+}
+
+export interface CsfloatPendingWithdrawal {
+  id?: string | number;
+  [key: string]: unknown;
 }
 
 export interface CsfloatUpdateMeRequest {

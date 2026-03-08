@@ -2,7 +2,7 @@ import { CsfloatSdkError, type CsfloatErrorKind } from "./errors.js";
 import type { QueryParams } from "./types.js";
 import { cleanParams } from "./utils.js";
 
-const DEFAULT_USER_AGENT = "csfloat-node-sdk/0.6.0";
+const DEFAULT_USER_AGENT = "csfloat-node-sdk/0.7.0";
 const DEFAULT_MAX_RETRIES = 2;
 const DEFAULT_RETRY_DELAY_MS = 250;
 const DEFAULT_MAX_RETRY_DELAY_MS = 2_000;
