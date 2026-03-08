@@ -175,6 +175,23 @@ async function main() {
   const offers = await request("GET", "/me/offers?limit=1");
   const firstOffer = offers.ok && offers.data?.offers?.[0] ? offers.data.offers[0] : null;
   const offerId = firstOffer ? String(firstOffer.id) : null;
+  const schemaPreview = await request("GET", "/schema");
+  const firstStickerIndex =
+    schemaPreview.ok && schemaPreview.data?.stickers?.[0]?.sticker_index
+      ? Number(schemaPreview.data.stickers[0].sticker_index)
+      : null;
+  const firstKeychainIndex =
+    schemaPreview.ok && schemaPreview.data?.keychains?.[0]?.keychain_index
+      ? Number(schemaPreview.data.keychains[0].keychain_index)
+      : null;
+  const stickerFilterQuery =
+    firstStickerIndex === null
+      ? null
+      : encodeURIComponent(JSON.stringify([{ i: firstStickerIndex }]));
+  const keychainFilterQuery =
+    firstKeychainIndex === null
+      ? null
+      : encodeURIComponent(JSON.stringify([{ i: firstKeychainIndex }]));
 
   const listings = await request("GET", "/listings?limit=1&type=buy_now");
   const firstListing = listings.ok && listings.data?.data?.[0] ? listings.data.data[0] : null;
@@ -295,6 +312,8 @@ async function main() {
     ["GET", "/listings?limit=1&keychain_highlight_reel=1"],
     ["GET", "/listings?limit=1&def_index=507&paint_index=38&min_fade=99&max_fade=100"],
     ["GET", "/listings?limit=1&min_blue=90&max_blue=100"],
+    ...(stickerFilterQuery ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}`]] : []),
+    ...(keychainFilterQuery ? [["GET", `/listings?limit=1&keychains=${keychainFilterQuery}`]] : []),
     // filter enum values — live-confirmed; unauthenticated requests return 403 (not 401)
     ["GET", "/listings?limit=1&filter=sticker_combos"],
     ["GET", "/listings?limit=1&filter=unique"],
