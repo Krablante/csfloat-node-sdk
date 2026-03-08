@@ -57,6 +57,8 @@ Status legend:
 | `/me/mobile/status` | `GET` | implemented | live + public wrapper source | authenticated mobile status |
 | `/trades/bulk/accept` | `POST` | implemented | live + public wrapper source | confirmed happy-path accept on a real queued `$0.05` sale with body `{ trade_ids: string[] }` |
 | `/trades/bulk/cancel` | `POST` | implemented | browser bundle + live invalid probe | bundle-mapped seller-side bulk cancel route; live invalid probe with `{ trade_ids:[\"0\"] }` returned `400 invalid trade ids specified` on the correct path |
+| `/trades/{id}` | `GET` | implemented | browser bundle + live | trade detail route now captured from a real queued cross-account trade; current live sample included `{ buyer, seller, contract, trade_url, trade_token, wait_for_cancel_ping, is_settlement_period }` |
+| `/trades/{id}/buyer-details` | `GET` | implemented | browser bundle + live | buyer-details route now captured from a real queued cross-account trade; current live sample shape `{ steam_level, persona_name, avatar_url }` |
 | `/trades/{id}` | `DELETE` | implemented | browser bundle + live invalid probe | bundle-mapped seller-side cancel route; live invalid probe on `id=0` returned `500 record not found`, confirming path/method |
 | `/me` | `PATCH` | implemented | live + public wrapper source | confirmed with no-op patch for `offers_enabled`, `max_offer_discount`, `stall_public`, `away`, `trade_url`; **also confirmed for `background_url` and `username` (2026-03-07 research pass 2)** |
 | `/me/notifications/read-receipt` | `POST` | implemented | live + public wrapper source | mark notifications read via `last_read_id` |
@@ -86,8 +88,6 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
 | `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
 | `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
-| `/trades/{id}` | `GET` | discovered | browser bundle + live invalid probe | trade detail route exists; invalid `id=0` returned `500 record not found`; happy-path sample not yet captured in current account state |
-| `/trades/{id}/buyer-details` | `GET` | discovered | browser bundle + live invalid probe | buyer-details route exists; invalid `id=0` returned `500 record not found`; response shape still unmapped |
 | `/trades/{id}/cannot-deliver` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely seller-side failure path, not executed happy-path due risk |
 | `/trades/{id}/dispute` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; not exercised on a real trade |
 | `/trades/{id}/received` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely buyer-side receipt acknowledgement path |

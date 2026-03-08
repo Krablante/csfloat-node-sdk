@@ -129,6 +129,7 @@ export type {
   CsfloatTopBid,
   CsfloatTrade,
   CsfloatTradeBatchResponse,
+  CsfloatTradeBuyerDetails,
   CsfloatTradeRole,
   CsfloatTradeState,
   CsfloatTradesResponse,

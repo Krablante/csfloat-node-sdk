@@ -548,6 +548,12 @@ export interface CsfloatTradeSteamOffer {
   updated_at?: string;
 }
 
+export interface CsfloatTradeBuyerDetails {
+  steam_level?: number;
+  persona_name?: string;
+  avatar_url?: string;
+}
+
 export interface CsfloatTrade {
   id?: string;
   created_at?: string;

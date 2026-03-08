@@ -327,6 +327,8 @@ async function main() {
     ["GET", "/listings/950170960026273280/sales"],
     ["GET", "/listings/948726619852374910/sales"],
     ["GET", "/offers/0/history"],
+    ["GET", "/trades/0"],
+    ["GET", "/trades/0/buyer-details"],
     ["GET", "/me/notifications"],
     ["GET", "/me/notification"],
     ["GET", "/me/offer-history?limit=1"],

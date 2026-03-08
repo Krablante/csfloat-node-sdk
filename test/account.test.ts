@@ -49,6 +49,24 @@ describe("AccountResource", () => {
     });
   });
 
+  it("requests a single trade by id", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getTrade("950574621256714680");
+
+    expect(get).toHaveBeenCalledWith("trades/950574621256714680");
+  });
+
+  it("requests buyer details for a trade", async () => {
+    const get = vi.fn(async (_path: string) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getTradeBuyerDetails("950574621256714680");
+
+    expect(get).toHaveBeenCalledWith("trades/950574621256714680/buyer-details");
+  });
+
   it("accepts a single trade", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);

@@ -17,7 +17,9 @@ import type {
   CsfloatOffersResponse,
   CsfloatPageParams,
   CsfloatRecommenderTokenResponse,
+  CsfloatTrade,
   CsfloatTradeBatchResponse,
+  CsfloatTradeBuyerDetails,
   CsfloatTradesParams,
   CsfloatTradesResponse,
   CsfloatTransactionsResponse,
@@ -36,6 +38,14 @@ export class AccountResource {
 
   getTrades(params: CsfloatTradesParams = {}): Promise<CsfloatTradesResponse> {
     return this.client.get<CsfloatTradesResponse>("me/trades", params as QueryParams);
+  }
+
+  getTrade(tradeId: string): Promise<CsfloatTrade> {
+    return this.client.get<CsfloatTrade>(`trades/${tradeId}`);
+  }
+
+  getTradeBuyerDetails(tradeId: string): Promise<CsfloatTradeBuyerDetails> {
+    return this.client.get<CsfloatTradeBuyerDetails>(`trades/${tradeId}/buyer-details`);
   }
 
   acceptTrades(tradeIds: string[] | AcceptTradesRequest): Promise<CsfloatTradeBatchResponse> {
