@@ -38,6 +38,20 @@ describe("authenticated user typing", () => {
     expect(order.bought_item_count).toBe(0);
   });
 
+  it("accepts the currently observed expression-backed buy-order fields", () => {
+    const order: CsfloatBuyOrder = {
+      id: "950841605202512568",
+      created_at: "0001-01-01T00:00:00Z",
+      expression: "(DefIndex == 7 and PaintIndex == 72 and StatTrak == false and Souvenir == false)",
+      qty: 1,
+      price: 3,
+      bought_item_count: 0,
+    };
+
+    expect(order.expression).toContain("DefIndex == 7");
+    expect(order.price).toBe(3);
+  });
+
   it("accepts the currently observed me response top-level fields", () => {
     const me: CsfloatMeResponse = {
       user: {

@@ -231,11 +231,20 @@ export class AccountResource {
   }
 
   createBuyOrder(request: CreateBuyOrderRequest): Promise<CsfloatBuyOrder> {
-    return this.client.post<CsfloatBuyOrder>("buy-orders", {
-      market_hash_name: request.market_hash_name,
-      max_price: request.max_price,
-      ...(request.quantity === undefined ? {} : { quantity: request.quantity }),
-    });
+    return this.client.post<CsfloatBuyOrder>(
+      "buy-orders",
+      "expression" in request
+        ? {
+            expression: request.expression,
+            max_price: request.max_price,
+            ...(request.quantity === undefined ? {} : { quantity: request.quantity }),
+          }
+        : {
+            market_hash_name: request.market_hash_name,
+            max_price: request.max_price,
+            ...(request.quantity === undefined ? {} : { quantity: request.quantity }),
+          },
+    );
   }
 
   updateBuyOrder(orderId: string, request: UpdateBuyOrderRequest): Promise<CsfloatBuyOrder> {

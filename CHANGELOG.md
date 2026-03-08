@@ -39,6 +39,8 @@ The format is based on Keep a Changelog.
 29. `buildCollectionFilter()`, `buildRarityFilter()`, `buildPaintSeedFilter()`, and `buildMusicKitFilter()` for the already live-confirmed visible market filter fields
 30. `check:node`, `pack:check`, `release:check`, stronger CI coverage for package/examples/scripts, and `prepublishOnly` release gating
 31. stronger npm package metadata: clearer live-validated description, broader discoverability keywords, and `sideEffects: false`
+32. `CsfloatBuyOrderExpressionBuilder`, `buildExpressionBuyOrderRequest()`, `buildSingleSkinBuyOrderExpression()`, `buildSingleSkinBuyOrderRequest()`, and the related buy-order expression types/constants for the now live-confirmed expression-backed `/buy-orders` and `/buy-orders/similar-orders` workflows
+33. a publishable `example:buy-order` script covering safe expression-backed similar-order lookups without creating a live order
 
 ### Changed
 
@@ -70,6 +72,7 @@ The format is based on Keep a Changelog.
 26. strengthened the live-backed attachment-filter story by adding a repeatable `custom_sticker_id` market probe and documenting the currently working `stickers=[{"c":"C10204271498"}]` search contract
 27. expanded the public market/homepage coverage again by adding repeatable unauthenticated probes for the current `Top Deals`, `Newest Items`, and `Unique Items` homepage feed variants
 28. tightened the public loadout-discover typing by narrowing `any_filled` to the only live-accepted value (`true`) and adding the current discover-mode `GET /v1/loadout?sort_by=favorites&limit=20&months=1&any_filled=true` route to the repeatable live audit
+29. promoted the buy-order expression path from browser-observed/docs-only semantics to implemented SDK surface after live-confirming `POST /buy-orders` create/delete and `POST /buy-orders/similar-orders?limit=...` happy-paths with a real expression AST on 2026-03-08
 
 ## [0.7.0] - 2026-03-08
 

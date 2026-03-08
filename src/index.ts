@@ -2,6 +2,16 @@ export { CsfloatHttpClient } from "./client.js";
 export { CsfloatSdk } from "./sdk.js";
 export { CsfloatSdkError, isCsfloatSdkError } from "./errors.js";
 export {
+  buildExpressionBuyOrderRequest,
+  buildSingleSkinBuyOrderExpression,
+  buildSingleSkinBuyOrderRequest,
+  CsfloatBuyOrderExpressionBuilder,
+  CSFLOAT_BUY_ORDER_COMPARISON_OPERATORS,
+  CSFLOAT_BUY_ORDER_EXPRESSION_FIELDS,
+  CSFLOAT_BUY_ORDER_GROUP_CONDITIONS,
+  CSFLOAT_BUY_ORDER_OPERATORS,
+} from "./buy-order.js";
+export {
   buildGenerateLoadoutRecommendationsRequest,
   buildLoadoutListParams,
   buildLoadoutRecommendationRequest,
@@ -63,6 +73,11 @@ export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 export type { CsfloatClientOptions, CsfloatFetch } from "./client.js";
 export type { CsfloatErrorKind, CsfloatSdkErrorOptions } from "./errors.js";
 export type {
+  CsfloatBuyOrderComparableField,
+  CsfloatSingleSkinBuyOrderExpressionOptions,
+  CsfloatSingleSkinBuyOrderRequestOptions,
+} from "./buy-order.js";
+export type {
   CsfloatLoadoutSkinSearchParams,
   CsfloatSingleSkinRecommendationOptions,
   CsfloatSingleSkinStickerRecommendationOptions,
@@ -99,8 +114,20 @@ export type {
   CsfloatAutoBid,
   CsfloatBid,
   CsfloatBuyOrder,
+  CsfloatBuyOrderExpressionComparisonOperator,
+  CsfloatBuyOrderExpressionCondition,
+  CsfloatBuyOrderExpressionField,
+  CsfloatBuyOrderExpressionGroup,
+  CsfloatBuyOrderExpressionGroupEntry,
+  CsfloatBuyOrderExpressionNestedGroup,
+  CsfloatBuyOrderExpressionOperator,
+  CsfloatBuyOrderExpressionRule,
+  CsfloatBuyOrderExpressionRuleValue,
+  CsfloatBuyOrderExpressionStickerValue,
   CsfloatBuyOrdersParams,
   CsfloatBuyOrdersResponse,
+  CsfloatCreateExpressionBuyOrderRequest,
+  CsfloatCreateMarketHashBuyOrderRequest,
   CsfloatExtensionStatusResponse,
   CsfloatFavoriteLoadoutsResponse,
   CsfloatSource,
@@ -197,6 +224,8 @@ export type {
   CsfloatSchemaResponse,
   CsfloatSchemaSticker,
   CsfloatSchemaWeapon,
+  CsfloatSimilarBuyOrdersByExpressionRequest,
+  CsfloatSimilarBuyOrdersByMarketHashRequest,
   CsfloatSimilarBuyOrder,
   CsfloatSimilarBuyOrdersResponse,
   CsfloatStickerRecommendationRequest,

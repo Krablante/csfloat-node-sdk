@@ -832,15 +832,90 @@ export interface CsfloatSimilarBuyOrdersResponse {
   data: CsfloatSimilarBuyOrder[];
 }
 
-export interface CreateBuyOrderRequest {
+export type CsfloatBuyOrderExpressionCondition = "and" | "or";
+
+export type CsfloatBuyOrderExpressionField =
+  | "FloatValue"
+  | "Stickers"
+  | "PaintSeed"
+  | "StatTrak"
+  | "Souvenir"
+  | "Rarity"
+  | "DefIndex"
+  | "PaintIndex";
+
+export type CsfloatBuyOrderExpressionComparisonOperator =
+  | "=="
+  | ">"
+  | ">="
+  | "<"
+  | "<=";
+
+export type CsfloatBuyOrderExpressionOperator =
+  | CsfloatBuyOrderExpressionComparisonOperator
+  | "has";
+
+export interface CsfloatBuyOrderExpressionStickerValue {
+  id: number;
+  qty?: number;
+  slot?: number;
+}
+
+export interface CsfloatBuyOrderExpressionRuleValue {
+  constant?: string;
+  sticker?: CsfloatBuyOrderExpressionStickerValue;
+}
+
+export interface CsfloatBuyOrderExpressionRule {
+  field: CsfloatBuyOrderExpressionField;
+  operator: CsfloatBuyOrderExpressionOperator;
+  value: CsfloatBuyOrderExpressionRuleValue;
+}
+
+export interface CsfloatBuyOrderExpressionNestedGroup {
+  expression: CsfloatBuyOrderExpressionGroup;
+}
+
+export type CsfloatBuyOrderExpressionGroupEntry =
+  | CsfloatBuyOrderExpressionRule
+  | CsfloatBuyOrderExpressionNestedGroup;
+
+export interface CsfloatBuyOrderExpressionGroup {
+  condition: CsfloatBuyOrderExpressionCondition;
+  rules: CsfloatBuyOrderExpressionGroupEntry[];
+}
+
+export interface CsfloatCreateMarketHashBuyOrderRequest {
   market_hash_name: string;
   max_price: number;
   quantity?: number;
+  expression?: never;
 }
 
-export interface SimilarBuyOrdersRequest {
-  market_hash_name: string;
+export interface CsfloatCreateExpressionBuyOrderRequest {
+  expression: CsfloatBuyOrderExpressionGroup;
+  max_price: number;
+  quantity?: number;
+  market_hash_name?: never;
 }
+
+export type CreateBuyOrderRequest =
+  | CsfloatCreateMarketHashBuyOrderRequest
+  | CsfloatCreateExpressionBuyOrderRequest;
+
+export interface CsfloatSimilarBuyOrdersByMarketHashRequest {
+  market_hash_name: string;
+  expression?: never;
+}
+
+export interface CsfloatSimilarBuyOrdersByExpressionRequest {
+  expression: CsfloatBuyOrderExpressionGroup;
+  market_hash_name?: never;
+}
+
+export type SimilarBuyOrdersRequest =
+  | CsfloatSimilarBuyOrdersByMarketHashRequest
+  | CsfloatSimilarBuyOrdersByExpressionRequest;
 
 export interface UpdateBuyOrderRequest {
   max_price: number;

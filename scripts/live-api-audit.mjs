@@ -541,6 +541,21 @@ async function main() {
     ["POST", "/me/notary-token", {}],
     ["POST", "/me/gs-inspect-token", {}],
     ["POST", "/buy-orders/similar-orders", { market_hash_name: "AK-47 | Redline (Field-Tested)" }],
+    [
+      "POST",
+      "/buy-orders/similar-orders",
+      {
+        expression: {
+          condition: "and",
+          rules: [
+            { field: "DefIndex", operator: "==", value: { constant: "7" } },
+            { field: "PaintIndex", operator: "==", value: { constant: "72" } },
+            { field: "StatTrak", operator: "==", value: { constant: "false" } },
+            { field: "Souvenir", operator: "==", value: { constant: "false" } },
+          ],
+        },
+      },
+    ],
     ["POST", "/listings/950170960026273280/bit", { max_price: 1 }],
     ["DELETE", "/offers/0"],
     ["POST", "/trades/bulk/received", { trade_ids: ["0"] }],
@@ -606,6 +621,16 @@ async function main() {
   }
 
   if (config.allowLiveMutations && steamId) {
+    const safariMeshExpression = {
+      condition: "and",
+      rules: [
+        { field: "DefIndex", operator: "==", value: { constant: "7" } },
+        { field: "PaintIndex", operator: "==", value: { constant: "72" } },
+        { field: "StatTrak", operator: "==", value: { constant: "false" } },
+        { field: "Souvenir", operator: "==", value: { constant: "false" } },
+      ],
+    };
+
     const buyOrderCreate = await request("POST", "/buy-orders", {
       market_hash_name: "Sticker | Aleksib | Paris 2023",
       max_price: 1,
@@ -629,6 +654,31 @@ async function main() {
           delete_summary: buyOrderDelete.ok
             ? summarizePayload(buyOrderDelete.data)
             : errorSummary(buyOrderDelete.data),
+        },
+      });
+    }
+
+    const expressionBuyOrderCreate = await request("POST", "/buy-orders", {
+      expression: safariMeshExpression,
+      max_price: 3,
+      quantity: 1,
+    });
+
+    if (expressionBuyOrderCreate.ok && expressionBuyOrderCreate.data?.id) {
+      const orderId = String(expressionBuyOrderCreate.data.id);
+      const expressionBuyOrderDelete = await request("DELETE", `/buy-orders/${orderId}`);
+
+      summary.mutation_checks.push({
+        method: "POST/DELETE",
+        route: `/buy-orders/${orderId}`,
+        status: expressionBuyOrderCreate.status,
+        ok: expressionBuyOrderCreate.ok && expressionBuyOrderDelete.ok,
+        details: {
+          expression: expressionBuyOrderCreate.data?.expression,
+          created_price: expressionBuyOrderCreate.data?.price,
+          delete_summary: expressionBuyOrderDelete.ok
+            ? summarizePayload(expressionBuyOrderDelete.data)
+            : errorSummary(expressionBuyOrderDelete.data),
         },
       });
     }

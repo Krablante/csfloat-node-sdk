@@ -411,6 +411,49 @@ describe("AccountResource", () => {
     });
   });
 
+  it("requests similar buy orders for an expression", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.getSimilarBuyOrders({
+      expression: {
+        condition: "and",
+        rules: [
+          {
+            field: "DefIndex",
+            operator: "==",
+            value: { constant: "7" },
+          },
+          {
+            field: "PaintIndex",
+            operator: "==",
+            value: { constant: "72" },
+          },
+        ],
+      },
+    }, 3);
+
+    expect(post).toHaveBeenCalledWith("buy-orders/similar-orders", {
+      expression: {
+        condition: "and",
+        rules: [
+          {
+            field: "DefIndex",
+            operator: "==",
+            value: { constant: "7" },
+          },
+          {
+            field: "PaintIndex",
+            operator: "==",
+            value: { constant: "72" },
+          },
+        ],
+      },
+    }, {
+      limit: 3,
+    });
+  });
+
   it("creates a buy order with explicit quantity", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);
@@ -440,6 +483,51 @@ describe("AccountResource", () => {
     expect(post).toHaveBeenCalledWith("buy-orders", {
       market_hash_name: "AWP | Dragon Lore (Factory New)",
       max_price: 1,
+    });
+  });
+
+  it("creates an expression-backed buy order", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.createBuyOrder({
+      expression: {
+        condition: "and",
+        rules: [
+          {
+            field: "DefIndex",
+            operator: "==",
+            value: { constant: "7" },
+          },
+          {
+            field: "PaintIndex",
+            operator: "==",
+            value: { constant: "72" },
+          },
+        ],
+      },
+      max_price: 3,
+      quantity: 1,
+    });
+
+    expect(post).toHaveBeenCalledWith("buy-orders", {
+      expression: {
+        condition: "and",
+        rules: [
+          {
+            field: "DefIndex",
+            operator: "==",
+            value: { constant: "7" },
+          },
+          {
+            field: "PaintIndex",
+            operator: "==",
+            value: { constant: "72" },
+          },
+        ],
+      },
+      max_price: 3,
+      quantity: 1,
     });
   });
 

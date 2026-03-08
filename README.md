@@ -33,6 +33,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - state-gated trade lifecycle helpers, including seller-side `acceptSale()` and buyer-side `markTradesReceived()`
 - low-level trade sync helpers for the browser-observed Steam status routes: `syncSteamNewOffer()` and `syncSteamOffers()`
 - live-confirmed buy-order insight flows: inspect-based lookup and similar-order discovery
+- live-confirmed buy-order expression workflows via `account.createBuyOrder({ expression, ... })`, `account.getSimilarBuyOrders({ expression }, ...)`, and composable builder helpers
 - live-confirmed support helpers around adjacent account/insight flows such as `meta.getNotary()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, and `account.getSimilarBuyOrders()`
 - live-confirmed auction flow pieces: bid history, max-price `placeBid()`, `deleteAutoBid()` cancellation on cheap auctions, and stable item-route bootstrap reads for `getBuyOrders()` / `getSimilar()` around active auction listings
 - live-confirmed bulk listing controls: `createBulkListings()`, `updateBulkListings()`, and `deleteBulkListings()` / `unlistBulkListings()`
@@ -121,6 +122,7 @@ npm run example:basic
 Additional focused examples:
 
 ```bash
+npm run example:buy-order
 npm run example:market
 npm run example:watchlist
 npm run example:loadout
@@ -131,6 +133,7 @@ Published/package-ready examples now cover:
 1. public market page + homepage feed presets
 2. authenticated watchlist iteration + public stall iteration
 3. public loadout discover + single-skin recommendation flows
+4. expression-backed buy-order similarity lookups
 
 ## Minimal Usage
 
@@ -341,6 +344,31 @@ const generatedRequest = buildGenerateLoadoutRecommendationsRequest({
 `account.getOffers()` now accepts the current profile-UI pagination shape for `/me/offers`: `page` and `limit` are live-meaningful, while the older `cursor` param currently appears to be ignored by the backend and is only kept as a backward-compatible low-level field in the typed params.
 
 `account.getBuyOrders()` now accepts the current profile-UI page contract for `/me/buy-orders`: `page`, `limit`, and a validated `order=asc|desc`. The current accounts used during 2026-03-08 validation had zero active buy orders, so the ordering effect remains documented conservatively even though the backend validates the field and the UI emits `order=desc`.
+
+The buy-order layer now also covers the expression-backed workflow that the browser/API accepts in practice. Live validation on 2026-03-08 confirmed both `POST /buy-orders` and `POST /buy-orders/similar-orders?limit=...` with an AST body like `{ expression:{ condition, rules }, max_price, quantity }`. To keep this convenient, the SDK now exports `CsfloatBuyOrderExpressionBuilder`, `buildSingleSkinBuyOrderExpression()`, `buildExpressionBuyOrderRequest()`, and `buildSingleSkinBuyOrderRequest()`:
+
+```ts
+import {
+  buildSingleSkinBuyOrderExpression,
+  buildSingleSkinBuyOrderRequest,
+} from "csfloat-node-sdk";
+
+const expression = buildSingleSkinBuyOrderExpression(7, 72, {
+  stattrak: false,
+  souvenir: false,
+});
+
+const request = buildSingleSkinBuyOrderRequest(7, 72, {
+  max_price: 3,
+  quantity: 1,
+  stattrak: false,
+  souvenir: false,
+});
+
+const similar = await sdk.account.getSimilarBuyOrders({ expression }, 3);
+const temporaryOrder = await sdk.account.createBuyOrder(request);
+await sdk.account.deleteBuyOrder(String(temporaryOrder.id));
+```
 
 `stall.getStall()` now accepts the same practical listing-style query params currently confirmed on public stall pages, including `sort_by`, `filter`, `type`, and `min_ref_qty`.
 

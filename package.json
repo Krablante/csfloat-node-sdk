@@ -43,6 +43,7 @@
     "release:check": "npm test && npm run check && npm run check:node && npm run build && npm run pack:check",
     "test": "vitest run",
     "example:basic": "node --env-file=.env examples/basic.mjs",
+    "example:buy-order": "node --env-file=.env examples/buy-order-expression.mjs",
     "example:market": "node --env-file=.env examples/market-public-feeds.mjs",
     "example:watchlist": "node --env-file=.env examples/watchlist-stall-iteration.mjs",
     "example:loadout": "node --env-file=.env examples/loadout-companion.mjs",
