@@ -57,6 +57,7 @@ The format is based on Keep a Changelog.
 23. strengthened market/search docs and live audit coverage around `music_kit_index`, `keychain_highlight_reel`, and `min_keychain_pattern` / `max_keychain_pattern`, including a fresh non-empty `Charm | Semi-Precious` pattern-range confirmation on 2026-03-08
 24. tightened market/search coverage again with live-distinct `filter=sticker_combos` vs `filter=unique` semantics, a tracked public homepage feed probe (`/listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500`), and an explicit note that the current cart UI is client-side `checkout_cart_contracts` state rather than a dedicated `/cart` backend route
 25. aligned the repeatable live audit with the current allowed scope by removing stale `verify-sms`, report-flow, floatdb-adjacent, and Stripe-connect probes from the default sweep
+26. strengthened the live-backed attachment-filter story by adding a repeatable `custom_sticker_id` market probe and documenting the currently working `stickers=[{"c":"C10204271498"}]` search contract
 
 ## [0.7.0] - 2026-03-08
 

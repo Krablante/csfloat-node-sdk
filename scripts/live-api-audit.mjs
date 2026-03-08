@@ -237,6 +237,8 @@ async function main() {
       : encodeURIComponent(JSON.stringify([{ i: firstStickerIndex }]));
   // Live-confirmed positive probe (2026-03-08): sticker ids 85 and 96 surface souvenir packages.
   const packageProbeStickerFilterQuery = encodeURIComponent(JSON.stringify([{ i: 85 }]));
+  // Live-confirmed positive probe (2026-03-08): custom sticker id C10204271498 surfaces coldzera autograph rows.
+  const customStickerFilterQuery = encodeURIComponent(JSON.stringify([{ c: "C10204271498" }]));
   const keychainFilterQuery =
     firstKeychainIndex === null
       ? null
@@ -388,6 +390,7 @@ async function main() {
       ? [["GET", `/listings?limit=1&stickers=${stickerFilterQuery}&sticker_option=skins`]]
       : []),
     ["GET", `/listings?limit=1&stickers=${packageProbeStickerFilterQuery}&sticker_option=packages`],
+    ["GET", `/listings?limit=1&stickers=${customStickerFilterQuery}`],
   ];
 
   const extendedMarketQueryRoutes = [

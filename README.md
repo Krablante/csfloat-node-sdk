@@ -348,6 +348,11 @@ const souvenirPackageSearch = await sdk.listings.getListings({
   ...buildStickerFilters([{ sticker_id: 85 }]),
 });
 
+const customStickerSearch = await sdk.listings.getListings({
+  limit: 10,
+  ...buildStickerFilters([{ custom_sticker_id: "C10204271498" }]),
+});
+
 const charmSearch = await sdk.listings.getListings({
   limit: 10,
   ...buildKeychainFilters([{ keychain_index: 1 }]),
@@ -392,7 +397,7 @@ const soldWatchlist = await sdk.account.getWatchlist({
 });
 ```
 
-`sticker_option: "packages"` is live-meaningful on market searches when paired with sticker filters; for example, sticker ids `85` and `96` currently surface `EMS One 2014 Souvenir Package` listings.
+`sticker_option: "packages"` is live-meaningful on market searches when paired with sticker filters; for example, sticker ids `85` and `96` currently surface `EMS One 2014 Souvenir Package` listings. The lower-level `custom_sticker_id` form is also live-meaningful: on 2026-03-08, `buildStickerFilters([{ custom_sticker_id: "C10204271498" }])` returned coldzera autograph rows on the public market.
 
 `account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
 
