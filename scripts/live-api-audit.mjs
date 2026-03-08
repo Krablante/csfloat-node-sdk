@@ -93,6 +93,10 @@ function isExtendedScope(config) {
   return config.auditScope === "extended";
 }
 
+function resolveRouteUrl(baseUrl, route) {
+  return /^https?:\/\//.test(route) ? route : `${baseUrl}${route}`;
+}
+
 async function main() {
   const config = getConfig();
   let lastRequestAt = 0;
@@ -138,7 +142,7 @@ async function main() {
   }
 
   async function request(method, route, body) {
-    const result = await fetchJson(`${config.baseUrl}${route}`, {
+    const result = await fetchJson(resolveRouteUrl(config.baseUrl, route), {
       method,
       headers: {
         Authorization: config.apiKey,
@@ -156,7 +160,7 @@ async function main() {
   }
 
   async function publicRequest(method, route, body) {
-    const result = await fetchJson(`${config.baseUrl}${route}`, {
+    const result = await fetchJson(resolveRouteUrl(config.baseUrl, route), {
       method,
       headers: {
         Accept: "application/json",

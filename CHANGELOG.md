@@ -45,6 +45,7 @@ The format is based on Keep a Changelog.
 16. documented that the `/sell` and `/stall/me` browser-auth pages currently stay on already-covered bootstrap routes rather than exposing additional safe backend endpoints
 17. expanded the public stall docs after confirming meaningful `sort_by`, `filter`, `type`, `min_ref_qty`, and `keychains` behavior on `/users/{id}/stall`, plus the current absence of a `limit=50` ceiling on that route
 18. clarified notifications timeline pagination semantics: `cursor` is live-meaningful, while `limit` currently appears to be ignored and therefore remains intentionally unexposed in the typed SDK surface
+19. fixed `audit:live` absolute-URL handling so external companion routes such as `loadout-api.csfloat.com` are no longer falsely prefixed with the main CSFloat API base URL during regression runs
 
 ## [0.7.0] - 2026-03-08
 
