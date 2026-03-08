@@ -5,7 +5,9 @@ export {
   buildBlueRange,
   buildFadeRange,
   buildFloatRange,
+  buildKeychainFilters,
   buildPriceRange,
+  buildStickerFilters,
   CSFLOAT_CATEGORY_PRESETS,
   CSFLOAT_FILTER_OPTIONS,
   CSFLOAT_SORT_OPTIONS,
@@ -44,6 +46,8 @@ export type {
 } from "./schema.js";
 export type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 export type {
+  CsfloatAppliedKeychainFilter,
+  CsfloatAppliedStickerFilter,
   AcceptTradesRequest,
   Category,
   BuyNowRequest,

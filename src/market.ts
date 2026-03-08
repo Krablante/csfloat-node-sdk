@@ -1,5 +1,7 @@
 import { CsfloatSdkError } from "./errors.js";
 import type {
+  CsfloatAppliedKeychainFilter,
+  CsfloatAppliedStickerFilter,
   CsfloatListParams,
   CsfloatListingCategoryFilter,
   CsfloatListingsFilter,
@@ -51,6 +53,16 @@ export interface CsfloatFadeRangeParams {
 export interface CsfloatBlueRangeParams {
   min_blue?: number;
   max_blue?: number;
+}
+
+function assertPositiveInteger(label: string, value: number | undefined): void {
+  if (value === undefined) {
+    return;
+  }
+
+  if (!Number.isInteger(value) || value < 0) {
+    throw new CsfloatSdkError(`${label} must be a non-negative integer`);
+  }
 }
 
 function assertNumberInRange(
@@ -156,5 +168,59 @@ export function buildBlueRange(
   return {
     ...(params.min_blue === undefined ? {} : { min_blue: params.min_blue }),
     ...(params.max_blue === undefined ? {} : { max_blue: params.max_blue }),
+  };
+}
+
+export function buildStickerFilters(
+  filters: CsfloatAppliedStickerFilter[],
+): Pick<CsfloatListParams, "stickers"> {
+  const serialized = filters.flatMap((filter) => {
+    const { sticker_id, custom_sticker_id, slot } = filter;
+
+    if (sticker_id !== undefined && custom_sticker_id !== undefined) {
+      throw new CsfloatSdkError("sticker filters cannot include both sticker_id and custom_sticker_id");
+    }
+
+    assertPositiveInteger("sticker_id", sticker_id);
+
+    if (slot !== undefined && (!Number.isInteger(slot) || slot < 1 || slot > 5)) {
+      throw new CsfloatSdkError("sticker slot must be an integer between 1 and 5");
+    }
+
+    const entry: Record<string, number | string> = {};
+
+    if (sticker_id !== undefined) {
+      entry.i = sticker_id;
+    }
+
+    if (custom_sticker_id) {
+      entry.c = custom_sticker_id;
+    }
+
+    if (slot !== undefined) {
+      entry.s = slot - 1;
+    }
+
+    return Object.keys(entry).length > 0 ? [entry] : [];
+  });
+
+  return {
+    stickers: JSON.stringify(serialized),
+  };
+}
+
+export function buildKeychainFilters(
+  filters: CsfloatAppliedKeychainFilter[],
+): Pick<CsfloatListParams, "keychains"> {
+  const serialized = filters.map((filter) => {
+    assertPositiveInteger("keychain_index", filter.keychain_index);
+
+    return {
+      i: filter.keychain_index,
+    };
+  });
+
+  return {
+    keychains: JSON.stringify(serialized),
   };
 }

@@ -15,6 +15,7 @@ The format is based on Keep a Changelog.
 5. `account.createGsInspectToken()` for the live-confirmed `POST /me/gs-inspect-token` companion-token route
 6. `meta.getItemExampleScreenshot()` for the live-confirmed authenticated `GET /schema/images/screenshot` route
 7. `CsfloatWatchlistParams` / `CsfloatWatchlistState` for the live-confirmed expanded `/me/watchlist` filter surface
+8. `buildStickerFilters()` and `buildKeychainFilters()` for the live-confirmed JSON-encoded applied attachment filters on market/watchlist queries
 
 ### Changed
 
@@ -22,6 +23,7 @@ The format is based on Keep a Changelog.
 2. expanded live audit coverage to keep app meta, schema browse, and pending deposits on the repeatable safe-read path
 3. expanded `API_COVERAGE.md` again with live-confirmed bulk listing workflows, including the overpricing/KYC gate on `POST /listings/bulk-list` and the current price-focused contract on `PATCH /listings/bulk-modify`
 4. widened `account.getWatchlist()` from `cursor|limit` only to the currently confirmed listing-style watchlist filter surface, including typed `state`
+5. documented the bundle-observed `stickers` / `keychains` query encoding and kept `sticker_option` docs-only because current live probes did not prove meaningful behavior
 
 ## [0.7.0] - 2026-03-08
 

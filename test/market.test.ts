@@ -5,7 +5,9 @@ import {
   buildBlueRange,
   buildFadeRange,
   buildFloatRange,
+  buildKeychainFilters,
   buildPriceRange,
+  buildStickerFilters,
   CSFLOAT_CATEGORY_PRESETS,
   getCategoryParams,
   withWearPreset,
@@ -78,5 +80,39 @@ describe("market helpers", () => {
       CsfloatSdkError,
     );
     expect(() => buildBlueRange({ min_blue: -1 })).toThrow(CsfloatSdkError);
+  });
+
+  it("serializes applied sticker filters", () => {
+    expect(
+      buildStickerFilters([
+        { sticker_id: 3, slot: 1 },
+        { custom_sticker_id: "custom-123", slot: 5 },
+        { slot: 2 },
+      ]),
+    ).toEqual({
+      stickers: JSON.stringify([
+        { i: 3, s: 0 },
+        { c: "custom-123", s: 4 },
+        { s: 1 },
+      ]),
+    });
+  });
+
+  it("rejects invalid sticker filter shapes", () => {
+    expect(() => buildStickerFilters([{ sticker_id: 3, custom_sticker_id: "custom-123" }])).toThrow(
+      CsfloatSdkError,
+    );
+    expect(() => buildStickerFilters([{ sticker_id: -1 }])).toThrow(CsfloatSdkError);
+    expect(() => buildStickerFilters([{ slot: 0 }])).toThrow(CsfloatSdkError);
+  });
+
+  it("serializes keychain filters", () => {
+    expect(buildKeychainFilters([{ keychain_index: 1 }, { keychain_index: 7 }])).toEqual({
+      keychains: JSON.stringify([{ i: 1 }, { i: 7 }]),
+    });
+  });
+
+  it("rejects invalid keychain filters", () => {
+    expect(() => buildKeychainFilters([{ keychain_index: -1 }])).toThrow(CsfloatSdkError);
   });
 });

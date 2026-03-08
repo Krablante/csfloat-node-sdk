@@ -927,6 +927,8 @@ export interface CsfloatListParams {
   keychain_index?: number;
   keychain_highlight_reel?: number;
   music_kit_index?: number;
+  stickers?: string;
+  keychains?: string;
   min_keychain_pattern?: number;
   max_keychain_pattern?: number;
   min_blue?: number;
@@ -939,6 +941,16 @@ export interface CsfloatListParams {
 
 export interface CsfloatWatchlistParams extends CsfloatListParams {
   state?: CsfloatWatchlistState;
+}
+
+export interface CsfloatAppliedStickerFilter {
+  sticker_id?: number;
+  custom_sticker_id?: string;
+  slot?: number;
+}
+
+export interface CsfloatAppliedKeychainFilter {
+  keychain_index: number;
 }
 
 export interface CreateBuyNowListingRequest {

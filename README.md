@@ -266,7 +266,9 @@ Use the market helpers when you want stronger local ergonomics for category pres
 ```ts
 import {
   buildFadeRange,
+  buildKeychainFilters,
   buildPriceRange,
+  buildStickerFilters,
   getCategoryParams,
   withWearPreset,
 } from "csfloat-node-sdk";
@@ -284,6 +286,20 @@ const scopedSearch = await sdk.listings.getListings(
     "FN",
   ),
 );
+```
+
+Low-level applied-attachment filters can also be serialized for market/watchlist queries:
+
+```ts
+const appliedStickerSearch = await sdk.listings.getListings({
+  limit: 10,
+  ...buildStickerFilters([{ sticker_id: 3, slot: 1 }]),
+});
+
+const charmSearch = await sdk.listings.getListings({
+  limit: 10,
+  ...buildKeychainFilters([{ keychain_index: 1 }]),
+});
 ```
 
 `account.getWatchlist()` now exposes the same practical listing-style filters currently confirmed on the watchlist UI, plus the watchlist-only `state` switch:
