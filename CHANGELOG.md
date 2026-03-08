@@ -17,6 +17,7 @@ The format is based on Keep a Changelog.
 7. `CsfloatWatchlistParams` / `CsfloatWatchlistState` for the live-confirmed expanded `/me/watchlist` filter surface
 8. `buildStickerFilters()` and `buildKeychainFilters()` for the live-confirmed JSON-encoded applied attachment filters on market/watchlist queries
 9. typed low-level `sticker_option` support on listing/watchlist query params after confirming `skins|packages` behavior on sticker-filtered searches
+10. `CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY` and `buildReferenceQuantityFilter()` for the live-confirmed `min_ref_qty` listing/watchlist filter used by the `Exclude Rare Items` UI toggle
 
 ### Changed
 
@@ -25,6 +26,7 @@ The format is based on Keep a Changelog.
 3. expanded `API_COVERAGE.md` again with live-confirmed bulk listing workflows, including the overpricing/KYC gate on `POST /listings/bulk-list` and the current price-focused contract on `PATCH /listings/bulk-modify`
 4. widened `account.getWatchlist()` from `cursor|limit` only to the currently confirmed listing-style watchlist filter surface, including typed `state`
 5. documented the bundle-observed `stickers` / `keychains` query encoding and then promoted `sticker_option` from docs-only to typed support after live paired-filter probes proved meaningful behavior
+6. documented that `/listings` and `/me/watchlist` currently hard-cap `limit` at `50`, and that invalid `min_ref_qty` values hard-fail with schema conversion errors
 6. expanded `audit:live` coverage again to keep the live-confirmed JSON `stickers` / `keychains` market filters on the repeatable regression path
 7. documented and audited the sticker- and keychain-filtered watchlist path after confirming that `/me/watchlist?stickers=[...]` and `/me/watchlist?keychains=[...]` reuse the same JSON attachment contract
 

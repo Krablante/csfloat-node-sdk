@@ -268,7 +268,9 @@ import {
   buildFadeRange,
   buildKeychainFilters,
   buildPriceRange,
+  buildReferenceQuantityFilter,
   buildStickerFilters,
+  CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   getCategoryParams,
   withWearPreset,
 } from "csfloat-node-sdk";
@@ -310,6 +312,13 @@ const watchedStickerItems = await sdk.account.getWatchlist({
 const watchedCharmItems = await sdk.account.getWatchlist({
   limit: 10,
   ...buildKeychainFilters([{ keychain_index: 83 }]),
+});
+
+const excludeRareItems = await sdk.listings.getListings({
+  limit: 20,
+  ...buildReferenceQuantityFilter({
+    min_ref_qty: CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
+  }),
 });
 ```
 

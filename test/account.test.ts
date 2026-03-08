@@ -217,6 +217,9 @@ describe("AccountResource", () => {
       filter: "sticker_combos",
       category: 2,
       type: "auction",
+      min_ref_qty: 20,
+      stickers: JSON.stringify([{ i: 3 }]),
+      keychains: JSON.stringify([{ i: 83 }]),
       sticker_option: "skins",
       min_price: 100,
     });
@@ -229,6 +232,9 @@ describe("AccountResource", () => {
       filter: "sticker_combos",
       category: 2,
       type: "auction",
+      min_ref_qty: 20,
+      stickers: JSON.stringify([{ i: 3 }]),
+      keychains: JSON.stringify([{ i: 83 }]),
       sticker_option: "skins",
       min_price: 100,
     });

@@ -96,7 +96,7 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 |---|---|---|---|---|
 | `/me/trades` | `GET` | implemented | live | returns `{ trades, count }`; supports `limit` |
 | `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; supports `limit` |
-| `/me/watchlist` | `GET` | implemented | live + browser-auth UI | returns `{ data, cursor }`; currently confirmed with `limit`, `state`, `sort_by`, `filter`, `category`, `type`, and `min_price` |
+| `/me/watchlist` | `GET` | implemented | live + browser-auth UI | returns `{ data, cursor }`; currently confirmed with `limit`, `state`, `sort_by`, `filter`, `category`, `type`, `min_price`, `min_ref_qty`, `stickers`, `keychains`, and `sticker_option` |
 | `/listings?limit=40&min_ref_qty=20` | `GET` | discovered | live + frontend network | special unauthenticated public feed shape used by public pages; general search params still require auth |
 | `/listings?filter=sticker_combos` | `GET` | discovered | live + browser UI + auth API | UI label `Sticker Combos`; requires auth |
 | `/listings?filter=unique` | `GET` | discovered | live + browser UI + auth API | UI label `Unique Items`; requires auth |
@@ -322,6 +322,8 @@ Live-confirmed search behaviors:
 87. direct authenticated live probes on 2026-03-08 confirmed that `GET /listings?stickers=[...]` and `GET /listings?keychains=[...]` both return `200` and meaningfully narrow results: `stickers=[{"i":3}]` surfaced items whose payloads included matching applied sticker entries like `{ stickerId: 3, slot: 1 }`, while `keychains=[{"i":1}]` surfaced items whose payloads included matching keychain entries like `{ stickerId: 1, slot: 0, pattern, ... }`
 88. `sticker_option=skins|packages` is now live-meaningful when paired with JSON `stickers=[...]` filters: on 2026-03-08, `GET /listings?stickers=[{"i":3}]&sticker_option=skins` preserved the applied-skin result set, while the same query with `sticker_option=packages` returned an empty set on the current sticker `3` probe; the current SDK exposes `sticker_option` as a low-level typed param, but package-side density still depends on the specific sticker id
 89. direct authenticated live probes on 2026-03-08 confirmed that `GET /me/watchlist` reuses the same JSON attachment-filter contract as `/listings`: `stickers=[{"i":3}]` returned the matching watched `Souvenir M4A1-S | VariCamo (Field-Tested)` row with an applied `{ stickerId: 3, slot: 3 }` payload, and a targeted `keychains=[{"i":83}]` probe returned the matching watched `Souvenir AUG | Spalted Wood (Field-Tested)` row with an applied `{ stickerId: 83, slot: 0, highlight_reel: 807, ... }` payload
+90. `min_ref_qty` is live-meaningful on both `/listings` and `/me/watchlist`: the browser `Exclude Rare Items` toggle maps to `min_ref_qty=20`, higher floors such as `100` further narrow results, and invalid values like `min_ref_qty=bogus` hard-fail with `400 code 18 schema: error converting value for "min_ref_qty"`
+91. current live limit ceilings on 2026-03-08 are `50` for both `/listings` and `/me/watchlist`: `limit=50` returned `200`, while `limit=51` and above returned `400 {"code":4,"message":"limit is too high"}`
 
 ## Listing Creation Surface
 

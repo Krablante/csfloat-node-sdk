@@ -7,7 +7,9 @@ import {
   buildFloatRange,
   buildKeychainFilters,
   buildPriceRange,
+  buildReferenceQuantityFilter,
   buildStickerFilters,
+  CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   CSFLOAT_CATEGORY_PRESETS,
   getCategoryParams,
   withWearPreset,
@@ -21,6 +23,7 @@ describe("market helpers", () => {
       souvenir: 3,
       highlight: 4,
     });
+    expect(CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY).toBe(20);
   });
 
   it("builds category params", () => {
@@ -114,5 +117,16 @@ describe("market helpers", () => {
 
   it("rejects invalid keychain filters", () => {
     expect(() => buildKeychainFilters([{ keychain_index: -1 }])).toThrow(CsfloatSdkError);
+  });
+
+  it("builds reference quantity filters", () => {
+    expect(buildReferenceQuantityFilter({ min_ref_qty: 20 })).toEqual({
+      min_ref_qty: 20,
+    });
+  });
+
+  it("rejects invalid reference quantity filters", () => {
+    expect(() => buildReferenceQuantityFilter({ min_ref_qty: -1 })).toThrow(CsfloatSdkError);
+    expect(() => buildReferenceQuantityFilter({ min_ref_qty: 1.5 })).toThrow(CsfloatSdkError);
   });
 });

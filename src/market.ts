@@ -40,6 +40,8 @@ export const CSFLOAT_SORT_OPTIONS: readonly SortBy[] = [
   "num_bids",
 ];
 
+export const CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY = 20;
+
 export interface CsfloatPriceRangeParams {
   min_price?: number;
   max_price?: number;
@@ -53,6 +55,10 @@ export interface CsfloatFadeRangeParams {
 export interface CsfloatBlueRangeParams {
   min_blue?: number;
   max_blue?: number;
+}
+
+export interface CsfloatReferenceQuantityParams {
+  min_ref_qty?: number;
 }
 
 function assertPositiveInteger(label: string, value: number | undefined): void {
@@ -168,6 +174,16 @@ export function buildBlueRange(
   return {
     ...(params.min_blue === undefined ? {} : { min_blue: params.min_blue }),
     ...(params.max_blue === undefined ? {} : { max_blue: params.max_blue }),
+  };
+}
+
+export function buildReferenceQuantityFilter(
+  params: CsfloatReferenceQuantityParams,
+): Pick<CsfloatListParams, "min_ref_qty"> {
+  assertPositiveInteger("min_ref_qty", params.min_ref_qty);
+
+  return {
+    ...(params.min_ref_qty === undefined ? {} : { min_ref_qty: params.min_ref_qty }),
   };
 }
 

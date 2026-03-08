@@ -7,7 +7,9 @@ export {
   buildFloatRange,
   buildKeychainFilters,
   buildPriceRange,
+  buildReferenceQuantityFilter,
   buildStickerFilters,
+  CSFLOAT_EXCLUDE_RARE_ITEMS_MIN_REF_QTY,
   CSFLOAT_CATEGORY_PRESETS,
   CSFLOAT_FILTER_OPTIONS,
   CSFLOAT_SORT_OPTIONS,
@@ -38,6 +40,7 @@ export type {
   CsfloatCategoryPreset,
   CsfloatFadeRangeParams,
   CsfloatPriceRangeParams,
+  CsfloatReferenceQuantityParams,
 } from "./market.js";
 export type {
   CsfloatScreenshotUrls,
