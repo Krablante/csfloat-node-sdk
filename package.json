@@ -1,7 +1,7 @@
 {
   "name": "csfloat-node-sdk",
   "version": "0.7.0",
-  "description": "Unofficial Node.js / TypeScript SDK for the CSFloat API.",
+  "description": "Live-validated Node.js / TypeScript SDK for the CSFloat API and public companion surfaces.",
   "homepage": "https://github.com/Krablante/csfloat-node-sdk",
   "repository": {
     "type": "git",
@@ -11,6 +11,7 @@
     "url": "https://github.com/Krablante/csfloat-node-sdk/issues"
   },
   "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -54,6 +55,10 @@
     "csfloat",
     "csfloat-api",
     "cs2",
+    "cs2-skins",
+    "steam",
+    "skins",
+    "marketplace",
     "sdk",
     "typescript",
     "nodejs",

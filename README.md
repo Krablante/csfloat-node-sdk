@@ -59,6 +59,8 @@ That means:
 2. no hiding uncertainty around undocumented behavior
 3. no separating endpoint discovery from SDK ergonomics
 
+The package metadata is also intentionally tuned for actual use: publishable examples ship in the npm tarball, `sideEffects` is marked `false`, and `prepublishOnly` now runs the full local `release:check` gate before publish.
+
 See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support matrix.
 
 ## Supported Surface

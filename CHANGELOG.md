@@ -38,6 +38,7 @@ The format is based on Keep a Changelog.
 28. publishable example scripts for `basic`, `market`, `watchlist`, and `loadout` workflows, plus package-file inclusion for `examples/`
 29. `buildCollectionFilter()`, `buildRarityFilter()`, `buildPaintSeedFilter()`, and `buildMusicKitFilter()` for the already live-confirmed visible market filter fields
 30. `check:node`, `pack:check`, `release:check`, stronger CI coverage for package/examples/scripts, and `prepublishOnly` release gating
+31. stronger npm package metadata: clearer live-validated description, broader discoverability keywords, and `sideEffects: false`
 
 ### Changed
 
