@@ -39,7 +39,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - live-confirmed public/account helpers around app bootstrap, schema media, checker lookup, and payments, including `meta.getApp()`, `meta.getSchemaBrowse()`, `meta.getItemExampleScreenshot()`, `meta.inspectItem()`, and `account.getPendingDeposits()`
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
-- public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
+- public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendForSkin()`, `loadout.recommendStickers()`, `loadout.recommendStickersForSkin()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
 - normalized `CsfloatSdkError` taxonomy with `kind`, `retryable`, and `apiMessage`
 
 ## Coverage Philosophy
@@ -72,7 +72,7 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | User stall | implemented | `stall.getStall()`, `stall.iterateStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.placeBid()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
 | Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.createBulkListings()`, `listings.updateBulkListings()`, `listings.deleteBulkListings()`, `listings.unlistBulkListings()`, `listings.updateListing()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
-| Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
+| Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendForSkin()`, `loadout.recommendStickers()`, `loadout.recommendStickersForSkin()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 
 ## Installation
@@ -183,6 +183,15 @@ const ak47Loadouts = await sdk.loadout.getSkinLoadouts(7, 490, {
   limit: 20,
   months: 1,
 });
+const skinRecommendations = await sdk.loadout.recommendForSkin(
+  recommender.token,
+  7,
+  490,
+  {
+    count: 5,
+    def_whitelist: [7, 9, 13],
+  },
+);
 const myFavoriteLoadouts = await sdk.loadout.getFavoriteLoadouts(
   recommender.token,
 );
@@ -227,6 +236,7 @@ console.log(
   loadouts.loadouts.length,
   featuredLoadouts.loadouts[0]?.id,
   ak47Loadouts.loadouts[0]?.id,
+  skinRecommendations.results[0]?.paint_index,
   myFavoriteLoadouts.favorites.length,
   recommendations.results[0]?.paint_index,
   stickerRecommendations.results[0]?.sticker_index,
@@ -234,13 +244,20 @@ console.log(
 );
 ```
 
-`loadout.getDiscoverLoadouts()` is the higher-level helper for the current public discover contract (`sort_by=favorites&months=1&any_filled=true`), and `loadout.getSkinLoadouts(defIndex, paintIndex, params?)` is the paired helper for the live-confirmed skin-scoped loadout search contract. If you want the raw params instead, `CSFLOAT_DISCOVER_LOADOUT_PARAMS`, `CSFLOAT_LOADOUT_SORT_OPTIONS`, `CSFLOAT_LOADOUT_MAX_LIMIT`, `buildLoadoutListParams()`, `buildLoadoutSkinSearchParams()`, and `getDiscoverLoadoutParams()` are also exported.
+`loadout.getDiscoverLoadouts()` is the higher-level helper for the current public discover contract (`sort_by=favorites&months=1&any_filled=true`), `loadout.getSkinLoadouts(defIndex, paintIndex, params?)` is the paired helper for the live-confirmed skin-scoped loadout search contract, and `loadout.recommendForSkin()` / `loadout.recommendStickersForSkin()` remove the boilerplate single-item request wrapper for the most common companion recommendation flows. If you want the raw params instead, `CSFLOAT_DISCOVER_LOADOUT_PARAMS`, `CSFLOAT_LOADOUT_SORT_OPTIONS`, `CSFLOAT_LOADOUT_FACTIONS`, `CSFLOAT_LOADOUT_MAX_LIMIT`, `CSFLOAT_STICKER_RECOMMENDATION_MAX_COUNT`, `buildLoadoutListParams()`, `buildLoadoutRecommendationRequest()`, `buildLoadoutSkinSearchParams()`, `buildSingleSkinRecommendationRequest()`, `buildSingleSkinStickerRecommendationRequest()`, `buildStickerRecommendationRequest()`, `buildGenerateLoadoutRecommendationsRequest()`, and `getDiscoverLoadoutParams()` are also exported.
 
 ```ts
 import {
+  buildGenerateLoadoutRecommendationsRequest,
   buildLoadoutListParams,
+  buildLoadoutRecommendationRequest,
   buildLoadoutSkinSearchParams,
+  buildSingleSkinRecommendationRequest,
+  buildSingleSkinStickerRecommendationRequest,
+  buildStickerRecommendationRequest,
+  CSFLOAT_LOADOUT_FACTIONS,
   CSFLOAT_LOADOUT_MAX_LIMIT,
+  CSFLOAT_STICKER_RECOMMENDATION_MAX_COUNT,
   getDiscoverLoadoutParams,
 } from "csfloat-node-sdk";
 
@@ -263,6 +280,32 @@ const validatedSkinQuery = buildLoadoutSkinSearchParams({
 const cappedDiscoverQuery = buildLoadoutListParams({
   ...getDiscoverLoadoutParams(),
   limit: CSFLOAT_LOADOUT_MAX_LIMIT,
+});
+
+const validatedSkinQuery = buildLoadoutSkinSearchParams({
+  def_index: 7,
+  paint_index: 490,
+  months: 1,
+});
+
+const validatedRecommendation = buildLoadoutRecommendationRequest({
+  items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+  count: 5,
+});
+
+const singleSkinRecommendation = buildSingleSkinRecommendationRequest(7, 490, {
+  count: 5,
+});
+
+const singleSkinStickers = buildSingleSkinStickerRecommendationRequest(7, 490, {
+  count: CSFLOAT_STICKER_RECOMMENDATION_MAX_COUNT,
+});
+
+const generatedRequest = buildGenerateLoadoutRecommendationsRequest({
+  items: [],
+  def_indexes: [7, 13, 39, 9],
+  faction: CSFLOAT_LOADOUT_FACTIONS[1],
+  max_price: 3000,
 });
 ```
 

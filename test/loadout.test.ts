@@ -1,11 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  buildGenerateLoadoutRecommendationsRequest,
   buildLoadoutListParams,
+  buildLoadoutRecommendationRequest,
   buildLoadoutSkinSearchParams,
+  buildSingleSkinRecommendationRequest,
+  buildSingleSkinStickerRecommendationRequest,
+  buildStickerRecommendationRequest,
   CSFLOAT_DISCOVER_LOADOUT_PARAMS,
+  CSFLOAT_LOADOUT_FACTIONS,
   CSFLOAT_LOADOUT_MAX_LIMIT,
   CSFLOAT_LOADOUT_SORT_OPTIONS,
+  CSFLOAT_STICKER_RECOMMENDATION_MAX_COUNT,
   getDiscoverLoadoutParams,
 } from "../src/loadout.js";
 import { LoadoutResource } from "../src/resources/loadout.js";
@@ -23,7 +30,9 @@ describe("LoadoutResource", () => {
       months: 1,
       sort_by: "favorites",
     });
+    expect(CSFLOAT_LOADOUT_FACTIONS).toEqual(["ct", "t"]);
     expect(CSFLOAT_LOADOUT_MAX_LIMIT).toBe(200);
+    expect(CSFLOAT_STICKER_RECOMMENDATION_MAX_COUNT).toBe(100);
   });
 
   it("builds discover loadout params", () => {
@@ -77,6 +86,70 @@ describe("LoadoutResource", () => {
     });
   });
 
+  it("builds validated recommendation helpers", () => {
+    expect(
+      buildLoadoutRecommendationRequest({
+        items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+        count: 5,
+        def_whitelist: [7, 9],
+      }),
+    ).toEqual({
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 5,
+      def_whitelist: [7, 9],
+    });
+
+    expect(
+      buildStickerRecommendationRequest({
+        items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+        count: 10,
+        collection_whitelist: ["Holo"],
+      }),
+    ).toEqual({
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 10,
+      collection_whitelist: ["Holo"],
+    });
+
+    expect(
+      buildGenerateLoadoutRecommendationsRequest({
+        items: [{ type: "skin", def_index: 7, paint_index: 490, wear_index: 2 }],
+        def_indexes: [7, 13, 39, 9],
+        faction: "t",
+        max_price: 3000,
+      }),
+    ).toEqual({
+      items: [{ type: "skin", def_index: 7, paint_index: 490, wear_index: 2 }],
+      def_indexes: [7, 13, 39, 9],
+      faction: "t",
+      max_price: 3000,
+    });
+  });
+
+  it("builds single-skin recommendation helper requests", () => {
+    expect(
+      buildSingleSkinRecommendationRequest(7, 490, {
+        count: 5,
+        def_blacklist: [60],
+      }),
+    ).toEqual({
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 5,
+      def_blacklist: [60],
+    });
+
+    expect(
+      buildSingleSkinStickerRecommendationRequest(7, 490, {
+        count: 10,
+        collection_whitelist: ["Holo"],
+      }),
+    ).toEqual({
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 10,
+      collection_whitelist: ["Holo"],
+    });
+  });
+
   it("rejects invalid loadout helper params", () => {
     expect(() =>
       buildLoadoutListParams({
@@ -95,6 +168,37 @@ describe("LoadoutResource", () => {
         months: 0,
       }),
     ).toThrow("months must be an integer greater than or equal to 1");
+
+    expect(() =>
+      buildLoadoutRecommendationRequest({
+        items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+        count: -1,
+      }),
+    ).toThrow("count must be an integer greater than or equal to 0");
+
+    expect(() =>
+      buildStickerRecommendationRequest({
+        items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+        count: 101,
+      }),
+    ).toThrow("count must be between 0 and 100");
+
+    expect(() =>
+      buildGenerateLoadoutRecommendationsRequest({
+        items: [],
+        def_indexes: [],
+        faction: "t",
+      }),
+    ).toThrow("def_indexes must contain at least one weapon id");
+
+    expect(() =>
+      buildGenerateLoadoutRecommendationsRequest({
+        items: [],
+        def_indexes: [7],
+        faction: "t",
+        max_price: 0,
+      }),
+    ).toThrow("max_price must be an integer greater than or equal to 1");
   });
 
   it("requests public loadout lists", async () => {
@@ -278,6 +382,23 @@ describe("LoadoutResource", () => {
     });
   });
 
+  it("requests bearer-token recommendations for a single skin", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const derive = vi.fn(() => ({ post }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.recommendForSkin("abc123", 7, 490, {
+      count: 5,
+      def_blacklist: [60],
+    });
+
+    expect(post).toHaveBeenCalledWith("recommend", {
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 5,
+      def_blacklist: [60],
+    });
+  });
+
   it("requests bearer-token sticker recommendations", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const derive = vi.fn(() => ({ post }));
@@ -293,6 +414,23 @@ describe("LoadoutResource", () => {
       apiKey: "Bearer abc123",
       baseUrl: "https://loadout-api.csfloat.com/v1",
     });
+    expect(post).toHaveBeenCalledWith("recommend/stickers", {
+      items: [{ type: "skin", def_index: 7, paint_index: 490 }],
+      count: 10,
+      collection_whitelist: ["Holo"],
+    });
+  });
+
+  it("requests bearer-token sticker recommendations for a single skin", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const derive = vi.fn(() => ({ post }));
+    const resource = new LoadoutResource({ derive } as never);
+
+    await resource.recommendStickersForSkin("abc123", 7, 490, {
+      count: 10,
+      collection_whitelist: ["Holo"],
+    });
+
     expect(post).toHaveBeenCalledWith("recommend/stickers", {
       items: [{ type: "skin", def_index: 7, paint_index: 490 }],
       count: 10,

@@ -1,9 +1,15 @@
 import type { CsfloatHttpClient } from "../client.js";
 import {
   buildLoadoutSkinSearchParams,
+  buildSingleSkinRecommendationRequest,
+  buildSingleSkinStickerRecommendationRequest,
   getDiscoverLoadoutParams,
 } from "../loadout.js";
 import type { CsfloatLoadoutSkinSearchParams } from "../loadout.js";
+import type {
+  CsfloatSingleSkinRecommendationOptions,
+  CsfloatSingleSkinStickerRecommendationOptions,
+} from "../loadout.js";
 import type {
   CsfloatCreateLoadoutRequest,
   CsfloatFavoriteLoadoutsResponse,
@@ -141,6 +147,18 @@ export class LoadoutResource {
       .post<CsfloatLoadoutRecommendationResponse>("recommend", request);
   }
 
+  recommendForSkin(
+    recommenderToken: string,
+    defIndex: number,
+    paintIndex: number,
+    options: CsfloatSingleSkinRecommendationOptions,
+  ): Promise<CsfloatLoadoutRecommendationResponse> {
+    return this.recommend(
+      recommenderToken,
+      buildSingleSkinRecommendationRequest(defIndex, paintIndex, options),
+    );
+  }
+
   recommendStickers(
     recommenderToken: string,
     request: CsfloatStickerRecommendationRequest,
@@ -154,6 +172,18 @@ export class LoadoutResource {
         "recommend/stickers",
         request,
       );
+  }
+
+  recommendStickersForSkin(
+    recommenderToken: string,
+    defIndex: number,
+    paintIndex: number,
+    options: CsfloatSingleSkinStickerRecommendationOptions,
+  ): Promise<CsfloatStickerRecommendationResponse> {
+    return this.recommendStickers(
+      recommenderToken,
+      buildSingleSkinStickerRecommendationRequest(defIndex, paintIndex, options),
+    );
   }
 
   generateRecommendations(

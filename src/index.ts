@@ -2,11 +2,18 @@ export { CsfloatHttpClient } from "./client.js";
 export { CsfloatSdk } from "./sdk.js";
 export { CsfloatSdkError, isCsfloatSdkError } from "./errors.js";
 export {
+  buildGenerateLoadoutRecommendationsRequest,
   buildLoadoutListParams,
+  buildLoadoutRecommendationRequest,
   buildLoadoutSkinSearchParams,
+  buildSingleSkinRecommendationRequest,
+  buildSingleSkinStickerRecommendationRequest,
+  buildStickerRecommendationRequest,
   CSFLOAT_DISCOVER_LOADOUT_PARAMS,
+  CSFLOAT_LOADOUT_FACTIONS,
   CSFLOAT_LOADOUT_MAX_LIMIT,
   CSFLOAT_LOADOUT_SORT_OPTIONS,
+  CSFLOAT_STICKER_RECOMMENDATION_MAX_COUNT,
   getDiscoverLoadoutParams,
 } from "./loadout.js";
 export {
@@ -51,7 +58,11 @@ export { CSFLOAT_WEAR_PRESETS, getWearParams } from "./wear.js";
 
 export type { CsfloatClientOptions, CsfloatFetch } from "./client.js";
 export type { CsfloatErrorKind, CsfloatSdkErrorOptions } from "./errors.js";
-export type { CsfloatLoadoutSkinSearchParams } from "./loadout.js";
+export type {
+  CsfloatLoadoutSkinSearchParams,
+  CsfloatSingleSkinRecommendationOptions,
+  CsfloatSingleSkinStickerRecommendationOptions,
+} from "./loadout.js";
 export type {
   CsfloatBlueRangeParams,
   CsfloatCategoryPreset,

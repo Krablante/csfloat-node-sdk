@@ -176,6 +176,26 @@ async function main() {
     };
   }
 
+  async function companionRequest(method, route, bearerToken, body) {
+    const companionBaseUrl = "https://loadout-api.csfloat.com/v1";
+    const normalizedRoute = route.startsWith("/") ? route : `/${route}`;
+    const result = await fetchJson(resolveRouteUrl(companionBaseUrl, normalizedRoute), {
+      method,
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+        Accept: "application/json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    return {
+      method,
+      route: resolveRouteUrl(companionBaseUrl, normalizedRoute),
+      ...result,
+    };
+  }
+
   const summary = {
     generated_at: new Date().toISOString(),
     base_url: config.baseUrl,
@@ -537,8 +557,13 @@ async function main() {
     mutationProbeRoutes.push(["POST", "/offers/0/counter-offer", {}]);
   }
 
+  let recommenderToken = null;
+
   for (const [method, route, body] of mutationProbeRoutes) {
     const result = await request(method, route, body);
+    if (route === "/me/recommender-token" && result.ok && result.data?.token) {
+      recommenderToken = result.data.token;
+    }
     summary.mutation_probes.push({
       method,
       route,
@@ -546,6 +571,38 @@ async function main() {
       ok: result.ok,
       summary: result.ok ? summarizePayload(result.data) : errorSummary(result.data),
     });
+  }
+
+  if (recommenderToken) {
+    const companionProbeRoutes = [
+      ["GET", "user/favorites"],
+      [
+        "POST",
+        "recommend",
+        { items: [{ type: "skin", def_index: 7, paint_index: 490 }], count: 5 },
+      ],
+      [
+        "POST",
+        "recommend/stickers",
+        { items: [{ type: "skin", def_index: 7, paint_index: 490 }], count: 10 },
+      ],
+      [
+        "POST",
+        "generate",
+        { items: [], def_indexes: [7, 13, 39, 9], faction: "t", max_price: 3000 },
+      ],
+    ];
+
+    for (const [method, route, body] of companionProbeRoutes) {
+      const result = await companionRequest(method, route, recommenderToken, body);
+      summary.mutation_probes.push({
+        method,
+        route: result.route,
+        status: result.status,
+        ok: result.ok,
+        summary: result.ok ? summarizePayload(result.data) : errorSummary(result.data),
+      });
+    }
   }
 
   if (config.allowLiveMutations && steamId) {
