@@ -25,6 +25,27 @@ describe("ListingsResource", () => {
     });
   });
 
+  it("builds an auction listing payload with the expected shape", async () => {
+    const resource = new ListingsResource(client);
+    const result = await resource.createAuctionListing({
+      type: "auction",
+      asset_id: "123",
+      reserve_price: 100,
+      duration_days: 3,
+      private: true,
+      description: "cheap test",
+    });
+
+    expect(result).toMatchObject({
+      type: "auction",
+      asset_id: "123",
+      reserve_price: 100,
+      duration_days: 3,
+      private: true,
+      description: "cheap test",
+    });
+  });
+
   it("rejects invalid auction duration", async () => {
     const resource = new ListingsResource(client);
 

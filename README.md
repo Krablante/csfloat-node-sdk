@@ -33,7 +33,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 - state-gated trade lifecycle helpers, including seller-side `acceptSale()` and buyer-side `markTradesReceived()`
 - live-confirmed buy-order insight flows: inspect-based lookup and similar-order discovery
 - live-confirmed support helpers around adjacent account/insight flows such as `meta.getNotary()`, `account.createNotaryToken()`, and `account.getSimilarBuyOrders()`
-- live-confirmed auction flow pieces: bid history, max-price `placeBid()`, and `deleteAutoBid()` cancellation on cheap auctions
+- live-confirmed auction flow pieces: bid history, max-price `placeBid()`, `deleteAutoBid()` cancellation on cheap auctions, and stable item-route bootstrap reads for `getBuyOrders()` / `getSimilar()` around active auction listings
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
 - public companion `loadout-api.csfloat.com` support via `loadout.getLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendStickers()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, and `loadout.unfavoriteLoadout()`
@@ -127,6 +127,11 @@ const listings = await sdk.listings.getListings({
   limit: 10,
   type: "buy_now",
 });
+const auctionListings = await sdk.listings.getListings({
+  limit: 10,
+  type: "auction",
+  sort_by: "expires_soon",
+});
 const priceList = await sdk.listings.getPriceList();
 const auctionBid = await sdk.listings.placeBid("945821907352158315", {
   max_price: 9,
@@ -178,6 +183,7 @@ console.log(
   sellerTrades.count,
   inventory.length,
   listings.data.length,
+  auctionListings.data[0]?.id,
   priceList[0]?.market_hash_name,
   auctionBid.id,
   loadouts.loadouts.length,
@@ -321,7 +327,7 @@ Mutation methods are part of the SDK surface, but public docs and examples shoul
 Important:
 
 1. `buy_now` listing creation is the primary supported mutation path
-2. auction request shape is supported in the SDK surface
+2. auction request shape is supported in the SDK surface, while auction read/bid helpers are the more strongly live-validated part of the current auction layer
 3. not every mutation variant should be treated as equally live-validated unless explicitly documented in [API_COVERAGE.md](./API_COVERAGE.md)
 
 ## Project Scope
