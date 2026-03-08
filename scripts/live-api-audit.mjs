@@ -290,7 +290,15 @@ async function main() {
     ["GET", "/me/auto-bids"],
     ["GET", "/me/mobile/status"],
     ["GET", "/me/payments/pending-deposits"],
-    ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),
+    ...(steamId
+      ? [
+          ["GET", `/users/${steamId}`],
+          ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`],
+          ["GET", `/users/${steamId}/stall?limit=1&sort_by=lowest_price`],
+          ["GET", `/users/${steamId}/stall?limit=1&filter=unique`],
+          ["GET", `/users/${steamId}/stall?limit=1&min_ref_qty=20`],
+        ]
+      : []),
     ["GET", "/listings?limit=1&type=buy_now"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
     ["GET", "/listings/948726619852374910/bids"],
@@ -328,7 +336,15 @@ async function main() {
     ...(loadoutId ? [["GET", `https://loadout-api.csfloat.com/v1/loadout/${loadoutId}`]] : []),
     ["GET", "/listings?limit=40&min_ref_qty=20"],
     ...(listingId ? [["GET", `/listings/${listingId}`]] : []),
-    ...(steamId ? [["GET", `/users/${steamId}`], ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`]] : []),
+    ...(steamId
+      ? [
+          ["GET", `/users/${steamId}`],
+          ["GET", `/users/${steamId}/stall?limit=1&type=buy_now`],
+          ["GET", `/users/${steamId}/stall?limit=1&sort_by=lowest_price`],
+          ["GET", `/users/${steamId}/stall?limit=1&filter=unique`],
+          ["GET", `/users/${steamId}/stall?limit=1&min_ref_qty=20`],
+        ]
+      : []),
     ["GET", "/listings/948726619852374910/bids"],
     ["GET", "/listings/948726619852374910/similar"],
     ["GET", "/listings/948726619852374910/buy-orders"],

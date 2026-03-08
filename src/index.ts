@@ -66,6 +66,7 @@ export type {
   CsfloatExtensionStatusResponse,
   CsfloatFavoriteLoadoutsResponse,
   CsfloatSource,
+  CsfloatStallParams,
   CsfloatListingCategoryFilter,
   CsfloatListingsFilter,
   CreateListingRequest,

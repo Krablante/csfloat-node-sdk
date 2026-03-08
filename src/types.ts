@@ -981,6 +981,8 @@ export interface CsfloatWatchlistParams extends CsfloatListParams {
   state?: CsfloatWatchlistState;
 }
 
+export interface CsfloatStallParams extends CsfloatListParams {}
+
 export interface CsfloatAppliedStickerFilter {
   sticker_id?: number;
   custom_sticker_id?: string;

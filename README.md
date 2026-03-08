@@ -157,6 +157,12 @@ const recentListedWatchlist = await sdk.account.getWatchlist({
   state: "listed",
   sort_by: "most_recent",
 });
+const publicStall = await sdk.stall.getStall(me.user.steam_id, {
+  limit: 20,
+  sort_by: "lowest_price",
+  filter: "unique",
+  min_ref_qty: 20,
+});
 const loadouts = await sdk.loadout.getUserLoadouts(me.user.steam_id);
 const recommender = await sdk.account.createRecommenderToken();
 const featuredLoadouts = await sdk.loadout.getLoadouts({
@@ -197,6 +203,7 @@ console.log(
   trades.count,
   sellerTrades.count,
   steamStatusPing.message,
+  publicStall.total_count,
   inventory.length,
   listings.data.length,
   auctionListings.data[0]?.id,
@@ -212,6 +219,8 @@ console.log(
 ```
 
 `account.syncSteamNewOffer()` and `account.syncSteamOffers()` are intentionally exposed as low-level trade sync helpers. The request shapes and `200 {"message":"successfully updated offer state"}` responses are live-confirmed, but exact side effects are still treated conservatively in the docs.
+
+`stall.getStall()` now accepts the same practical listing-style query params currently confirmed on public stall pages, including `sort_by`, `filter`, `type`, and `min_ref_qty`.
 
 By default, the client retries transient `GET` failures such as `429`, `502`, `503`, and `504` with bounded backoff. Unsafe requests are not retried unless you explicitly opt into `retryUnsafeRequests`.
 

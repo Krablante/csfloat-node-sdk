@@ -1,10 +1,7 @@
 import type { CsfloatHttpClient } from "../client.js";
-import type { CsfloatListingsResponse, QueryParams } from "../types.js";
+import type { CsfloatListingsResponse, CsfloatStallParams, QueryParams } from "../types.js";
 
-export interface GetStallParams {
-  limit?: number;
-  cursor?: string;
-}
+export type GetStallParams = CsfloatStallParams;
 
 export class StallResource {
   constructor(private readonly client: CsfloatHttpClient) {}

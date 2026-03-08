@@ -22,7 +22,7 @@ Status legend:
 | `/listings/{id}` | `PATCH` | implemented | live | update listing price |
 | `/listings/{id}` | `DELETE` | implemented | live + python clone | unlist / delist behavior |
 | `/users/{id}` | `GET` | implemented | python clone + live | public user profile |
-| `/users/{id}/stall` | `GET` | implemented | python clone + live | public user stall |
+| `/users/{id}/stall` | `GET` | implemented | python clone + live | public user stall; current live validation confirms meaningful listing-style params including `sort_by`, `filter`, `type`, and `min_ref_qty` |
 | `/me` | `GET` | implemented | live + python clone | authenticated account; current profile `Earnings` card is derived from `user.statistics.total_sales` and `user.statistics.total_purchases` in this payload, not from a separate earnings endpoint |
 | `/me/inventory` | `GET` | implemented | live + python clone | authenticated inventory |
 | `/history/{market_hash_name}/sales` | `GET` | implemented | live | sales history |
@@ -329,6 +329,9 @@ Live-confirmed search behaviors:
 93. the `/checker` page uses an external companion route rather than `/api/v1`: on 2026-03-08, browser-auth network and direct live replay confirmed `GET https://api.csfloat.com/?url=<inspectLink>` with `Origin: https://csfloat.com` returning `{ iteminfo:{ origin, quality, rarity, paintseed, defindex, paintindex, floatvalue, min, max, weapon_type, item_name, rarity_name, quality_name, wear_name, full_item_name, s, a, d, m } }`; the same request without a valid `Origin` header returned `400 {"error":"Invalid Origin"}`
 94. browser-auth discovery on `/sell` did not reveal a new sell-only backend surface on 2026-03-08; the page currently bootstraps with the already-covered `GET /me`, `GET /schema`, `GET /meta/location`, `GET /meta/exchange-rates`, and `GET /me/inventory` routes
 95. browser-auth discovery on `/stall/me` likewise stayed on the already-covered surface on 2026-03-08: `POST /me/recommender-token`, `GET /users/{steam_id}/stall?limit=40`, and `GET https://loadout-api.csfloat.com/v1/user/{steam_id}/loadouts`; no additional self-stall-only backend route was promoted from this pass
+96. direct public live probes on 2026-03-08 confirmed that `GET /users/{id}/stall` accepts meaningful listing-style params beyond `limit` and `cursor`: `sort_by=lowest_price|highest_discount|most_recent` all changed the first-page ordering, `filter=unique` narrowed the public stall from `263` to `164` rows, `type=buy_now` returned the active rows while `type=auction` returned an empty set on the current stall, and `min_ref_qty=20` narrowed the total count from `263` to `244`
+97. the public stall route also accepts attachment-style listing filters: on 2026-03-08, `keychains=[{"i":83}]` returned the matching `Souvenir Zeus x27 | Charged Up (Battle-Scarred)` row, while `filter=sticker_combos` returned `200` with an empty set on the current stall; invalid `filter=bogus` hard-failed with `400 invalid filter value`, while invalid `sort_by=bogus` returned `404 the given resource could not be found`
+98. unlike `/listings` and `/me/watchlist`, the current public stall route is not capped at `50` rows per page: on 2026-03-08, `limit=51` returned `200`, and the live audit already uses `GET /users/{id}/stall?limit=500&type=buy_now` successfully for mutation-safe inventory reconciliation
 
 ## Listing Creation Surface
 
