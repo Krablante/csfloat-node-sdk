@@ -1,5 +1,6 @@
 # csfloat-node-sdk
 
+[![npm version](https://img.shields.io/npm/v/csfloat-node-sdk?logo=npm&label=npm)](https://www.npmjs.com/package/csfloat-node-sdk)
 [![CI](https://github.com/Krablante/csfloat-node-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/Krablante/csfloat-node-sdk/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-first-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Live API Audit](https://img.shields.io/badge/live%20API-audited-1f883d)](./scripts/live-api-audit.mjs)
@@ -17,6 +18,8 @@ The strongest public Node.js / TypeScript SDK for the **currently known** CSFloa
 The project is intentionally conservative about claims. Anything called `implemented` or highlighted in the README has been wired into the SDK and validated against live traffic, browser-auth discovery, or both.
 
 > The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
+>
+> Install from npm: [`csfloat-node-sdk@0.9.0`](https://www.npmjs.com/package/csfloat-node-sdk)
 
 ## Why Choose This SDK
 
@@ -111,9 +114,19 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 
 ## Installation
 
-This repository is public and usable today, but it is not yet published to npm.
+The canonical package distribution is npm:
 
-Clone the repository and install dependencies locally:
+```bash
+npm install csfloat-node-sdk
+```
+
+Package page:
+
+- [`https://www.npmjs.com/package/csfloat-node-sdk`](https://www.npmjs.com/package/csfloat-node-sdk)
+
+The GitHub repository remains the source of truth for code, issues, release notes, coverage docs, and examples.
+
+If you want to work from source instead of the published package:
 
 ```bash
 git clone https://github.com/Krablante/csfloat-node-sdk.git
