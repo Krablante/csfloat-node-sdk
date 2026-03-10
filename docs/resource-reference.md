@@ -2,7 +2,7 @@
 
 This page is the method-level reference for the runtime SDK surface.
 
-For the higher-level map of when to use each surface, see [Resources, Workflows, And Surface Map](./resources-and-workflows.md). For builders and presets, see [Helpers, Builders, And Constants](./helpers-and-builders.md).
+For the higher-level map of when to use each surface, see [Resources, Workflows, And Surface Map](./resources-and-workflows.md). For builders and presets, see [Helpers, Builders, And Constants](./helpers-and-builders.md). For minimal write payloads and caveats on mutation-heavy routes, see [Write Flows And Payloads](./write-flows-and-payloads.md).
 
 ## Main Entry Points
 
@@ -71,6 +71,9 @@ Key types:
 Key types:
 `CsfloatTradesParams`, `CsfloatTradesResponse`, `CsfloatTrade`, `AcceptTradesRequest`, `CsfloatTradeSteamStatusNewOfferRequest`, `CsfloatTradeSteamOfferSyncRequest`
 
+Write payload guide:
+[Write Flows And Payloads](./write-flows-and-payloads.md#trades-and-steam-sync)
+
 ### Offers
 
 | Method | Returns | Use It For | Notes |
@@ -87,6 +90,9 @@ Key types:
 
 Key types:
 `CsfloatOffersParams`, `CsfloatOffersResponse`, `CreateOfferRequest`, `CounterOfferRequest`, `CsfloatAcceptOfferResponse`
+
+Write payload guide:
+[Write Flows And Payloads](./write-flows-and-payloads.md#offers)
 
 ### Watchlist And Notifications
 
@@ -134,6 +140,9 @@ Key types:
 
 Key types:
 `CsfloatBuyOrdersParams`, `CsfloatBuyOrdersResponse`, `CreateBuyOrderRequest`, `UpdateBuyOrderRequest`, `SimilarBuyOrdersRequest`, `CsfloatAutoBid`, `CsfloatRecommenderTokenResponse`, `CsfloatNotaryTokenResponse`, `CsfloatGsInspectTokenResponse`
+
+Write payload guide:
+[Write Flows And Payloads](./write-flows-and-payloads.md#buy-orders)
 
 ## `sdk.inventory`
 
@@ -206,6 +215,9 @@ Important validation notes:
 Key types:
 `CreateListingRequest`, `CreateBuyNowListingRequest`, `CreateAuctionListingRequest`, `UpdateBulkListingRequest`, `UpdateListingRequest`
 
+Write payload guide:
+[Write Flows And Payloads](./write-flows-and-payloads.md#listings-and-bids)
+
 ## `sdk.history`
 
 | Method | Returns | Use It For | Notes |
@@ -247,6 +259,9 @@ Key types:
 
 Key types:
 `CsfloatLoadoutListParams`, `CsfloatCreateLoadoutRequest`, `CsfloatUpdateLoadoutRequest`, `CsfloatLoadoutRecommendationRequest`, `CsfloatStickerRecommendationRequest`, `CsfloatGenerateLoadoutRecommendationsRequest`
+
+Write payload guide:
+[Write Flows And Payloads](./write-flows-and-payloads.md#loadout-crud-and-recommendations)
 
 ## `sdk.workflows`
 

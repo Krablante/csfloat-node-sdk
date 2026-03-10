@@ -21,15 +21,17 @@ If you are reading this from the published npm package, these files ship in the 
    The method-level reference for `sdk.meta`, `sdk.account`, `sdk.listings`, and the rest.
 4. [Helpers, Builders, And Constants](./helpers-and-builders.md)
    Every exported helper module and the constants that shape queries or requests.
-5. [Workflows And CLI](./workflows-and-cli.md)
+5. [Write Flows And Payloads](./write-flows-and-payloads.md)
+   Minimal valid payloads, field meanings, and caveats for mutation-heavy SDK usage.
+6. [Workflows And CLI](./workflows-and-cli.md)
    The higher-level orchestration layer plus the published CLI commands.
-6. [Transport, Errors, And Metadata](./transport-and-errors.md)
+7. [Transport, Errors, And Metadata](./transport-and-errors.md)
    `CsfloatHttpClient`, retries, pacing, metadata responses, and error handling.
-7. [Examples And Recipes](./examples-and-recipes.md)
+8. [Examples And Recipes](./examples-and-recipes.md)
    Runnable examples plus copyable snippets for common flows.
-8. [Stability And Coverage](./stability-and-coverage.md)
+9. [Stability And Coverage](./stability-and-coverage.md)
    How to interpret implemented vs low-level vs account-gated behavior.
-9. [`API_COVERAGE.md`](../API_COVERAGE.md)
+10. [`API_COVERAGE.md`](../API_COVERAGE.md)
    Endpoint-level truth for validated and discovered routes.
 
 ## Choose By Task
@@ -42,6 +44,8 @@ If you are reading this from the published npm package, these files ship in the 
   [Resource Reference](./resource-reference.md)
 - Exported builders, presets, constants, and pagination helpers:
   [Helpers, Builders, And Constants](./helpers-and-builders.md)
+- Minimal payloads for write-heavy and operator-heavy calls:
+  [Write Flows And Payloads](./write-flows-and-payloads.md)
 - High-level snapshot helpers or CLI usage:
   [Workflows And CLI](./workflows-and-cli.md)
 - Transport behavior, retries, rate limits, or raw metadata:

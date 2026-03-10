@@ -118,6 +118,7 @@ The package root exports four major layers:
 - Public loadout discovery: `sdk.loadout.getDiscoverLoadouts()`
 - Exact method-level reference: [Resource Reference](./resource-reference.md)
 - Helper/preset reference: [Helpers, Builders, And Constants](./helpers-and-builders.md)
+- Write payload reference: [Write Flows And Payloads](./write-flows-and-payloads.md)
 
 ## Local Verification
 
@@ -147,6 +148,8 @@ npx csfloat-node-sdk help
   [Resource Reference](./resource-reference.md)
 - helper/builders/constants:
   [Helpers, Builders, And Constants](./helpers-and-builders.md)
+- write-heavy request payloads and caveats:
+  [Write Flows And Payloads](./write-flows-and-payloads.md)
 - transport or error behavior:
   [Transport, Errors, And Metadata](./transport-and-errors.md)
 - runnable snippets and examples:

@@ -19,7 +19,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 > The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
 >
-> Install from npm: [`csfloat-node-sdk@0.9.2`](https://www.npmjs.com/package/csfloat-node-sdk)
+> Install from npm: [`csfloat-node-sdk@0.9.2.1`](https://www.npmjs.com/package/csfloat-node-sdk)
 
 ## Documentation
 
@@ -32,11 +32,12 @@ If you want the fastest path through the SDK, start here:
 3. [Resources, Workflows, And Surface Map](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/resources-and-workflows.md)
 4. [Resource Reference](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/resource-reference.md)
 5. [Helpers, Builders, And Constants](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/helpers-and-builders.md)
-6. [Workflows And CLI](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/workflows-and-cli.md)
-7. [Transport, Errors, And Metadata](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/transport-and-errors.md)
-8. [Examples And Recipes](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/examples-and-recipes.md)
-9. [Stability And Coverage](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/stability-and-coverage.md)
-10. [API Coverage Matrix](https://github.com/Krablante/csfloat-node-sdk/blob/main/API_COVERAGE.md)
+6. [Write Flows And Payloads](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/write-flows-and-payloads.md)
+7. [Workflows And CLI](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/workflows-and-cli.md)
+8. [Transport, Errors, And Metadata](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/transport-and-errors.md)
+9. [Examples And Recipes](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/examples-and-recipes.md)
+10. [Stability And Coverage](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/stability-and-coverage.md)
+11. [API Coverage Matrix](https://github.com/Krablante/csfloat-node-sdk/blob/main/API_COVERAGE.md)
 
 These Markdown docs ship in the npm tarball as well, so npm users are not forced onto a separate site just to understand the SDK.
 
@@ -204,6 +205,14 @@ Published/package-ready examples now cover:
 5. the higher-level workflow layer end-to-end
 
 The package also now ships a small CLI for the most common read-heavy workflows:
+
+```bash
+npx csfloat-node-sdk help
+npx csfloat-node-sdk feeds --api-key "$CSFLOAT_API_KEY"
+npx csfloat-node-sdk workspace --api-key "$CSFLOAT_API_KEY"
+```
+
+If you are running from source after `npm run build`:
 
 ```bash
 node dist/cli.js help

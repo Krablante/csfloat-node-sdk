@@ -55,6 +55,12 @@ npx csfloat-node-sdk feeds --api-key "$CSFLOAT_API_KEY"
 - Higher-level multi-call orchestration:
   `examples/workflows.mjs`
 
+Mutation-heavy docs-only recipes live here:
+
+- [Write Flows And Payloads](./write-flows-and-payloads.md)
+
+They are documented in Markdown instead of shipped as runnable scripts because they can create, modify, or cancel real state.
+
 ## Common Recipes
 
 Assume `const sdk = new CsfloatSdk({ apiKey: process.env.CSFLOAT_API_KEY! });` unless the snippet shows otherwise.
@@ -183,6 +189,66 @@ await sdk.listings.updateBulkListings([
   { contract_id: "123", price: 1_500 },
   { contract_id: "456", price: 2_000 },
 ]);
+```
+
+### Create Or Counter An Offer
+
+```ts
+const offer = await sdk.account.createOffer({
+  contract_id: "945821907352158315",
+  price: 1_250,
+});
+
+const counter = await sdk.account.counterOffer(String(offer.id), {
+  price: 1_400,
+});
+```
+
+### Create Or Update A Buy Order
+
+```ts
+const buyOrder = await sdk.account.createBuyOrder({
+  market_hash_name: "AK-47 | Redline (Field-Tested)",
+  max_price: 1_500,
+  quantity: 1,
+});
+
+await sdk.account.updateBuyOrder(String(buyOrder.id), {
+  max_price: 1_700,
+});
+```
+
+### Create A Buy-Now Listing
+
+```ts
+const listing = await sdk.listings.createBuyNowListing({
+  asset_id: "1234567890",
+  price: 2_500,
+  private: true,
+  max_offer_discount: 5,
+});
+```
+
+### Update Account Preferences
+
+```ts
+await sdk.account.updateMe({
+  offers_enabled: true,
+  stall_public: true,
+  max_offer_discount: 5,
+});
+```
+
+### Create A Loadout
+
+```ts
+const recommender = await sdk.account.createRecommenderToken();
+
+await sdk.loadout.createLoadout(recommender.token, {
+  name: "My CT/T setup",
+  ct: { is_filled: true, rifles: [{ def_index: 7, paint_index: 490 }] },
+  t: { is_filled: true, rifles: [{ def_index: 60, paint_index: 16 }] },
+});
 ```
 
 ## How To Decide Between Examples And Docs

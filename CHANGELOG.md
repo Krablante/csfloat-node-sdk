@@ -6,6 +6,12 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.2.1] - 2026-03-10
+
+### Changed
+
+1. expanded docs again with a dedicated write-flow and payload guide, deeper mutation-heavy recipes, and more npm-first CLI guidance so advanced users no longer need to fall back to source for common request bodies
+
 ## [0.9.2] - 2026-03-10
 
 ### Changed
