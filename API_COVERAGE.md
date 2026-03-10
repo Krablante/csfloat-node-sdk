@@ -51,6 +51,7 @@ Status legend:
 | `/me/offers-timeline` | `GET` | implemented | live + public wrapper source | authenticated offers timeline |
 | `/offers` | `POST` | implemented | live | confirmed happy-path create on buyer account with body `{ contract_id, price }` |
 | `/offers/{id}` | `GET` | implemented | live | single offer fetch by valid offer id |
+| `/offers/{id}/accept` | `POST` | implemented | live invalid probe + browser-auth discovery | current SDK exposes `account.acceptOffer()`; route existence is confirmed, but happy-path response semantics remain only partially mapped |
 | `/offers/{id}/history` | `GET` | implemented | live + public wrapper source | historical thread for the offer chain; confirmed with valid declined/counter-offer ids |
 | `/offers/{id}/counter-offer` | `POST` | implemented | live | confirmed happy-path on seller account with body `{ price }` |
 | `/offers/{id}` | `DELETE` | implemented | live | confirmed happy-path cancellation with response `offer canceled`; exact actor/state semantics may vary by thread state |
@@ -98,17 +99,13 @@ These routes were confirmed live during the 2026-03-07 recon sweep:
 | `/me/trades` | `GET` | implemented | live | returns `{ trades, count }`; supports `limit` |
 | `/me/offers` | `GET` | implemented | live | returns `{ offers, count }`; current live validation confirms meaningful `page` + `limit`, while legacy `cursor` appears ignored |
 | `/me/watchlist` | `GET` | implemented | live + browser-auth UI | returns `{ data, cursor }`; currently confirmed with `limit`, `state`, `sort_by`, `filter`, `category`, `type`, `min_price`, `min_ref_qty`, `stickers`, `keychains`, and `sticker_option`; live-meaningful examples include `type=auction|buy_now`, `filter=unique`, and `sort_by=highest_discount|lowest_price` |
-| `/listings?limit=40&min_ref_qty=20` | `GET` | discovered | live + frontend network | exact unauthenticated public `/search` page bootstrap shape; general search params still require auth |
-| `/listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500` | `GET` | discovered | browser UI + live | current homepage-highlight feed shape; public and stable on 2026-03-08 |
-| `/listings?limit=5&sort_by=most_recent&min_ref_qty=20&type=buy_now&min_price=500` | `GET` | discovered | browser UI + live | current homepage `Newest Items` feed shape; public and stable on 2026-03-08 |
-| `/listings?limit=5&sort_by=most_recent&filter=unique&min_ref_qty=20&type=buy_now&min_price=500` | `GET` | discovered | browser UI + live | current homepage `Unique Items` feed shape; public and stable on 2026-03-08 |
+| `/listings?limit=40&min_ref_qty=20` | `GET` | implemented | live + frontend network | exact unauthenticated public `/search` page bootstrap shape; exposed via `listings.getListings(getPublicMarketPageParams())` |
+| `/listings?limit=5&min_ref_qty=20&type=buy_now&min_price=500` | `GET` | implemented | browser UI + live | current homepage-highlight feed shape; exposed via `listings.getListings(getHomepageFeedParams("top_deals"))` and `workflows.getPublicMarketFeeds()` |
+| `/listings?limit=5&sort_by=most_recent&min_ref_qty=20&type=buy_now&min_price=500` | `GET` | implemented | browser UI + live | current homepage `Newest Items` feed shape; exposed via `listings.getListings(getHomepageFeedParams("newest"))` and `workflows.getPublicMarketFeeds()` |
+| `/listings?limit=5&sort_by=most_recent&filter=unique&min_ref_qty=20&type=buy_now&min_price=500` | `GET` | implemented | browser UI + live | current homepage `Unique Items` feed shape; exposed via `listings.getListings(getHomepageFeedParams("unique"))` and `workflows.getPublicMarketFeeds()` |
 | `/listings?filter=sticker_combos` | `GET` | discovered | live + browser UI + auth API | UI label `Sticker Combos`; requires auth; current live probes return sticker-heavy rows |
 | `/listings?filter=unique` | `GET` | discovered | live + browser UI + auth API | UI label `Unique Items`; requires auth |
 | `/listings/{auction_id}/bids` | `GET` | implemented | live | returns bid array for auction listings; empty array when no bids |
-| `/buy-orders` | `POST` | discovered | live + public wrapper source | invalid payload returned validation error, confirming route existence |
-| `/buy-orders/{id}` | `DELETE` | discovered | live + public wrapper source | invalid order id returned `unknown buy order` |
-| `/me/notifications/read-receipt` | `POST` | discovered | live + public wrapper source | invalid read marker returned validation error |
-| `/offers/{id}/accept` | `POST` | discovered | live | invalid offer id returned `failed to accept offer`, confirming route existence; happy-path not yet executed |
 | `/buy-orders/item` | `GET` | implemented | browser bundle + live | inspect-link oriented route using query params `{ url:<inspectLink>, limit }`; live happy-path returned an array like `[{ expression, qty, price }]` |
 | `/buy-orders/matching-items/floatdb` | `POST` | discovered | browser bundle + live invalid probe | route exists but currently demands float-expression semantics; plain `market_hash_name` returned `condition and rules are required for an expression` |
 | `/trades/{id}/cannot-deliver` | `POST` | discovered | browser bundle + live invalid probe | invalid `id=0` returned `500 record not found`; likely seller-side failure path, not executed happy-path due risk |
@@ -278,7 +275,7 @@ Live-confirmed search behaviors:
 38. `DELETE /offers/{id}` is the confirmed close route for both buyer-side cancel and seller-side decline flows; the server still returns the generic message `{ "message": "offer canceled" }` in both cases, while the historical offer state becomes `declined`
 39. `POST /listings/buy` happy-path is confirmed with body `{ contract_ids: string[], total_price }` and returns `{ "message": "all listings purchased" }`
 40. `PATCH /buy-orders/{id}` happy-path is confirmed with body `{ max_price }`; `PUT` and `POST` on the same route return `405`
-41. `POST /offers/{id}/accept` exists and returns `code 91: failed to accept offer` for an invalid offer id; the route is discovered, but the happy-path is intentionally not executed yet because that would complete a real purchase
+41. `POST /offers/{id}/accept` exists and returns `code 91: failed to accept offer` for an invalid offer id; the SDK now exposes it as the low-level helper `account.acceptOffer()`, while the happy-path is still intentionally not executed because that would complete a real purchase
 42. `POST /trades/bulk/accept` is the confirmed `accept sale` route for queued seller trades; on a real `$0.05` queued sale it returned `{ data: [trade] }`, transitioned the trade from `queued` to `pending`, and populated `accepted_at`, `trade_url`, `trade_token`, and `steam_offer` timing fields
 43. `GET /listings/price-list` is a public market-wide price index that returned `24653` entries during the 2026-03-07 live check; each entry currently exposes `market_hash_name`, `quantity`, and `min_price`
 44. currently observed query params on `/listings/price-list` such as `market_hash_name` and `limit` appear to be silently ignored; exact filtering/pagination semantics are not yet mapped

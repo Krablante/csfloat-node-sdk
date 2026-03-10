@@ -778,6 +778,8 @@ export interface CsfloatOffer {
   is_from_seller?: boolean;
 }
 
+export type CsfloatAcceptOfferResponse = CsfloatOffer | CsfloatMessageResponse;
+
 export interface CsfloatOffersResponse {
   offers: CsfloatOffer[];
   count?: number;
@@ -1113,7 +1115,10 @@ export type CreateListingRequest =
   | CreateAuctionListingRequest;
 
 export interface UpdateListingRequest {
-  price: number;
+  price?: number;
+  description?: string;
+  max_offer_discount?: number;
+  private?: boolean;
 }
 
 export interface UpdateBulkListingRequest {

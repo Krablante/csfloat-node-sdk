@@ -3,6 +3,7 @@ import { paginateCursor } from "../pagination.js";
 import type {
   AcceptTradesRequest,
   CounterOfferRequest,
+  CsfloatAcceptOfferResponse,
   CsfloatAccountStandingResponse,
   CsfloatAutoBid,
   CsfloatBuyOrder,
@@ -141,6 +142,15 @@ export class AccountResource {
 
   getOffer(offerId: string): Promise<CsfloatOffer> {
     return this.client.get<CsfloatOffer>(`offers/${offerId}`);
+  }
+
+  /**
+   * Low-level accept helper for the browser-observed offer acceptance route.
+   * Current live validation confirms the route exists, but happy-path response
+   * semantics remain only partially mapped.
+   */
+  acceptOffer(offerId: string): Promise<CsfloatAcceptOfferResponse> {
+    return this.client.post<CsfloatAcceptOfferResponse>(`offers/${offerId}/accept`, {});
   }
 
   getOfferHistory(offerId: string): Promise<CsfloatOffer[]> {

@@ -132,6 +132,62 @@ describe("ListingsResource", () => {
     expect(() => resource.updateBulkListings([])).toThrow(CsfloatSdkError);
   });
 
+  it("provides a price-only listing update helper", async () => {
+    const patch = vi.fn(async (_path: string, body: unknown) => body);
+    const resource = new ListingsResource({
+      ...client,
+      patch,
+    } as never);
+
+    await resource.updateListingPrice("listing-1", 1337);
+
+    expect(patch).toHaveBeenCalledWith("listings/listing-1", {
+      price: 1337,
+    });
+  });
+
+  it("provides a description-only listing update helper", async () => {
+    const patch = vi.fn(async (_path: string, body: unknown) => body);
+    const resource = new ListingsResource({
+      ...client,
+      patch,
+    } as never);
+
+    await resource.updateListingDescription("listing-1", "test text");
+
+    expect(patch).toHaveBeenCalledWith("listings/listing-1", {
+      description: "test text",
+    });
+  });
+
+  it("provides a max-offer-discount listing update helper", async () => {
+    const patch = vi.fn(async (_path: string, body: unknown) => body);
+    const resource = new ListingsResource({
+      ...client,
+      patch,
+    } as never);
+
+    await resource.updateListingMaxOfferDiscount("listing-1", 12);
+
+    expect(patch).toHaveBeenCalledWith("listings/listing-1", {
+      max_offer_discount: 12,
+    });
+  });
+
+  it("provides a privacy-only listing update helper", async () => {
+    const patch = vi.fn(async (_path: string, body: unknown) => body);
+    const resource = new ListingsResource({
+      ...client,
+      patch,
+    } as never);
+
+    await resource.updateListingPrivate("listing-1", true);
+
+    expect(patch).toHaveBeenCalledWith("listings/listing-1", {
+      private: true,
+    });
+  });
+
   it("delists listings in bulk", async () => {
     const patch = vi.fn(async (_path: string, _body?: unknown) => ({ message: "contracts delisted" }));
     const resource = new ListingsResource({

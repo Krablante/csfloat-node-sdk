@@ -153,6 +153,25 @@ export class ListingsResource {
     return this.client.patch<CsfloatListing>(`listings/${listingId}`, request);
   }
 
+  updateListingPrice(listingId: string, price: number): Promise<CsfloatListing> {
+    return this.updateListing(listingId, { price });
+  }
+
+  updateListingDescription(listingId: string, description: string): Promise<CsfloatListing> {
+    return this.updateListing(listingId, { description });
+  }
+
+  updateListingMaxOfferDiscount(
+    listingId: string,
+    maxOfferDiscount: number,
+  ): Promise<CsfloatListing> {
+    return this.updateListing(listingId, { max_offer_discount: maxOfferDiscount });
+  }
+
+  updateListingPrivate(listingId: string, isPrivate: boolean): Promise<CsfloatListing> {
+    return this.updateListing(listingId, { private: isPrivate });
+  }
+
   deleteListing(listingId: string): Promise<CsfloatListing | null> {
     return this.client.delete<CsfloatListing | null>(`listings/${listingId}`);
   }

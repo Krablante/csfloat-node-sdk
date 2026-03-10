@@ -195,6 +195,15 @@ describe("AccountResource", () => {
     expect(get).toHaveBeenCalledWith("offers/950518288876703091");
   });
 
+  it("accepts an offer through the browser-observed route", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.acceptOffer("950518288876703091");
+
+    expect(post).toHaveBeenCalledWith("offers/950518288876703091/accept", {});
+  });
+
   it("requests offer history by id", async () => {
     const get = vi.fn(async (_path: string) => null);
     const resource = new AccountResource({ get } as never);

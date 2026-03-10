@@ -2,11 +2,32 @@ import { CsfloatSdkError, type CsfloatErrorKind } from "./errors.js";
 import type { QueryParams } from "./types.js";
 import { cleanParams } from "./utils.js";
 
-const DEFAULT_USER_AGENT = "csfloat-node-sdk/0.9.0";
+const DEFAULT_USER_AGENT = "csfloat-node-sdk/0.9.1";
 const DEFAULT_MAX_RETRIES = 2;
 const DEFAULT_RETRY_DELAY_MS = 250;
 const DEFAULT_MAX_RETRY_DELAY_MS = 2_000;
 const RETRYABLE_STATUS_CODES = new Set([429, 502, 503, 504]);
+
+export interface CsfloatRateLimitMetadata {
+  limit?: number;
+  remaining?: number;
+  resetEpochSeconds?: number;
+  resetAt?: string;
+  retryAfterMs?: number;
+  suggestedWaitMs?: number;
+}
+
+export interface CsfloatResponseMetadata {
+  url: string;
+  status: number;
+  headers: Record<string, string>;
+  rateLimit?: CsfloatRateLimitMetadata;
+}
+
+export interface CsfloatResponse<T> {
+  data: T;
+  meta: CsfloatResponseMetadata;
+}
 
 function parseResponseBody(text: string): unknown {
   if (!text) {
@@ -49,6 +70,19 @@ function extractApiMessage(details: unknown): string | undefined {
   }
 
   return undefined;
+}
+
+function parseIntegerHeader(value: string | null): number | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 0) {
+    return undefined;
+  }
+
+  return parsed;
 }
 
 function classifyApiError(
@@ -140,6 +174,67 @@ function parseRetryAfterMs(value: string | null): number | undefined {
   }
 
   return Math.max(0, date - Date.now());
+}
+
+function headersToRecord(headers: Headers): Record<string, string> {
+  const record: Record<string, string> = {};
+
+  headers.forEach((value, key) => {
+    record[key] = value;
+  });
+
+  return record;
+}
+
+function buildRateLimitMetadata(headers: Headers): CsfloatRateLimitMetadata | undefined {
+  const limit = parseIntegerHeader(headers.get("X-Ratelimit-Limit"));
+  const remaining = parseIntegerHeader(headers.get("X-Ratelimit-Remaining"));
+  const resetEpochSeconds = parseIntegerHeader(headers.get("X-Ratelimit-Reset"));
+  const retryAfterMs = parseRetryAfterMs(headers.get("Retry-After"));
+
+  if (
+    limit === undefined &&
+    remaining === undefined &&
+    resetEpochSeconds === undefined &&
+    retryAfterMs === undefined
+  ) {
+    return undefined;
+  }
+
+  const resetAt = resetEpochSeconds === undefined
+    ? undefined
+    : new Date(resetEpochSeconds * 1000).toISOString();
+  const resetMs = resetEpochSeconds === undefined ? undefined : resetEpochSeconds * 1000;
+  let suggestedWaitMs: number | undefined;
+
+  if (resetMs !== undefined) {
+    if (remaining === 0) {
+      suggestedWaitMs = Math.max(0, resetMs - Date.now());
+    } else if (remaining !== undefined && remaining > 0) {
+      suggestedWaitMs = Math.max(0, Math.floor((resetMs - Date.now()) / remaining));
+    }
+  }
+
+  return {
+    ...(limit === undefined ? {} : { limit }),
+    ...(remaining === undefined ? {} : { remaining }),
+    ...(resetEpochSeconds === undefined ? {} : { resetEpochSeconds }),
+    ...(resetAt === undefined ? {} : { resetAt }),
+    ...(retryAfterMs === undefined ? {} : { retryAfterMs }),
+    ...(suggestedWaitMs === undefined ? {} : { suggestedWaitMs }),
+  };
+}
+
+function buildResponseMetadata(url: URL, response: Response): CsfloatResponseMetadata {
+  const headers = headersToRecord(response.headers);
+  const rateLimit = buildRateLimitMetadata(response.headers);
+
+  return {
+    url: response.url || url.toString(),
+    status: response.status,
+    headers,
+    ...(rateLimit === undefined ? {} : { rateLimit }),
+  };
 }
 
 function getRetryDelayMs(
@@ -276,31 +371,62 @@ export class CsfloatHttpClient {
     path: string,
     params?: QueryParams,
   ): Promise<T> {
-    return this.request<T>(
+    return this
+      .requestWithMetadata<T>("GET", path, params === undefined ? undefined : { params })
+      .then((response) => response.data);
+  }
+
+  async post<T>(path: string, body: unknown, params?: QueryParams): Promise<T> {
+    return this
+      .requestWithMetadata<T>("POST", path, params === undefined ? { body } : { body, params })
+      .then((response) => response.data);
+  }
+
+  async patch<T>(path: string, body: unknown): Promise<T> {
+    return this.requestWithMetadata<T>("PATCH", path, { body }).then((response) => response.data);
+  }
+
+  async put<T>(path: string, body: unknown): Promise<T> {
+    return this.requestWithMetadata<T>("PUT", path, { body }).then((response) => response.data);
+  }
+
+  async delete<T>(path: string): Promise<T> {
+    return this.requestWithMetadata<T>("DELETE", path).then((response) => response.data);
+  }
+
+  async getWithMetadata<T>(
+    path: string,
+    params?: QueryParams,
+  ): Promise<CsfloatResponse<T>> {
+    return this.requestWithMetadata<T>(
       "GET",
       path,
       params === undefined ? undefined : { params },
     );
   }
 
-  async post<T>(path: string, body: unknown, params?: QueryParams): Promise<T> {
-    return this.request<T>(
+  async postWithMetadata<T>(
+    path: string,
+    body: unknown,
+    params?: QueryParams,
+  ): Promise<CsfloatResponse<T>> {
+    return this.requestWithMetadata<T>(
       "POST",
       path,
       params === undefined ? { body } : { body, params },
     );
   }
 
-  async patch<T>(path: string, body: unknown): Promise<T> {
-    return this.request<T>("PATCH", path, { body });
+  async patchWithMetadata<T>(path: string, body: unknown): Promise<CsfloatResponse<T>> {
+    return this.requestWithMetadata<T>("PATCH", path, { body });
   }
 
-  async put<T>(path: string, body: unknown): Promise<T> {
-    return this.request<T>("PUT", path, { body });
+  async putWithMetadata<T>(path: string, body: unknown): Promise<CsfloatResponse<T>> {
+    return this.requestWithMetadata<T>("PUT", path, { body });
   }
 
-  async delete<T>(path: string): Promise<T> {
-    return this.request<T>("DELETE", path);
+  async deleteWithMetadata<T>(path: string): Promise<CsfloatResponse<T>> {
+    return this.requestWithMetadata<T>("DELETE", path);
   }
 
   private async waitForPacingTurn(): Promise<void> {
@@ -319,14 +445,14 @@ export class CsfloatHttpClient {
     await turn;
   }
 
-  private async request<T>(
+  private async requestWithMetadata<T>(
     method: string,
     path: string,
     options: {
       params?: QueryParams;
       body?: unknown;
     } | undefined = undefined,
-  ): Promise<T> {
+  ): Promise<CsfloatResponse<T>> {
     const url = new URL(path, `${this.baseUrl}/`);
     if (options?.params) {
       url.search = cleanParams(options.params).toString();
@@ -363,6 +489,7 @@ export class CsfloatHttpClient {
 
         const text = await response.text();
         const data = parseResponseBody(text);
+        const meta = buildResponseMetadata(url, response);
 
         if (!response.ok) {
           if (
@@ -392,7 +519,10 @@ export class CsfloatHttpClient {
           });
         }
 
-        return data as T;
+        return {
+          data: data as T,
+          meta,
+        };
       } catch (error) {
         if (error instanceof CsfloatSdkError) {
           throw error;

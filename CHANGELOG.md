@@ -6,6 +6,20 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-03-10
+
+### Added
+
+1. opt-in low-level response metadata via `client.getWithMetadata()`, `postWithMetadata()`, `patchWithMetadata()`, `putWithMetadata()`, and `deleteWithMetadata()`, including parsed rate-limit fields such as `limit`, `remaining`, `resetAt`, `retryAfterMs`, and `suggestedWaitMs`
+2. `account.acceptOffer()` for the browser-observed `POST /offers/{id}/accept` route, exposed conservatively as a low-level helper while the happy-path response remains only partially mapped
+3. `listings.updateListingPrice()`, `listings.updateListingDescription()`, `listings.updateListingMaxOfferDiscount()`, and `listings.updateListingPrivate()` as thin convenience helpers over the already validated `PATCH /listings/{id}` contract
+
+### Changed
+
+1. bumped package versioning and default user agent from `0.9.0` to `0.9.1`
+2. tightened the README competitor-facing transport story by documenting opt-in response metadata alongside existing retry/backoff/pacing features
+3. cleaned `API_COVERAGE.md` so already-implemented buy-order and notification routes are no longer duplicated as discovered-only rows, and current public feed presets are called out as implemented helpers rather than stray query strings
+
 ## [0.9.0] - 2026-03-08
 
 ### Added

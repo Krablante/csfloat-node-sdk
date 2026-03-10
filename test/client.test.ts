@@ -28,7 +28,7 @@ describe("CsfloatHttpClient", () => {
       method: "GET",
       headers: expect.objectContaining({
         Authorization: "secret",
-        "User-Agent": "csfloat-node-sdk/0.9.0",
+        "User-Agent": "csfloat-node-sdk/0.9.1",
       }),
     });
   });
@@ -142,6 +142,64 @@ describe("CsfloatHttpClient", () => {
     expect(String(url)).toContain("buy-orders/similar-orders?limit=10");
     expect(init).toMatchObject({
       method: "POST",
+    });
+  });
+
+  it("returns response metadata for successful requests", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "X-Ratelimit-Limit": "120",
+          "X-Ratelimit-Remaining": "30",
+          "X-Ratelimit-Reset": "2000000000",
+        },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({ apiKey: "secret" });
+
+    const response = await client.getWithMetadata<{ ok: true }>("me");
+
+    expect(response.data).toEqual({ ok: true });
+    expect(response.meta.status).toBe(200);
+    expect(response.meta.url).toContain("/me");
+    expect(response.meta.headers["content-type"]).toBe("application/json");
+    expect(response.meta.rateLimit).toMatchObject({
+      limit: 120,
+      remaining: 30,
+      resetEpochSeconds: 2000000000,
+      resetAt: "2033-05-18T03:33:20.000Z",
+    });
+  });
+
+  it("returns response metadata for POST requests with query params", async () => {
+    const fetchMock = vi.fn(async () =>
+      new Response(JSON.stringify({ created: true }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Retry-After": "2",
+        },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new CsfloatHttpClient({ apiKey: "secret" });
+
+    const response = await client.postWithMetadata(
+      "buy-orders/similar-orders",
+      { market_hash_name: "AK-47 | Redline (Field-Tested)" },
+      { limit: 5 },
+    );
+
+    expect(response.data).toEqual({ created: true });
+    expect(response.meta.status).toBe(200);
+    expect(response.meta.url).toContain("buy-orders/similar-orders?limit=5");
+    expect(response.meta.rateLimit).toMatchObject({
+      retryAfterMs: 2000,
     });
   });
 

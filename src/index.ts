@@ -76,7 +76,13 @@ export {
   CSFLOAT_PUBLIC_FEED_WORKFLOW_DEFAULTS,
 } from "./workflows.js";
 
-export type { CsfloatClientOptions, CsfloatFetch } from "./client.js";
+export type {
+  CsfloatClientOptions,
+  CsfloatFetch,
+  CsfloatRateLimitMetadata,
+  CsfloatResponse,
+  CsfloatResponseMetadata,
+} from "./client.js";
 export type { CsfloatErrorKind, CsfloatSdkErrorOptions } from "./errors.js";
 export type {
   CsfloatBuyOrderComparableField,
@@ -118,6 +124,7 @@ export type { CsfloatWearParams, CsfloatWearPreset } from "./wear.js";
 export type {
   CsfloatAppliedKeychainFilter,
   CsfloatAppliedStickerFilter,
+  CsfloatAcceptOfferResponse,
   AcceptTradesRequest,
   Category,
   BuyNowRequest,
