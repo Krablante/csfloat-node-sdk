@@ -19,23 +19,26 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 > The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
 >
-> Install from npm: [`csfloat-node-sdk@0.9.1.5`](https://www.npmjs.com/package/csfloat-node-sdk)
+> Install from npm: [`csfloat-node-sdk@0.9.2`](https://www.npmjs.com/package/csfloat-node-sdk)
 
 ## Documentation
+
+The docs set now aims to cover the full public runtime surface of the package, not just the quick-start path.
 
 If you want the fastest path through the SDK, start here:
 
 1. [Documentation Hub](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/README.md)
 2. [Getting Started](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/getting-started.md)
-3. [Resources And Workflows](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/resources-and-workflows.md)
-4. [Transport, Errors, And Metadata](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/transport-and-errors.md)
-5. [Examples And Recipes](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/examples-and-recipes.md)
-6. [API Coverage Matrix](https://github.com/Krablante/csfloat-node-sdk/blob/main/API_COVERAGE.md)
+3. [Resources, Workflows, And Surface Map](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/resources-and-workflows.md)
+4. [Resource Reference](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/resource-reference.md)
+5. [Helpers, Builders, And Constants](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/helpers-and-builders.md)
+6. [Workflows And CLI](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/workflows-and-cli.md)
+7. [Transport, Errors, And Metadata](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/transport-and-errors.md)
+8. [Examples And Recipes](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/examples-and-recipes.md)
+9. [Stability And Coverage](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/stability-and-coverage.md)
+10. [API Coverage Matrix](https://github.com/Krablante/csfloat-node-sdk/blob/main/API_COVERAGE.md)
 
-Current recommendation:
-
-1. keep documentation GitHub/npm-first while the information architecture is still evolving
-2. only add a separate docs site later, using this same Markdown content as the source of truth
+These Markdown docs ship in the npm tarball as well, so npm users are not forced onto a separate site just to understand the SDK.
 
 ## Why Choose This SDK
 

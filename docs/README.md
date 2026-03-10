@@ -1,51 +1,77 @@
 # Documentation Hub
 
-This SDK already ships a broad surface. The fastest way to make it usable is not
-to make the main README even longer, but to give users a clear map.
+This docs set is meant to cover the full public runtime surface of `csfloat-node-sdk`:
 
-If you are reading this on npm:
+- `CsfloatSdk` resources
+- `sdk.client` and `CsfloatHttpClient`
+- workflow helpers
+- builder/helper/constant exports from the package root
+- CLI commands
+- the stability and coverage notes needed to use the SDK responsibly
 
-1. start with the repository README for the high-level pitch and install snippet
-2. use this `docs/` directory for task-oriented guidance
-3. use `API_COVERAGE.md` when you need endpoint-level truth
+If you are reading this from the published npm package, these files ship in the tarball.
 
-## Start Here
+## Recommended Reading Order
 
-- [Getting Started](./getting-started.md)
-  First install, API key setup, first requests, local verification.
-- [Resources And Workflows](./resources-and-workflows.md)
-  Which SDK surface to use for market reads, account automation, loadouts, and higher-level helpers.
-- [Transport, Errors, And Metadata](./transport-and-errors.md)
-  Retries, pacing, typed errors, and the new opt-in response metadata surface.
-- [Examples And Recipes](./examples-and-recipes.md)
-  Examples, CLI commands, and which script to run for common tasks.
+1. [Getting Started](./getting-started.md)
+   Install, first client, first requests, and where to go next.
+2. [Resources, Workflows, And Surface Map](./resources-and-workflows.md)
+   Which surface to use for each kind of task.
+3. [Resource Reference](./resource-reference.md)
+   The method-level reference for `sdk.meta`, `sdk.account`, `sdk.listings`, and the rest.
+4. [Helpers, Builders, And Constants](./helpers-and-builders.md)
+   Every exported helper module and the constants that shape queries or requests.
+5. [Workflows And CLI](./workflows-and-cli.md)
+   The higher-level orchestration layer plus the published CLI commands.
+6. [Transport, Errors, And Metadata](./transport-and-errors.md)
+   `CsfloatHttpClient`, retries, pacing, metadata responses, and error handling.
+7. [Examples And Recipes](./examples-and-recipes.md)
+   Runnable examples plus copyable snippets for common flows.
+8. [Stability And Coverage](./stability-and-coverage.md)
+   How to interpret implemented vs low-level vs account-gated behavior.
+9. [`API_COVERAGE.md`](../API_COVERAGE.md)
+   Endpoint-level truth for validated and discovered routes.
 
-## How To Read This SDK
+## Choose By Task
 
-Use the SDK in three layers:
+- First request or install help:
+  [Getting Started](./getting-started.md)
+- Which resource or helper to reach for:
+  [Resources, Workflows, And Surface Map](./resources-and-workflows.md)
+- Exact public methods on each resource:
+  [Resource Reference](./resource-reference.md)
+- Exported builders, presets, constants, and pagination helpers:
+  [Helpers, Builders, And Constants](./helpers-and-builders.md)
+- High-level snapshot helpers or CLI usage:
+  [Workflows And CLI](./workflows-and-cli.md)
+- Transport behavior, retries, rate limits, or raw metadata:
+  [Transport, Errors, And Metadata](./transport-and-errors.md)
+- Copyable code for real tasks:
+  [Examples And Recipes](./examples-and-recipes.md)
+- Support confidence, caveats, and route truth:
+  [Stability And Coverage](./stability-and-coverage.md) and [`API_COVERAGE.md`](../API_COVERAGE.md)
 
-1. `CsfloatSdk` resources for normal application code
-2. helpers/builders/workflows when you want less glue code
-3. `sdk.client.*WithMetadata()` when you need low-level response visibility
+## What This Docs Set Covers
+
+- every public runtime entrypoint exported from the package root
+- every SDK resource and workflow method
+- the helper functions and constants that materially affect day-to-day usage
+- the published CLI surface
+- the transport and error model
+
+The root package also exports a very large TypeScript type surface. These docs call out the important request and response types by area, but the generated `.d.ts` files and your IDE remain the authoritative field-level reference.
 
 ## Where Different Kinds Of Truth Live
 
-- Product overview: `README.md`
-- Stable endpoint coverage notes: `API_COVERAGE.md`
-- Release history: `CHANGELOG.md`
-- Task-oriented usage: `docs/*.md`
-- Executable examples: `examples/*.mjs`
-
-## Should You Build A Separate Docs Site?
-
-Not yet, unless you are ready to keep GitHub, npm, and the site in sync.
-
-The better near-term strategy is:
-
-1. keep GitHub + npm-readable docs as the source of truth
-2. keep docs in Markdown inside the package repository
-3. only later add a Vercel-hosted site that reuses this same content
-
-That way npm users are not forced onto an external site just to understand the
-package, and a future docs site becomes a presentation layer, not a second
-documentation system.
+- Product overview and install snippet:
+  [`README.md`](../README.md)
+- Runtime docs:
+  `docs/*.md`
+- Endpoint-by-endpoint validation and discovery notes:
+  [`API_COVERAGE.md`](../API_COVERAGE.md)
+- Release history:
+  [`CHANGELOG.md`](../CHANGELOG.md)
+- Executable examples:
+  `examples/*.mjs`
+- Tests for supported behavior:
+  `test/*.test.ts`

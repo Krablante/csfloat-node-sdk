@@ -6,6 +6,12 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-03-10
+
+### Changed
+
+1. expanded `docs/` from a light task-oriented hub into a fuller package-level documentation set, covering the complete runtime surface across resources, workflows, helper exports, CLI usage, transport behavior, and stability guidance
+
 ## [0.9.1.5] - 2026-03-10
 
 ### Added
