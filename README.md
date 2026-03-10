@@ -19,7 +19,23 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 > The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
 >
-> Install from npm: [`csfloat-node-sdk@0.9.1`](https://www.npmjs.com/package/csfloat-node-sdk)
+> Install from npm: [`csfloat-node-sdk@0.9.1.5`](https://www.npmjs.com/package/csfloat-node-sdk)
+
+## Documentation
+
+If you want the fastest path through the SDK, start here:
+
+1. [Documentation Hub](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/README.md)
+2. [Getting Started](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/getting-started.md)
+3. [Resources And Workflows](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/resources-and-workflows.md)
+4. [Transport, Errors, And Metadata](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/transport-and-errors.md)
+5. [Examples And Recipes](https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/examples-and-recipes.md)
+6. [API Coverage Matrix](https://github.com/Krablante/csfloat-node-sdk/blob/main/API_COVERAGE.md)
+
+Current recommendation:
+
+1. keep documentation GitHub/npm-first while the information architecture is still evolving
+2. only add a separate docs site later, using this same Markdown content as the source of truth
 
 ## Why Choose This SDK
 

@@ -6,6 +6,17 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.1.5] - 2026-03-10
+
+### Added
+
+1. a new `docs/` hub with task-oriented pages for getting started, resource selection, transport/error behavior, and examples/recipes
+
+### Changed
+
+1. promoted documentation discoverability in the README so npm and GitHub users get direct links into the structured docs instead of only one long landing page
+2. package publishing now includes `docs/` so the same documentation structure can ship with the npm tarball instead of living only in the GitHub repo
+
 ## [0.9.1] - 2026-03-10
 
 ### Added
