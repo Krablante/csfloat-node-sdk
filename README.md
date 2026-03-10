@@ -19,7 +19,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 > The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
 >
-> Install from npm: [`csfloat-node-sdk@0.9.2.1`](https://www.npmjs.com/package/csfloat-node-sdk)
+> Install from npm: [`csfloat-node-sdk@0.9.3`](https://www.npmjs.com/package/csfloat-node-sdk)
 
 ## Documentation
 
