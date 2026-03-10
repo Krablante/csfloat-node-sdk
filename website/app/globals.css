@@ -1,0 +1,198 @@
+:root {
+  color-scheme: dark;
+  --nextra-primary-hue: 39deg;
+  --nextra-primary-saturation: 78%;
+  --nextra-primary-lightness: 58%;
+  --nextra-bg: 15, 13, 10;
+  --nextra-content-width: 90rem;
+  --font-body-fallback:
+    "Manrope", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-heading-fallback:
+    "Cormorant Garamond", "Times New Roman", serif;
+  --site-bg: #0f0d0a;
+  --site-panel: #17120c;
+  --site-panel-strong: #21180f;
+  --site-text: #f6eedf;
+  --site-text-soft: #d0c7b3;
+  --site-gold: #dfb567;
+  --site-gold-strong: #f2d081;
+  --site-line: rgba(223, 181, 103, 0.18);
+}
+
+.dark,
+html[data-theme="dark"] {
+  --nextra-primary-hue: 39deg;
+  --nextra-primary-saturation: 78%;
+  --nextra-primary-lightness: 58%;
+  --nextra-bg: 15, 13, 10;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+html {
+  background: rgb(var(--nextra-bg));
+  background:
+    radial-gradient(circle at top right, rgba(210, 161, 68, 0.18), transparent 25%),
+    linear-gradient(180deg, #16110b 0%, #0f0d0a 100%);
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  color: var(--site-text);
+  font-family: var(--font-body), var(--font-body-fallback);
+}
+
+::selection {
+  background: hsla(var(--nextra-primary-hue), var(--nextra-primary-saturation), var(--nextra-primary-lightness), 0.3);
+}
+
+a {
+  color: var(--site-gold-strong);
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family:
+    "JetBrains Mono", "SFMono-Regular", "SF Mono", "Menlo", monospace;
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-mark {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 30% 30%, #ffdc94, #d39d3f 62%, #6a4f23 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 229, 170, 0.15),
+    0 0 22px rgba(223, 181, 103, 0.38);
+}
+
+.brand-text {
+  display: grid;
+  line-height: 1;
+}
+
+.brand-text strong {
+  color: var(--site-text);
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.brand-text span {
+  color: #be9a59;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.footer-grid a {
+  color: var(--site-gold-strong);
+}
+
+html.dark .nextra-nav-container,
+html[data-theme="dark"] .nextra-nav-container {
+  background: linear-gradient(180deg, rgba(15, 13, 10, 0.88), rgba(15, 13, 10, 0.6)) !important;
+  backdrop-filter: blur(14px);
+}
+
+html.dark .nextra-sidebar,
+html[data-theme="dark"] .nextra-sidebar {
+  background:
+    linear-gradient(180deg, rgba(20, 16, 11, 0.96), rgba(15, 13, 10, 0.92)) !important;
+}
+
+html.dark .nextra-body-typesetting-article h1,
+html.dark .nextra-body-typesetting-default h1,
+html.dark .nextra-body-typesetting-article h2,
+html.dark .nextra-body-typesetting-default h2,
+html.dark .nextra-body-typesetting-article h3,
+html.dark .nextra-body-typesetting-default h3,
+html[data-theme="dark"] .nextra-body-typesetting-article h1,
+html[data-theme="dark"] .nextra-body-typesetting-default h1,
+html[data-theme="dark"] .nextra-body-typesetting-article h2,
+html[data-theme="dark"] .nextra-body-typesetting-default h2,
+html[data-theme="dark"] .nextra-body-typesetting-article h3,
+html[data-theme="dark"] .nextra-body-typesetting-default h3 {
+  font-family: var(--font-heading), var(--font-heading-fallback);
+  color: #f7eede;
+  letter-spacing: -0.03em;
+}
+
+html.dark .nextra-body-typesetting-default,
+html.dark .nextra-body-typesetting-article,
+html[data-theme="dark"] .nextra-body-typesetting-default,
+html[data-theme="dark"] .nextra-body-typesetting-article {
+  color: var(--site-text-soft);
+}
+
+html.dark .nextra-body-typesetting-default a,
+html.dark .nextra-body-typesetting-article a,
+html[data-theme="dark"] .nextra-body-typesetting-default a,
+html[data-theme="dark"] .nextra-body-typesetting-article a {
+  color: #f1ca72;
+}
+
+html.dark .nextra-body-typesetting-default code,
+html.dark .nextra-body-typesetting-article code,
+html[data-theme="dark"] .nextra-body-typesetting-default code,
+html[data-theme="dark"] .nextra-body-typesetting-article code {
+  background: rgba(248, 214, 133, 0.08);
+  border: 1px solid rgba(248, 214, 133, 0.12);
+}
+
+html.dark .nextra-toc,
+html.dark .nextra-sidebar-container,
+html.dark .nextra-search,
+html[data-theme="dark"] .nextra-toc,
+html[data-theme="dark"] .nextra-sidebar-container,
+html[data-theme="dark"] .nextra-search {
+  --tw-border-opacity: 1;
+  border-color: var(--site-line) !important;
+}
+
+html.dark .nextra-callout,
+html[data-theme="dark"] .nextra-callout {
+  border-color: rgba(223, 181, 103, 0.28) !important;
+  background: rgba(255, 240, 196, 0.04) !important;
+}
+
+html.dark .nextra-filetree,
+html.dark .nextra-cards,
+html.dark .nextra-steps,
+html[data-theme="dark"] .nextra-filetree,
+html[data-theme="dark"] .nextra-cards,
+html[data-theme="dark"] .nextra-steps {
+  border-color: var(--site-line);
+}
+
+html.dark .nextra-scrollbar,
+html[data-theme="dark"] .nextra-scrollbar {
+  scrollbar-color: rgba(223, 181, 103, 0.28) transparent;
+}
+
+button[title*="theme"],
+button[title*="Theme"] {
+  display: none !important;
+}
