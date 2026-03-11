@@ -3,6 +3,13 @@ export { CsfloatSdk } from "./sdk.js";
 export { CsfloatSdkError, isCsfloatSdkError } from "./errors.js";
 export { WorkflowResource } from "./resources/workflows.js";
 export {
+  buildReferenceInsight,
+  getReferenceDiscountPercent,
+  getReferenceItemFactorAmount,
+  getReferencePremiumPercent,
+  getReferencePrice,
+} from "./reference.js";
+export {
   buildExpressionBuyOrderRequest,
   buildSingleSkinBuyOrderExpression,
   buildSingleSkinBuyOrderRequest,
@@ -84,6 +91,11 @@ export type {
   CsfloatResponseMetadata,
 } from "./client.js";
 export type { CsfloatErrorKind, CsfloatSdkErrorOptions } from "./errors.js";
+export type {
+  CsfloatReferenceCarrier,
+  CsfloatReferenceInsight,
+  CsfloatReferenceTarget,
+} from "./reference.js";
 export type {
   CsfloatBuyOrderComparableField,
   CsfloatSingleSkinBuyOrderExpressionOptions,

@@ -105,6 +105,9 @@ Write payload guide:
 Key types:
 `CsfloatWatchlistParams`, `CsfloatListingsResponse`, `CsfloatNotificationsParams`, `CsfloatNotificationsResponse`
 
+Watchlist note:
+returned `CsfloatListing` rows can include `reference`, which carries the base/predicted price widget data used by the marketplace UI.
+
 ### Transactions, Payments, And Status
 
 | Method | Returns | Use It For | Notes |
@@ -150,6 +153,9 @@ Write payload guide:
 |---|---|---|---|
 | `getInventory()` | `Promise<CsfloatInventoryResponse>` | authenticated inventory lookup | simple read-only resource |
 
+Inventory note:
+some `CsfloatInventoryItem` rows can include `reference` with the same base/predicted price metadata seen on listing responses.
+
 ## `sdk.users`
 
 | Method | Returns | Use It For | Notes |
@@ -165,6 +171,9 @@ Write payload guide:
 
 Key types:
 `CsfloatStallParams`, `CsfloatListingsResponse`, `CsfloatListing`
+
+Stall note:
+stall listing rows use the same `CsfloatListing` shape as public search results and can also include `reference`.
 
 ## `sdk.listings`
 
@@ -187,6 +196,9 @@ Key types:
 
 Key types:
 `CsfloatListParams`, `CsfloatListingsResponse`, `CsfloatListing`, `CsfloatPriceListEntry`, `CsfloatBid`, `BuyNowRequest`, `PlaceBidRequest`
+
+Listing note:
+`CsfloatListing.reference` can carry the same data shown by the marketplace reference widget: `base_price`, `predicted_price`, `quantity`, and the float-factor multiplier. Use the reference helpers from [Helpers, Builders, And Constants](./helpers-and-builders.md#reference-price-helpers) if you want derived values such as item-factor amount or deal percentage.
 
 ### Listing Writes
 

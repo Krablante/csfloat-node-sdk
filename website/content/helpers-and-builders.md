@@ -127,6 +127,54 @@ const listings = await sdk.listings.getListings(params);
 Relevant types:
 `CsfloatCategoryPreset`, `CsfloatHomepageFeedPreset`, `CsfloatPriceRangeParams`, `CsfloatFadeRangeParams`, `CsfloatBlueRangeParams`, `CsfloatReferenceQuantityParams`, `CsfloatCollectionFilterParams`, `CsfloatRarityFilterParams`, `CsfloatPaintSeedFilterParams`, `CsfloatMusicKitFilterParams`, `CsfloatKeychainPatternRangeParams`
 
+## Reference Price Helpers
+
+Listings, watchlist entries, stall listings, and some inventory items can include a `reference` object that powers the marketplace-style price widget:
+
+- base price
+- item factor
+- final/predicted price
+- global listing count
+- deal percentage versus the current listing price
+
+The SDK already exposes the raw field as `listing.reference` / `inventoryItem.reference`. These helpers make it easier to work with it directly.
+
+| Export | Use It For |
+|---|---|
+| `getReferencePrice(target)` | extract the raw `reference` object from a listing, inventory item, or reference payload |
+| `getReferenceItemFactorAmount(target)` | compute the absolute item-factor amount (`predicted_price - base_price`) |
+| `getReferenceDiscountPercent(target, listingPrice?)` | compute the positive discount percent when a listing is below the predicted price |
+| `getReferencePremiumPercent(target, listingPrice?)` | compute the positive premium percent when a listing is above the predicted price |
+| `buildReferenceInsight(target, listingPrice?)` | build one summary object with base/final price, item factor amount, quantity, and discount/premium info |
+
+Notes:
+
+- `finalPrice` in `buildReferenceInsight()` maps to the API field `predicted_price`
+- `globalListings` maps to the API field `quantity`
+- all values stay in the same integer price units used by `listing.price` and the API payloads
+
+Example:
+
+```ts
+import {
+  buildReferenceInsight,
+  getReferenceDiscountPercent,
+} from "csfloat-node-sdk";
+
+const [listing] = (await sdk.listings.getListings()).data;
+
+const insight = buildReferenceInsight(listing);
+
+console.log(insight?.basePrice);
+console.log(insight?.itemFactorAmount);
+console.log(insight?.finalPrice);
+console.log(insight?.globalListings);
+console.log(getReferenceDiscountPercent(listing));
+```
+
+Relevant types:
+`CsfloatReferencePrice`, `CsfloatReferenceInsight`, `CsfloatReferenceTarget`
+
 ## Loadout Helpers
 
 ### Constants
