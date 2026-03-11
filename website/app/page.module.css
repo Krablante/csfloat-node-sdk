@@ -2,6 +2,8 @@
   display: grid;
   gap: 3rem;
   padding: 3rem 1.5rem 4rem;
+  width: min(100%, var(--site-shell-max));
+  margin: 0 auto;
 }
 
 .hero {
@@ -9,7 +11,7 @@
   display: grid;
   gap: 2rem;
   grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-  align-items: start;
+  align-items: center;
   padding: 1.5rem 0 0.75rem;
 }
 
@@ -139,13 +141,15 @@
 
 .heroPanel {
   display: grid;
-  align-items: start;
-  padding-top: 1.25rem;
+  align-self: center;
+  align-items: center;
+  justify-items: end;
 }
 
 .codeCard {
   position: relative;
   overflow: hidden;
+  width: min(100%, 48rem);
   border: 1px solid rgba(223, 181, 103, 0.22);
   border-radius: 1.6rem;
   background:
@@ -297,6 +301,10 @@
   .rationale,
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .heroPanel {
+    justify-items: stretch;
   }
 
   .points {

@@ -17,6 +17,7 @@
   --site-gold: #dfb567;
   --site-gold-strong: #f2d081;
   --site-line: rgba(223, 181, 103, 0.18);
+  --site-shell-max: 120rem;
   --site-scrollbar-track: rgba(255, 243, 208, 0.035);
   --site-scrollbar-thumb: rgba(223, 181, 103, 0.56);
   --site-scrollbar-thumb-strong: rgba(242, 208, 129, 0.76);
@@ -255,6 +256,24 @@ html[data-theme="dark"] .nextra-sidebar {
   html[data-theme="dark"] .nextra-toc::-webkit-scrollbar {
     width: 0;
     height: 0;
+  }
+}
+
+@media (min-width: 2000px) {
+  html.dark nav[class*="x:max-w-(--nextra-content-width)"],
+  html[data-theme="dark"] nav[class*="x:max-w-(--nextra-content-width)"] {
+    width: min(100%, var(--site-shell-max));
+    max-width: var(--site-shell-max) !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  html.dark body > div[class*="x:max-w-(--nextra-content-width)"],
+  html[data-theme="dark"] body > div[class*="x:max-w-(--nextra-content-width)"] {
+    width: min(100%, var(--site-shell-max));
+    max-width: var(--site-shell-max) !important;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
