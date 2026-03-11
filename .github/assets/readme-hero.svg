@@ -22,7 +22,7 @@
                 <feMergeNode in="SourceGraphic" />
             </feMerge>
         </filter>
-
+        
         <filter id="glow-subtle" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
             <feMerge>
@@ -128,16 +128,16 @@
     </g>
 
     <g transform="translate(80, 0)">
-        <text x="-4" y="115" class="title">CSFloat SDK</text>
-        <text x="0" y="160" class="subtitle">Node.js + TypeScript SDK for the practical CSFloat API</text>
+        <text x="-4" y="100" class="title">CSFloat SDK</text>
+        <text x="0" y="145" class="subtitle">Node.js + TypeScript SDK for the practical CSFloat API</text>
 
-        <text x="0" y="205" class="link-text">
+        <text x="0" y="185" class="link-text">
             <tspan class="link-label">docs</tspan>
             <tspan class="link-arrow" dx="10">→</tspan>
             <tspan class="link-url" dx="10">csfloat-node-sdk.vercel.app</tspan>
         </text>
 
-        <text x="0" y="250" class="meta">market • listings • offers • trades • buy orders • docs</text>
+        <text x="0" y="225" class="meta">market • listings • offers • trades • buy orders • docs</text>
     </g>
 
     <rect width="1198.5" height="278.5" x="0.75" y="0.75" class="outer-border" />
