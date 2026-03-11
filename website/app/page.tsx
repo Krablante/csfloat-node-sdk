@@ -3,24 +3,48 @@ import styles from "./page.module.css";
 
 const sections = [
   {
-    title: "Start Fast",
-    description: "Install, auth, and get your first working calls without reading the whole repo.",
+    title: "Getting Started",
+    description: "Install the package, authenticate, and make the first useful requests.",
     href: "/docs/getting-started",
   },
   {
-    title: "Full Surface",
+    title: "Resource Reference",
     description: "Method-level reference for resources, workflows, helpers, and transport.",
     href: "/docs/resource-reference",
   },
   {
     title: "Write Flows",
-    description: "Mutation-heavy payloads, caveats, and safe operator-oriented examples.",
+    description: "Payloads, caveats, and examples for mutation-heavy SDK usage.",
     href: "/docs/write-flows-and-payloads",
   },
   {
-    title: "Coverage Truth",
-    description: "Route validation, discovery notes, and what is implemented versus low-level.",
+    title: "Coverage Matrix",
+    description: "Route validation notes and what is implemented, low-level, or still exploratory.",
     href: "/docs/api-coverage",
+  },
+];
+
+const summary = [
+  "Resources, workflows, helpers, and CLI",
+  "Write payloads, transport behavior, and error handling",
+  "Coverage notes, changelog, examples, and repository context",
+];
+
+const overview = [
+  {
+    title: "SDK package",
+    description:
+      "The npm package exposes typed resources, workflow helpers, builders, transport primitives, and a small CLI.",
+  },
+  {
+    title: "Documentation set",
+    description:
+      "The docs cover setup, method reference, write-heavy flows, helpers, transport details, and practical recipes.",
+  },
+  {
+    title: "Repository artifacts",
+    description:
+      "The repository also contains the coverage matrix, release history, examples, and tests that support the package.",
   },
 ];
 
@@ -29,28 +53,36 @@ export default function HomePage() {
     <main className={styles.shell}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>Dark-gold documentation for serious CSFloat automation</p>
-          <h1>One SDK. One source of truth. A site that finally feels worthy of it.</h1>
+          <p className={styles.eyebrow}>TypeScript SDK reference for CSFloat</p>
+          <h1>Documentation for csfloat-node-sdk</h1>
           <p className={styles.lead}>
-            This site is the polished presentation layer for <code>csfloat-node-sdk</code>: the full
-            public runtime surface, the operator-facing transport model, and the write-flow payloads
-            that usually stay trapped in source files.
+            This site documents the public runtime surface of <code>csfloat-node-sdk</code>:
+            resources, workflows, helpers, write payloads, transport behavior, examples, and
+            coverage notes for the currently mapped CSFloat surface.
           </p>
+          <ul className={styles.summaryList}>
+            {summary.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
           <div className={styles.ctas}>
             <Link href="/docs" className={styles.primaryCta}>
-              Open Documentation
+              Browse Documentation
             </Link>
             <a
               href="https://www.npmjs.com/package/csfloat-node-sdk"
               className={styles.secondaryCta}
             >
-              View npm Package
+              npm Package
             </a>
           </div>
+          <a href="https://github.com/Krablante/csfloat-node-sdk" className={styles.repoLink}>
+            GitHub repository
+          </a>
         </div>
         <div className={styles.heroPanel}>
           <div className={styles.codeCard}>
-            <span className={styles.codeLabel}>Fast path</span>
+            <span className={styles.codeLabel}>Quick start</span>
             <pre>{`import { CsfloatSdk } from "csfloat-node-sdk"\n\nconst sdk = new CsfloatSdk({\n  apiKey: process.env.CSFLOAT_API_KEY!,\n  minRequestDelayMs: 1250,\n})\n\nconst feeds = await sdk.workflows.getPublicMarketFeeds()`}</pre>
           </div>
         </div>
@@ -68,27 +100,20 @@ export default function HomePage() {
 
       <section className={styles.rationale}>
         <div>
-          <h3>Why this site exists</h3>
+          <h3>Repository overview</h3>
           <p>
-            GitHub and npm remain the canonical home of the docs, coverage matrix, and release
-            history. This site does not replace that source of truth. It turns the same material
-            into something faster to scan, easier to navigate, and better suited for onboarding and
-            day-to-day use.
+            <code>csfloat-node-sdk</code> is both a published package and a maintained repository:
+            the SDK lives alongside its documentation, coverage matrix, release history, examples,
+            and tests. This site is the easiest way to navigate that material as documentation.
           </p>
         </div>
         <div className={styles.points}>
-          <div>
-            <strong>No second documentation system</strong>
-            <span>The docs content is synced from the repository documents you already maintain.</span>
-          </div>
-          <div>
-            <strong>Built for real users</strong>
-            <span>Reference, workflows, transport, payloads, and coverage live in one coherent UI.</span>
-          </div>
-          <div>
-            <strong>Ready for Vercel previews</strong>
-            <span>Every future docs PR can become a deploy preview instead of a markdown-only diff.</span>
-          </div>
+          {overview.map((item) => (
+            <div key={item.title}>
+              <strong>{item.title}</strong>
+              <span>{item.description}</span>
+            </div>
+          ))}
         </div>
       </section>
     </main>
