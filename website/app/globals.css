@@ -17,6 +17,9 @@
   --site-gold: #dfb567;
   --site-gold-strong: #f2d081;
   --site-line: rgba(223, 181, 103, 0.18);
+  --site-scrollbar-track: rgba(255, 243, 208, 0.035);
+  --site-scrollbar-thumb: rgba(223, 181, 103, 0.56);
+  --site-scrollbar-thumb-strong: rgba(242, 208, 129, 0.76);
 }
 
 .dark,
@@ -37,6 +40,7 @@ html {
   background:
     radial-gradient(circle at top right, rgba(210, 161, 68, 0.18), transparent 25%),
     linear-gradient(180deg, #16110b 0%, #0f0d0a 100%);
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -44,6 +48,37 @@ body {
   background: transparent;
   color: var(--site-text);
   font-family: var(--font-body), var(--font-body-fallback);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--site-scrollbar-thumb) var(--site-scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background:
+    linear-gradient(180deg, rgba(255, 243, 208, 0.045), rgba(12, 10, 8, 0.78));
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(15, 13, 10, 0.96);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, var(--site-scrollbar-thumb-strong), rgba(132, 95, 39, 0.8));
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, rgba(249, 219, 145, 0.9), rgba(154, 110, 43, 0.9));
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 ::selection {
@@ -121,6 +156,62 @@ html.dark .nextra-sidebar,
 html[data-theme="dark"] .nextra-sidebar {
   background:
     linear-gradient(180deg, rgba(20, 16, 11, 0.96), rgba(15, 13, 10, 0.92)) !important;
+}
+
+@media (min-width: 768px) {
+  html.dark nav[class*="x:max-w-(--nextra-content-width)"],
+  html[data-theme="dark"] nav[class*="x:max-w-(--nextra-content-width)"] {
+    width: 100%;
+    max-width: none !important;
+    padding-left: max(env(safe-area-inset-left), 1rem);
+    padding-right: max(env(safe-area-inset-right), 1rem);
+  }
+
+  html.dark body > div[class*="x:max-w-(--nextra-content-width)"],
+  html[data-theme="dark"] body > div[class*="x:max-w-(--nextra-content-width)"] {
+    width: 100%;
+    max-width: none !important;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  html.dark .nextra-sidebar,
+  html[data-theme="dark"] .nextra-sidebar {
+    width: 17.5rem !important;
+    min-width: 17.5rem;
+    top: calc(var(--nextra-navbar-height) + 0px);
+    height: calc(100dvh - var(--nextra-navbar-height));
+    border-right: 1px solid var(--site-line);
+    box-shadow: inset -1px 0 0 rgba(255, 228, 165, 0.04);
+  }
+
+  html.dark body > div[class*="x:max-w-(--nextra-content-width)"] > article,
+  html[data-theme="dark"] body > div[class*="x:max-w-(--nextra-content-width)"] > article {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-left: clamp(1.25rem, 2vw, 2.5rem) !important;
+    padding-right: clamp(1.25rem, 2vw, 2.5rem) !important;
+  }
+
+  html.dark body > div[class*="x:max-w-(--nextra-content-width)"] > article > main,
+  html[data-theme="dark"] body > div[class*="x:max-w-(--nextra-content-width)"] > article > main {
+    max-width: 68rem;
+  }
+
+  html.dark .nextra-toc,
+  html[data-theme="dark"] .nextra-toc {
+    position: sticky;
+    top: calc(var(--nextra-navbar-height) + 1rem);
+    align-self: flex-start;
+    width: 17rem !important;
+    max-height: calc(100vh - var(--nextra-navbar-height) - 1rem);
+    overflow: auto;
+    padding-left: clamp(1rem, 1.6vw, 1.5rem);
+    padding-right: max(env(safe-area-inset-right), 1rem);
+    border-left: 1px solid var(--site-line);
+    background:
+      linear-gradient(180deg, rgba(23, 18, 12, 0.82), rgba(15, 13, 10, 0.74));
+  }
 }
 
 html.dark .nextra-body-typesetting-article h1,
