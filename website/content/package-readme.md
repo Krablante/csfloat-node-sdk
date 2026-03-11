@@ -1,6 +1,13 @@
+<p align="center">
+  <a href="https://csfloat-node-sdk.vercel.app">
+    <img src="https://raw.githubusercontent.com/Krablante/csfloat-node-sdk/main/.github/assets/readme-hero.svg" alt="csfloat-node-sdk" width="100%" />
+  </a>
+</p>
+
 # csfloat-node-sdk
 
 [![npm version](https://img.shields.io/npm/v/csfloat-node-sdk?logo=npm&label=npm)](https://www.npmjs.com/package/csfloat-node-sdk)
+[![Docs Site](https://img.shields.io/badge/docs-site-C6973A?logo=vercel&logoColor=white)](https://csfloat-node-sdk.vercel.app)
 [![CI](https://github.com/Krablante/csfloat-node-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/Krablante/csfloat-node-sdk/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-first-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Live API Audit](https://img.shields.io/badge/live%20API-audited-1f883d)](https://github.com/Krablante/csfloat-node-sdk/blob/main/scripts/live-api-audit.mjs)
@@ -8,7 +15,17 @@
 [![License: MIT](https://img.shields.io/github/license/Krablante/csfloat-node-sdk)](https://github.com/Krablante/csfloat-node-sdk/blob/main/LICENSE)
 [![Issues](https://img.shields.io/github/issues/Krablante/csfloat-node-sdk)](https://github.com/Krablante/csfloat-node-sdk/issues)
 
-The strongest public Node.js / TypeScript SDK for the **currently known** CSFloat surface that we can responsibly validate today.
+<p align="center">
+  <a href="https://csfloat-node-sdk.vercel.app"><strong>Docs Site</strong></a>
+  ·
+  <a href="https://github.com/Krablante/csfloat-node-sdk/blob/main/docs/README.md"><strong>Docs Hub</strong></a>
+  ·
+  <a href="https://www.npmjs.com/package/csfloat-node-sdk"><strong>npm</strong></a>
+  ·
+  <a href="https://github.com/Krablante/csfloat-node-sdk/blob/main/API_COVERAGE.md"><strong>Coverage Matrix</strong></a>
+</p>
+
+Live-validated Node.js / TypeScript SDK for the **currently known** CSFloat surface: market reads, listings, account routes, offers, trades, buy orders, companion/loadout flows, and a maintained coverage matrix.
 
 `csfloat-node-sdk` is built to do two things well at the same time:
 
@@ -23,23 +40,31 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 ## Documentation
 
-The docs set now aims to cover the full public runtime surface of the package, not just the quick-start path.
+Primary docs site:
+
+- [`https://csfloat-node-sdk.vercel.app`](https://csfloat-node-sdk.vercel.app)
+
+The repository docs and the docs site are kept in sync from the same Markdown source, and the `docs/` set still ships in the npm tarball.
 
 If you want the fastest path through the SDK, start here:
 
-1. [Documentation Hub](/docs)
-2. [Getting Started](/docs/getting-started)
-3. [Resources, Workflows, And Surface Map](/docs/resources-and-workflows)
-4. [Resource Reference](/docs/resource-reference)
-5. [Helpers, Builders, And Constants](/docs/helpers-and-builders)
-6. [Write Flows And Payloads](/docs/write-flows-and-payloads)
-7. [Workflows And CLI](/docs/workflows-and-cli)
-8. [Transport, Errors, And Metadata](/docs/transport-and-errors)
-9. [Examples And Recipes](/docs/examples-and-recipes)
-10. [Stability And Coverage](/docs/stability-and-coverage)
-11. [API Coverage Matrix](/docs/api-coverage)
+1. [Docs Site Home](https://csfloat-node-sdk.vercel.app)
+2. [Documentation Hub](https://csfloat-node-sdk.vercel.app/docs)
+3. [Getting Started](https://csfloat-node-sdk.vercel.app/docs/getting-started)
+4. [Resource Reference](https://csfloat-node-sdk.vercel.app/docs/resource-reference)
+5. [Write Flows And Payloads](https://csfloat-node-sdk.vercel.app/docs/write-flows-and-payloads)
+6. [Helpers, Builders, And Constants](https://csfloat-node-sdk.vercel.app/docs/helpers-and-builders)
+7. [Workflows And CLI](https://csfloat-node-sdk.vercel.app/docs/workflows-and-cli)
+8. [Transport, Errors, And Metadata](https://csfloat-node-sdk.vercel.app/docs/transport-and-errors)
+9. [Examples And Recipes](https://csfloat-node-sdk.vercel.app/docs/examples-and-recipes)
+10. [Stability And Coverage](https://csfloat-node-sdk.vercel.app/docs/stability-and-coverage)
+11. [API Coverage Matrix](https://csfloat-node-sdk.vercel.app/docs/api-coverage)
 
-These Markdown docs ship in the npm tarball as well, so npm users are not forced onto a separate site just to understand the SDK.
+GitHub-first entrypoints remain available too:
+
+1. [Repository docs/ hub](/docs)
+2. [Repository API_COVERAGE.md](/docs/api-coverage)
+3. [Repository CHANGELOG.md](/docs/changelog)
 
 ## Why Choose This SDK
 
