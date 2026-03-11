@@ -22,7 +22,7 @@
                 <feMergeNode in="SourceGraphic" />
             </feMerge>
         </filter>
-        
+
         <filter id="glow-subtle" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
             <feMerge>
