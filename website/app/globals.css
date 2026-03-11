@@ -177,12 +177,48 @@ html[data-theme="dark"] .nextra-sidebar {
 
   html.dark .nextra-sidebar,
   html[data-theme="dark"] .nextra-sidebar {
-    width: 17.5rem !important;
-    min-width: 17.5rem;
     top: calc(var(--nextra-navbar-height) + 0px);
     height: calc(100dvh - var(--nextra-navbar-height));
     border-right: 1px solid var(--site-line);
     box-shadow: inset -1px 0 0 rgba(255, 228, 165, 0.04);
+    overflow: hidden;
+  }
+
+  html.dark .nextra-sidebar[class*="x:w-64"],
+  html[data-theme="dark"] .nextra-sidebar[class*="x:w-64"] {
+    width: 17.5rem !important;
+    min-width: 17.5rem;
+  }
+
+  html.dark .nextra-sidebar[class*="x:w-20"],
+  html[data-theme="dark"] .nextra-sidebar[class*="x:w-20"] {
+    width: 5rem !important;
+    min-width: 5rem;
+  }
+
+  html.dark .nextra-sidebar > div[class*="x:grow"],
+  html[data-theme="dark"] .nextra-sidebar > div[class*="x:grow"] {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html.dark .nextra-sidebar > div[class*="x:grow"]::-webkit-scrollbar,
+  html[data-theme="dark"] .nextra-sidebar > div[class*="x:grow"]::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  html.dark .nextra-sidebar .nextra-sidebar-footer,
+  html[data-theme="dark"] .nextra-sidebar .nextra-sidebar-footer {
+    justify-content: flex-start;
+  }
+
+  html.dark .nextra-sidebar[class*="x:w-20"] .nextra-sidebar-footer,
+  html[data-theme="dark"] .nextra-sidebar[class*="x:w-20"] .nextra-sidebar-footer {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
   }
 
   html.dark body > div[class*="x:max-w-(--nextra-content-width)"] > article,
@@ -206,11 +242,19 @@ html[data-theme="dark"] .nextra-sidebar {
     width: 17rem !important;
     max-height: calc(100vh - var(--nextra-navbar-height) - 1rem);
     overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     padding-left: clamp(1rem, 1.6vw, 1.5rem);
     padding-right: max(env(safe-area-inset-right), 1rem);
     border-left: 1px solid var(--site-line);
     background:
       linear-gradient(180deg, rgba(23, 18, 12, 0.82), rgba(15, 13, 10, 0.74));
+  }
+
+  html.dark .nextra-toc::-webkit-scrollbar,
+  html[data-theme="dark"] .nextra-toc::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 }
 
