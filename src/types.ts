@@ -195,6 +195,7 @@ export interface CsfloatKeychain {
   sticker_id?: number;
   stickerId?: number;
   slot?: number;
+  highlight_reel?: number;
   offset_x?: number;
   offset_y?: number;
   offset_z?: number;
@@ -797,6 +798,7 @@ export interface CsfloatNotification {
 export interface CsfloatNotificationsResponse {
   data: CsfloatNotification[];
   cursor?: string;
+  latest_notification_id?: string;
 }
 
 export interface CsfloatBuyOrder {
@@ -818,6 +820,7 @@ export interface CsfloatBuyOrdersResponse {
 
 export interface CsfloatInspectBuyOrder {
   expression?: string;
+  market_hash_name?: string;
   qty?: number;
   price?: number;
 }
@@ -929,6 +932,8 @@ export interface AcceptTradesRequest {
 
 export interface CsfloatTradeSteamStatusNewOfferRequest {
   offer_id: string;
+  given_asset_ids?: string[];
+  received_asset_ids?: string[];
 }
 
 export interface CsfloatTradeSteamOfferSyncRequest {
@@ -1006,6 +1011,8 @@ export interface CsfloatMessageResponse {
   message: string;
 }
 
+export type CsfloatTradeActionResponse = CsfloatTrade | CsfloatMessageResponse;
+
 export interface CsfloatPendingWithdrawal {
   id?: string | number;
   [key: string]: unknown;
@@ -1021,6 +1028,16 @@ export interface CsfloatUpdateMeRequest {
   background_url?: string;
   /** Live-confirmed accepted by PATCH /me (2026-03-07). Note: exact validation rules unknown; empty string returns 200. */
   username?: string;
+}
+
+export interface CsfloatVerifyEmailRequest {
+  email: string;
+  token?: string;
+}
+
+export interface CsfloatVerifySmsRequest {
+  phone_number: string;
+  token?: string;
 }
 
 export interface CsfloatHistoryGraphPoint {

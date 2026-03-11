@@ -6,6 +6,24 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.4] - 2026-03-11
+
+### Added
+
+1. low-level trade lifecycle helpers for the browser-confirmed single-trade routes: `account.cannotDeliverTrade()`, `account.disputeTrade()`, `account.markTradeReceived()`, `account.rollbackTrade()`, `account.manualVerifyTrade()`, and `account.verifyTradeRollback()`
+2. low-level account verification helpers `account.verifyEmail()` and `account.verifySms()` based on current frontend payload shapes plus live invalid-payload validation
+3. a public Vercel-ready docs site under `website/`, including the synced repository Markdown hub, search, sitemap, robots, and the refined dark-gold documentation shell
+
+### Changed
+
+1. widened `CsfloatTradeSteamStatusNewOfferRequest` and `account.syncSteamNewOffer()` to support the current frontend's optional `given_asset_ids` / `received_asset_ids` annotation payload
+2. reconciled stale coverage rows so `filter=sticker_combos`, `filter=unique`, and `PATCH /me` with `trade_url` are no longer left as discovered-only when the SDK already supports them
+3. promoted the browser-confirmed low-level trade lifecycle routes from discovered-only to implemented while keeping their docs explicitly conservative and state-gated
+4. widened response typing again after a slow live shape-audit pass: notifications now expose `latest_notification_id`, inspect-linked buy-order lookups can surface `market_hash_name`, and listing/trade keychain payloads can carry `highlight_reel`
+5. strengthened `audit:shapes` with slower default pacing, explicit skip support for state-driven routes, token-helper coverage, and better inspect-link selection for `buy-orders/item` / checker probes
+6. expanded the package docs and docs-site content so the runtime surface, write payloads, stability notes, and low-level account/trade helpers stay synchronized in one source of truth
+7. refined the docs-site UI with a calmer landing page, better sidebar collapse behavior, custom scrollbar styling, and a wide-screen max-width cap for large displays
+
 ## [0.9.3] - 2026-03-10
 
 ### Changed

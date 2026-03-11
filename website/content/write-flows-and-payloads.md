@@ -96,6 +96,8 @@ await sdk.account.markTradesReceived({
 | Field | Required | Meaning |
 |---|---|---|
 | `offer_id` | yes | Steam offer id as string |
+| `given_asset_ids` | no | optional asset ids the seller gave in that offer |
+| `received_asset_ids` | no | optional asset ids the seller received in that offer |
 
 `syncSteamOffers()` request shape:
 
@@ -109,6 +111,8 @@ Examples:
 ```ts
 await sdk.account.syncSteamNewOffer({
   offer_id: "1234567890123456789",
+  given_asset_ids: ["asset-1"],
+  received_asset_ids: ["asset-2"],
 });
 
 await sdk.account.syncSteamOffers({
@@ -122,6 +126,7 @@ await sdk.account.syncSteamOffers({
 - trade accept/cancel/received flows are real but state-gated
 - bulk accept can reject ids that look visible but are not actionable in the current account state
 - the Steam sync helpers are useful operator tools, but they are still lower-level than the average app flow
+- single-trade low-level helpers such as `cannotDeliverTrade()`, `disputeTrade()`, `markTradeReceived()`, `rollbackTrade()`, `manualVerifyTrade()`, and `verifyTradeRollback()` now exist for the browser-confirmed trade lifecycle edges; treat them as advanced/state-gated operations rather than generic happy-path methods
 
 ## Buy Orders
 
@@ -366,6 +371,44 @@ Equivalent convenience helpers:
 - `updateTradeUrl()`
 - `updateBackground()`
 - `updateUsername()`
+
+## Email And Phone Verification
+
+Low-level request types:
+
+- `CsfloatVerifyEmailRequest`
+- `CsfloatVerifySmsRequest`
+
+Field shapes:
+
+| Field | Meaning |
+|---|---|
+| `email` | target email address for the verification flow |
+| `phone_number` | target phone number for the verification flow |
+| `token` | optional code/token used to confirm a previously requested verification |
+
+Examples:
+
+```ts
+await sdk.account.verifyEmail("user@example.com");
+
+await sdk.account.verifyEmail("user@example.com", "123456");
+
+await sdk.account.verifySms({
+  phone_number: "+12025550123",
+});
+
+await sdk.account.verifySms({
+  phone_number: "+12025550123",
+  token: "654321",
+});
+```
+
+Notes:
+
+- calling these helpers without `token` requests a verification message
+- calling them with `token` attempts to confirm the verification
+- the SDK intentionally keeps these as low-level account helpers because delivery/validation behavior is API-controlled
 
 ## Loadout CRUD And Recommendations
 

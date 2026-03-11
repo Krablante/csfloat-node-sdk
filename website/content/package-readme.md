@@ -19,7 +19,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 > The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
 >
-> Install from npm: [`csfloat-node-sdk@0.9.3`](https://www.npmjs.com/package/csfloat-node-sdk)
+> Install from npm: [`csfloat-node-sdk@0.9.4`](https://www.npmjs.com/package/csfloat-node-sdk)
 
 ## Documentation
 
@@ -81,8 +81,9 @@ This SDK is optimized for:
 
 - live-confirmed offer flows: create, counter, cancel, decline, history, plus a low-level `acceptOffer()` helper for the browser-observed accept route
 - live-confirmed purchase flows: direct `buyNow`, buy-order create/update/delete, seller-side `acceptSale`
-- state-gated trade lifecycle helpers, including seller-side `acceptSale()` and buyer-side `markTradesReceived()`
-- low-level trade sync helpers for the browser-observed Steam status routes: `syncSteamNewOffer()` and `syncSteamOffers()`
+- state-gated trade lifecycle helpers, including seller-side `acceptSale()`, buyer-side `markTradesReceived()`, and low-level single-trade helpers such as `markTradeReceived()`, `cannotDeliverTrade()`, and `rollbackTrade()`
+- low-level trade sync helpers for the browser-observed Steam status routes: `syncSteamNewOffer()` and `syncSteamOffers()`, with optional asset-annotation payloads on the new-offer route
+- low-level account verification helpers for `verifyEmail()` and `verifySms()`
 - live-confirmed buy-order insight flows: inspect-based lookup and similar-order discovery
 - live-confirmed buy-order expression workflows via `account.createBuyOrder({ expression, ... })`, `account.getSimilarBuyOrders({ expression }, ...)`, and composable builder helpers
 - workflow-first helpers via `sdk.workflows` for public feed snapshots, account workspace snapshots, and single-skin buy-order insights
@@ -123,7 +124,7 @@ See [API_COVERAGE.md](/docs/api-coverage) for the endpoint-by-endpoint support m
 | Area | Status | Methods |
 |---|---|---|
 | Meta | implemented | `meta.getSchema()`, `meta.getSchemaBrowse()`, `meta.getItemExampleScreenshot()`, `meta.inspectItem()`, `meta.getExchangeRates()`, `meta.getApp()`, `meta.getLocation()`, `meta.getNotary()` |
-| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.syncSteamNewOffer()`, `account.syncSteamOffers()`, `account.acceptTrades()`, `account.markTradesReceived()`, `account.acceptTrade()`, `account.acceptSale()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.cancelSale()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.acceptOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.iterateWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.exportTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getBuyOrdersForInspect()`, `account.getSimilarBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, `account.getMaxWithdrawable()`, `account.getPendingDeposits()`, `account.getPendingWithdrawals()`, `account.deletePendingWithdrawal()`, `account.getExtensionStatus()`, `account.getMobileStatus()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.cannotDeliverTrade()`, `account.disputeTrade()`, `account.syncSteamNewOffer()`, `account.syncSteamOffers()`, `account.acceptTrades()`, `account.markTradesReceived()`, `account.markTradeReceived()`, `account.acceptTrade()`, `account.acceptSale()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.cancelSale()`, `account.rollbackTrade()`, `account.manualVerifyTrade()`, `account.verifyTradeRollback()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.acceptOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.iterateWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.exportTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getBuyOrdersForInspect()`, `account.getSimilarBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, `account.getMaxWithdrawable()`, `account.getPendingDeposits()`, `account.getPendingWithdrawals()`, `account.deletePendingWithdrawal()`, `account.getExtensionStatus()`, `account.getMobileStatus()`, `account.verifyEmail()`, `account.verifySms()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()`, `stall.iterateStall()` |
@@ -838,6 +839,12 @@ Run the deeper response-shape audit when you want raw payload samples and unione
 ```bash
 ENV_FILE=/path/to/.env npm run audit:shapes
 ```
+
+The shape audit now defaults to conservative pacing and also supports:
+
+- `SHAPE_AUDIT_DELAY_MS`
+- `SHAPE_AUDIT_RETRY_DELAY_MS`
+- `SHAPE_AUDIT_INCLUDE_TOKEN_HELPERS=0`
 
 To let the shape audit create and remove a temporary low-price buy order so non-empty `buy_orders` fields can be observed:
 

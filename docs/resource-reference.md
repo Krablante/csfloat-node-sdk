@@ -45,11 +45,13 @@ Key types:
 | `updateTradeUrl(tradeUrl)` | `Promise<CsfloatMessageResponse>` | set account trade URL | convenience wrapper |
 | `updateBackground(backgroundUrl)` | `Promise<CsfloatMessageResponse>` | set profile background image URL | live-confirmed field on `PATCH /me` |
 | `updateUsername(username)` | `Promise<CsfloatMessageResponse>` | update display username | exact validation rules remain API-driven |
+| `verifyEmail(emailOrRequest, token?)` | `Promise<CsfloatMessageResponse>` | request or confirm email verification | low-level account verification helper |
+| `verifySms(phoneNumberOrRequest, token?)` | `Promise<CsfloatMessageResponse>` | request or confirm phone verification | low-level account verification helper |
 | `markNotificationsRead(lastReadId)` | `Promise<CsfloatMessageResponse>` | update notification read receipt | posts `last_read_id` |
 | `setMobileStatus(version?)` | `Promise<CsfloatMessageResponse>` | send mobile client status heartbeat | defaults to `"8.0.0"` |
 
 Key types:
-`CsfloatMeResponse`, `CsfloatUpdateMeRequest`, `CsfloatMessageResponse`
+`CsfloatMeResponse`, `CsfloatUpdateMeRequest`, `CsfloatVerifyEmailRequest`, `CsfloatVerifySmsRequest`, `CsfloatMessageResponse`
 
 ### Trades And Steam Sync
 
@@ -62,14 +64,20 @@ Key types:
 | `syncSteamOffers(request)` | `Promise<CsfloatMessageResponse>` | low-level Steam offer-status sync helper | browser-observed support helper |
 | `acceptTrades(tradeIdsOrRequest)` | `Promise<CsfloatTradeBatchResponse>` | bulk seller acceptance | can be account/state-sensitive |
 | `markTradesReceived(tradeIdsOrRequest)` | `Promise<CsfloatTrade[]>` | bulk buyer receipt flow | state-gated by actual Steam offer lifecycle |
+| `markTradeReceived(tradeId)` | `Promise<CsfloatTradeActionResponse>` | single buyer receipt flow | low-level single-trade route |
 | `acceptTrade(tradeId)` | `Promise<CsfloatTrade>` | accept one queued trade | seller-side single trade flow |
 | `acceptSale(tradeId)` | `Promise<CsfloatTrade>` | seller-oriented alias for `acceptTrade()` | convenience alias |
 | `cancelTrades(tradeIdsOrRequest)` | `Promise<CsfloatTradeBatchResponse>` | bulk seller cancel flow | bundle-backed route |
 | `cancelTrade(tradeId)` | `Promise<CsfloatMessageResponse>` | cancel one trade | seller-side single cancel flow |
 | `cancelSale(tradeId)` | `Promise<CsfloatMessageResponse>` | seller-oriented alias for `cancelTrade()` | convenience alias |
+| `cannotDeliverTrade(tradeId)` | `Promise<CsfloatTradeActionResponse>` | seller-side cannot-deliver flow | low-level failure path |
+| `disputeTrade(tradeId)` | `Promise<CsfloatTradeActionResponse>` | open the browser-confirmed dispute route | low-level recovery path |
+| `rollbackTrade(tradeId)` | `Promise<CsfloatTradeActionResponse>` | request rollback handling | low-level recovery path |
+| `manualVerifyTrade(tradeId)` | `Promise<CsfloatTradeActionResponse>` | trigger manual verification route | low-level verification path |
+| `verifyTradeRollback(tradeId)` | `Promise<CsfloatTradeActionResponse>` | confirm rollback-oriented verification route | low-level verification path |
 
 Key types:
-`CsfloatTradesParams`, `CsfloatTradesResponse`, `CsfloatTrade`, `AcceptTradesRequest`, `CsfloatTradeSteamStatusNewOfferRequest`, `CsfloatTradeSteamOfferSyncRequest`
+`CsfloatTradesParams`, `CsfloatTradesResponse`, `CsfloatTrade`, `CsfloatTradeActionResponse`, `AcceptTradesRequest`, `CsfloatTradeSteamStatusNewOfferRequest`, `CsfloatTradeSteamOfferSyncRequest`
 
 Write payload guide:
 [Write Flows And Payloads](./write-flows-and-payloads.md#trades-and-steam-sync)
@@ -100,7 +108,7 @@ Write payload guide:
 |---|---|---|---|
 | `getWatchlist(params?)` | `Promise<CsfloatListingsResponse>` | authenticated watchlist listing feed | query surface mirrors listing-style filters |
 | `iterateWatchlist(params?)` | `AsyncGenerator<CsfloatListing>` | stream the cursor-based watchlist | convenience over `paginateCursor()` |
-| `getNotifications(params?)` | `Promise<CsfloatNotificationsResponse>` | notifications timeline | cursor-aware route |
+| `getNotifications(params?)` | `Promise<CsfloatNotificationsResponse>` | notifications timeline | cursor-aware route; current live payload also includes `latest_notification_id` |
 
 Key types:
 `CsfloatWatchlistParams`, `CsfloatListingsResponse`, `CsfloatNotificationsParams`, `CsfloatNotificationsResponse`
@@ -130,7 +138,7 @@ Key types:
 | Method | Returns | Use It For | Notes |
 |---|---|---|---|
 | `getBuyOrders(params?)` | `Promise<CsfloatBuyOrdersResponse>` | list account buy orders | page/order/limit profile flow |
-| `getBuyOrdersForInspect(inspectLink, limit?)` | `Promise<CsfloatInspectBuyOrdersResponse>` | inspect-link oriented buy-order lookup | wraps `/buy-orders/item` |
+| `getBuyOrdersForInspect(inspectLink, limit?)` | `Promise<CsfloatInspectBuyOrdersResponse>` | inspect-link oriented buy-order lookup | wraps `/buy-orders/item`; entries can carry either `expression` or direct `market_hash_name` |
 | `getSimilarBuyOrders(request, limit?)` | `Promise<CsfloatSimilarBuyOrdersResponse>` | similar order research | accepts `market_hash_name` or expression-backed request shapes |
 | `createBuyOrder(request)` | `Promise<CsfloatBuyOrder>` | create a market-hash or expression-backed order | request type is `CreateBuyOrderRequest` |
 | `updateBuyOrder(orderId, request)` | `Promise<CsfloatBuyOrder>` | change an existing buy order | currently wraps the validated patch surface |

@@ -30,6 +30,7 @@ import type {
   CsfloatPendingWithdrawal,
   CsfloatRecommenderTokenResponse,
   CsfloatTrade,
+  CsfloatTradeActionResponse,
   CsfloatTradeBatchResponse,
   CsfloatTradeBuyerDetails,
   CsfloatTradeSteamOfferSyncRequest,
@@ -40,6 +41,8 @@ import type {
   CsfloatTransactionsResponse,
   CsfloatSimilarBuyOrdersResponse,
   CsfloatUpdateMeRequest,
+  CsfloatVerifyEmailRequest,
+  CsfloatVerifySmsRequest,
   CsfloatWatchlistParams,
   CreateOfferRequest,
   QueryParams,
@@ -67,9 +70,26 @@ export class AccountResource {
   }
 
   /**
+   * Low-level seller-side failure helper for the browser-confirmed cannot-deliver route.
+   * State gating and happy-path semantics remain trade-specific, so keep this as an advanced helper.
+   */
+  cannotDeliverTrade(tradeId: string): Promise<CsfloatTradeActionResponse> {
+    return this.client.post<CsfloatTradeActionResponse>(`trades/${tradeId}/cannot-deliver`, {});
+  }
+
+  /**
+   * Low-level buyer/seller dispute helper for the browser-confirmed trade dispute route.
+   * Route existence and no-body payload are confirmed from the current frontend bundle.
+   */
+  disputeTrade(tradeId: string): Promise<CsfloatTradeActionResponse> {
+    return this.client.post<CsfloatTradeActionResponse>(`trades/${tradeId}/dispute`, {});
+  }
+
+  /**
    * Low-level Steam-offer sync helper for the browser-observed new-offer route.
    * Current live validation confirms `{ offer_id } -> 200 {"message":"successfully updated offer state" }`
-   * even for `"0"`, but exact side effects remain partially unmapped.
+   * even for `"0"`, and the current frontend also sends optional `{ given_asset_ids, received_asset_ids }`
+   * arrays when it wants to annotate the offer against concrete assets.
    */
   syncSteamNewOffer(
     offerId: string | number | CsfloatTradeSteamStatusNewOfferRequest,
@@ -108,6 +128,15 @@ export class AccountResource {
     return this.client.post<CsfloatTrade[]>("trades/bulk/received", body);
   }
 
+  /**
+   * Low-level single-trade receipt helper for the browser-confirmed buyer route.
+   * This is intentionally separate from `markTradesReceived()` because the backend
+   * still gates success on the real Steam-offer lifecycle.
+   */
+  markTradeReceived(tradeId: string): Promise<CsfloatTradeActionResponse> {
+    return this.client.post<CsfloatTradeActionResponse>(`trades/${tradeId}/received`, {});
+  }
+
   acceptTrade(tradeId: string): Promise<CsfloatTrade> {
     return this.client.post<CsfloatTrade>(`trades/${tradeId}/accept`, {});
   }
@@ -130,6 +159,28 @@ export class AccountResource {
 
   cancelSale(tradeId: string): Promise<CsfloatMessageResponse> {
     return this.cancelTrade(tradeId);
+  }
+
+  /**
+   * Low-level rollback helper for bundle-confirmed seller/buyer recovery flows.
+   * Keep this conservative: route shape is stable, outcome semantics are still trade-state-specific.
+   */
+  rollbackTrade(tradeId: string): Promise<CsfloatTradeActionResponse> {
+    return this.client.post<CsfloatTradeActionResponse>(`trades/${tradeId}/rollback`, {});
+  }
+
+  /**
+   * Low-level manual-verification helper for the current browser-confirmed route.
+   */
+  manualVerifyTrade(tradeId: string): Promise<CsfloatTradeActionResponse> {
+    return this.client.post<CsfloatTradeActionResponse>(`trades/${tradeId}/manual-verification`, {});
+  }
+
+  /**
+   * Low-level rollback verification helper for the current browser-confirmed route.
+   */
+  verifyTradeRollback(tradeId: string): Promise<CsfloatTradeActionResponse> {
+    return this.client.post<CsfloatTradeActionResponse>(`trades/${tradeId}/rollback-verify`, {});
   }
 
   getOffers(params: CsfloatOffersParams = {}): Promise<CsfloatOffersResponse> {
@@ -311,6 +362,40 @@ export class AccountResource {
 
   getMobileStatus(): Promise<CsfloatMobileStatusResponse> {
     return this.client.get<CsfloatMobileStatusResponse>("me/mobile/status");
+  }
+
+  /**
+   * Low-level email verification helper confirmed by the current frontend bundle
+   * and a live invalid-payload probe (`invalid email format`).
+   *
+   * Pass only `email` to request a verification message, or include `token` to confirm it.
+   */
+  verifyEmail(
+    emailOrRequest: string | CsfloatVerifyEmailRequest,
+    token?: string,
+  ): Promise<CsfloatMessageResponse> {
+    const body = typeof emailOrRequest === "string"
+      ? { email: emailOrRequest, ...(token === undefined ? {} : { token }) }
+      : emailOrRequest;
+
+    return this.client.post<CsfloatMessageResponse>("me/verify-email", body);
+  }
+
+  /**
+   * Low-level SMS verification helper confirmed by the current frontend bundle
+   * and a live invalid-payload probe (`twilio: Invalid phone number: abc`).
+   *
+   * Pass only `phoneNumber` to request an SMS token, or include `token` to confirm it.
+   */
+  verifySms(
+    phoneNumberOrRequest: string | CsfloatVerifySmsRequest,
+    token?: string,
+  ): Promise<CsfloatMessageResponse> {
+    const body = typeof phoneNumberOrRequest === "string"
+      ? { phone_number: phoneNumberOrRequest, ...(token === undefined ? {} : { token }) }
+      : phoneNumberOrRequest;
+
+    return this.client.post<CsfloatMessageResponse>("me/verify-sms", body);
   }
 
   updateMe(request: CsfloatUpdateMeRequest): Promise<CsfloatMessageResponse> {

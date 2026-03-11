@@ -43,27 +43,28 @@ function getConfig() {
     apiKey,
     baseUrl: process.env.CSFLOAT_BASE_URL || "https://csfloat.com/api/v1",
     outDir: process.env.SHAPE_AUDIT_OUT_DIR || "/tmp/csfloat-shape-audit",
-    delayMs: Number(process.env.SHAPE_AUDIT_DELAY_MS || 400),
-    allowLiveMutations: process.env.ALLOW_LIVE_MUTATIONS === "1",
+    delayMs: Number(process.env.SHAPE_AUDIT_DELAY_MS || 1500),
+    retryDelayMs: Number(process.env.SHAPE_AUDIT_RETRY_DELAY_MS || 6000),
+    retryOn429: process.env.SHAPE_AUDIT_RETRY_ON_429 !== "0",
+    maxDepth: Number(process.env.SHAPE_AUDIT_MAX_DEPTH || 6),
+    includeTokenHelpers: process.env.SHAPE_AUDIT_INCLUDE_TOKEN_HELPERS !== "0",
   };
 }
 
 async function sleep(ms) {
-  if (ms <= 0) {
-    return;
+  if (ms > 0) {
+    await new Promise((resolve) => setTimeout(resolve, ms));
   }
-
-  await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function collectPaths(value, prefix = "", depth = 0, maxDepth = 5, out = new Set()) {
+function collectPaths(value, prefix = "", depth = 0, maxDepth = 6, out = new Set()) {
   if (depth > maxDepth || value === null || value === undefined) {
     return out;
   }
 
   if (Array.isArray(value)) {
     out.add(prefix ? `${prefix}[]` : "[]");
-    for (const item of value.slice(0, 20)) {
+    for (const item of value.slice(0, 10)) {
       collectPaths(item, prefix ? `${prefix}[]` : "[]", depth + 1, maxDepth, out);
     }
     return out;
@@ -80,11 +81,27 @@ function collectPaths(value, prefix = "", depth = 0, maxDepth = 5, out = new Set
   return out;
 }
 
+function firstKeys(value) {
+  if (Array.isArray(value)) {
+    const first = value[0];
+    return first && typeof first === "object" && !Array.isArray(first)
+      ? Object.keys(first).slice(0, 20)
+      : [];
+  }
+
+  if (value && typeof value === "object") {
+    return Object.keys(value).slice(0, 20);
+  }
+
+  return [];
+}
+
 function summarize(value) {
   if (Array.isArray(value)) {
     return {
       kind: "array",
       length: value.length,
+      firstKeys: firstKeys(value),
     };
   }
 
@@ -101,144 +118,361 @@ function summarize(value) {
   };
 }
 
+function sanitizeName(name) {
+  return name.replace(/[^a-z0-9._-]+/gi, "_");
+}
+
+function parseCsvText(text) {
+  const lines = text.split(/\r?\n/).filter(Boolean);
+  return {
+    lineCount: lines.length,
+    header: lines[0] ?? "",
+    preview: lines.slice(0, 5),
+  };
+}
+
 async function main() {
   const config = getConfig();
   fs.mkdirSync(config.outDir, { recursive: true });
 
+  const stats = {
+    requests: 0,
+    retries429: 0,
+  };
+
   let lastRequestAt = 0;
 
-  async function request(route, options = {}) {
+  async function pacedFetch(url, init) {
     const now = Date.now();
     const waitMs = Math.max(0, config.delayMs - (now - lastRequestAt));
-    if (waitMs > 0) {
-      await sleep(waitMs);
+    await sleep(waitMs);
+
+    let response = await fetch(url, init);
+    lastRequestAt = Date.now();
+    stats.requests += 1;
+
+    if (config.retryOn429 && response.status === 429) {
+      stats.retries429 += 1;
+      await sleep(Math.max(config.retryDelayMs, config.delayMs * 4));
+      response = await fetch(url, init);
+      lastRequestAt = Date.now();
+      stats.requests += 1;
     }
 
-    const response = await fetch(`${config.baseUrl}${route}`, {
-      headers: {
-        Authorization: config.apiKey,
-        Accept: "application/json",
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
+    return response;
+  }
+
+  async function request(spec) {
+    const baseHeaders = {
+      Accept: spec.accept ?? "application/json",
+      ...(spec.auth === false ? {} : { Authorization: config.apiKey }),
+      ...(spec.headers ?? {}),
+    };
+
+    if (spec.body && !baseHeaders["Content-Type"]) {
+      baseHeaders["Content-Type"] = "application/json";
+    }
+
+    const response = await pacedFetch(
+      spec.url ?? `${config.baseUrl}${spec.route}`,
+      {
+        method: spec.method ?? "GET",
+        headers: baseHeaders,
+        body: spec.body ? JSON.stringify(spec.body) : undefined,
       },
-      ...options,
-    });
-    lastRequestAt = Date.now();
+    );
 
     const text = await response.text();
     let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
+
+    if (spec.parseAs === "text") {
       data = text;
+    } else {
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
     }
 
     return {
-      route,
       status: response.status,
       ok: response.ok,
       data,
     };
   }
 
-  const me = await request("/me");
-  const steamId = String(me.data.user.steam_id);
-  const listings = await request("/listings?limit=1&type=buy_now");
-  const listingId = String(listings.data.data[0].id);
-
-  const routes = {
-    schema: "/schema",
-    schema_browse_stickers: "/schema/browse?type=stickers",
-    schema_item_screenshot: "/schema/images/screenshot?def_index=7&paint_index=490&min_float=0.15&max_float=0.38",
-    exchange_rates: "/meta/exchange-rates",
-    app_meta: "/meta/app",
-    location: "/meta/location",
-    me: "/me",
-    inventory: "/me/inventory",
-    account_standing: "/me/account-standing",
-    transactions: "/me/transactions?limit=10",
-    trades: "/me/trades?limit=10",
-    offers: "/me/offers?limit=10",
-    offers_timeline: "/me/offers-timeline?limit=10",
-    watchlist: "/me/watchlist?limit=10",
-    notifications: "/me/notifications/timeline",
-    buy_orders: "/me/buy-orders?limit=10",
-    auto_bids: "/me/auto-bids",
-    pending_deposits: "/me/payments/pending-deposits",
-    mobile_status: "/me/mobile/status",
-    user: `/users/${steamId}`,
-    stall: `/users/${steamId}/stall?limit=10&type=buy_now`,
-    listings: "/listings?limit=10&type=buy_now",
-    listing: `/listings/${listingId}`,
-    auction_bids: "/listings/949824804901487637/bids",
-    listing_buy_orders: "/listings/948726619852374910/buy-orders",
-    similar: "/listings/948726619852374910/similar",
-    sales: `/history/${encodeURIComponent("Souvenir P250 | Boreal Forest (Factory New)")}/sales`,
-    graph_paint: `/history/${encodeURIComponent("Souvenir P250 | Boreal Forest (Factory New)")}/graph?paint_index=77`,
-    graph_no_paint: `/history/${encodeURIComponent("AK-47 | Redline (Field-Tested)")}/graph`,
-    listings_fade: "/listings?limit=10&type=buy_now&def_index=507&paint_index=38&min_fade=99&max_fade=100",
-    listings_music_kit: "/listings?limit=10&type=buy_now&music_kit_index=3",
-    listings_keychain_highlight: "/listings?limit=10&type=buy_now&keychain_highlight_reel=1",
-  };
-
+  const context = {};
   const summary = {
     generated_at: new Date().toISOString(),
     out_dir: config.outDir,
-    allow_live_mutations: config.allowLiveMutations,
+    delay_ms: config.delayMs,
+    retry_delay_ms: config.retryDelayMs,
+    retry_on_429: config.retryOn429,
+    include_token_helpers: config.includeTokenHelpers,
+    stats,
     routes: {},
+    skipped: [],
   };
 
-  for (const [name, route] of Object.entries(routes)) {
-    const result = await request(route);
+  function addSkipped(name, reason) {
+    summary.skipped.push({ name, reason });
+  }
+
+  const me = await request({ route: "/me" });
+  if (!me.ok) {
+    throw new Error(`Failed bootstrap GET /me (${me.status})`);
+  }
+
+  context.me = me.data;
+  context.steamId = context.me?.user?.steam_id ? String(context.me.user.steam_id) : null;
+
+  const listingPreview = await request({ route: "/listings?limit=5&type=buy_now" });
+  if (listingPreview.ok && Array.isArray(listingPreview.data?.data)) {
+    context.listings = listingPreview.data.data;
+    context.firstListing = context.listings[0] ?? null;
+    context.firstListingId = context.firstListing?.id ? String(context.firstListing.id) : null;
+    const inspectCandidate = context.listings.find(
+      (listing) =>
+        typeof listing?.item?.inspect_link === "string" &&
+        /preview%20S\d+A\d+D\d+/i.test(listing.item.inspect_link),
+    ) ?? context.listings.find(
+      (listing) => typeof listing?.item?.inspect_link === "string",
+    ) ?? null;
+
+    context.firstInspectLink =
+      inspectCandidate?.item?.inspect_link ?? null;
+  }
+
+  const auctionPreview = await request({ route: "/listings?limit=5&type=auction" });
+  if (auctionPreview.ok && Array.isArray(auctionPreview.data?.data)) {
+    context.firstAuction = auctionPreview.data.data[0] ?? null;
+    context.firstAuctionId = context.firstAuction?.id ? String(context.firstAuction.id) : null;
+  }
+
+  const offersPreview = await request({ route: "/me/offers?page=0&limit=1" });
+  if (offersPreview.ok && Array.isArray(offersPreview.data?.offers)) {
+    context.firstOffer = offersPreview.data.offers[0] ?? null;
+    context.firstOfferId = context.firstOffer?.id ? String(context.firstOffer.id) : null;
+  }
+
+  const tradesPreview = await request({ route: "/me/trades?page=0&limit=1" });
+  if (tradesPreview.ok && Array.isArray(tradesPreview.data?.trades)) {
+    context.firstTrade = tradesPreview.data.trades[0] ?? null;
+    context.firstTradeId = context.firstTrade?.id ? String(context.firstTrade.id) : null;
+  }
+
+  const buyOrdersPreview = await request({ route: "/me/buy-orders?page=0&limit=1" });
+  if (buyOrdersPreview.ok && Array.isArray(buyOrdersPreview.data?.orders)) {
+    context.firstBuyOrder = buyOrdersPreview.data.orders[0] ?? null;
+    context.firstBuyOrderId = context.firstBuyOrder?.id ? String(context.firstBuyOrder.id) : null;
+  }
+
+  const safeMonth = (() => {
+    const now = new Date();
+    const utcYear = now.getUTCFullYear();
+    const utcMonth = now.getUTCMonth() + 1;
+    if (utcMonth === 1) {
+      return { year: utcYear - 1, month: 12 };
+    }
+    return { year: utcYear, month: utcMonth - 1 };
+  })();
+
+  const routeSpecs = [
+    { name: "schema", route: "/schema" },
+    { name: "schema_browse_stickers", route: "/schema/browse?type=stickers" },
+    { name: "schema_browse_keychains", route: "/schema/browse?type=keychains" },
+    { name: "schema_item_screenshot", route: "/schema/images/screenshot?def_index=7&paint_index=490&min_float=0.15&max_float=0.38" },
+    { name: "exchange_rates", route: "/meta/exchange-rates" },
+    { name: "app_meta", route: "/meta/app" },
+    { name: "location", route: "/meta/location" },
+    { name: "notary_meta", route: "/meta/notary" },
+    { name: "me", route: "/me" },
+    { name: "inventory", route: "/me/inventory" },
+    { name: "account_standing", route: "/me/account-standing" },
+    { name: "transactions", route: "/me/transactions?limit=10&page=0&order=desc" },
+    {
+      name: "transactions_export",
+      route: `/me/transactions/export?year=${safeMonth.year}&month=${safeMonth.month}`,
+      parseAs: "text",
+    },
+    { name: "trades", route: "/me/trades?limit=10&page=0" },
+    { name: "offers", route: "/me/offers?limit=10&page=0" },
+    { name: "offers_timeline", route: "/me/offers-timeline?limit=10" },
+    { name: "watchlist", route: "/me/watchlist?limit=10" },
+    { name: "notifications", route: "/me/notifications/timeline" },
+    { name: "buy_orders", route: "/me/buy-orders?limit=10&page=0&order=desc" },
+    { name: "auto_bids", route: "/me/auto-bids" },
+    { name: "pending_deposits", route: "/me/payments/pending-deposits" },
+    { name: "max_withdrawable", route: "/me/payments/max-withdrawable" },
+    { name: "pending_withdrawals", route: "/me/pending-withdrawals" },
+    { name: "extension_status", route: "/me/extension/status" },
+    { name: "mobile_status", route: "/me/mobile/status" },
+    { name: "price_list", route: "/listings/price-list" },
+    { name: "listings", route: "/listings?limit=10&type=buy_now" },
+    { name: "user", skipUnless: () => context.steamId, route: () => `/users/${context.steamId}` },
+    { name: "stall", skipUnless: () => context.steamId, route: () => `/users/${context.steamId}/stall?limit=10&type=buy_now` },
+    { name: "listing", skipUnless: () => context.firstListingId, route: () => `/listings/${context.firstListingId}` },
+    { name: "listing_buy_orders", skipUnless: () => context.firstListingId, route: () => `/listings/${context.firstListingId}/buy-orders?limit=5` },
+    { name: "listing_similar", skipUnless: () => context.firstListingId, route: () => `/listings/${context.firstListingId}/similar` },
+    { name: "auction_bids", skipUnless: () => context.firstAuctionId, route: () => `/listings/${context.firstAuctionId}/bids` },
+    {
+      name: "sales",
+      route: `/history/${encodeURIComponent("Souvenir P250 | Boreal Forest (Factory New)")}/sales`,
+    },
+    {
+      name: "graph_paint",
+      route: `/history/${encodeURIComponent("Souvenir P250 | Boreal Forest (Factory New)")}/graph?paint_index=77`,
+    },
+    {
+      name: "graph_no_paint",
+      route: `/history/${encodeURIComponent("AK-47 | Redline (Field-Tested)")}/graph`,
+    },
+    {
+      name: "inspect_buy_orders",
+      skipUnless: () => context.firstInspectLink,
+      route: () => `/buy-orders/item?url=${encodeURIComponent(context.firstInspectLink)}&limit=3`,
+    },
+    {
+      name: "similar_buy_orders_market_hash",
+      method: "POST",
+      route: "/buy-orders/similar-orders?limit=5",
+      body: { market_hash_name: "AK-47 | Redline (Field-Tested)" },
+    },
+    {
+      name: "inspect_item",
+      skipUnless: () => context.firstInspectLink,
+      url: () => `https://api.csfloat.com/?url=${encodeURIComponent(context.firstInspectLink)}`,
+      auth: false,
+      headers: { Origin: "https://csfloat.com" },
+    },
+    {
+      name: "loadout_public_discover",
+      auth: false,
+      url: "https://loadout-api.csfloat.com/v1/loadout?sort_by=favorites&limit=5&months=1&any_filled=true",
+    },
+    {
+      name: "loadout_user_loadouts",
+      skipUnless: () => context.steamId,
+      auth: false,
+      url: () => `https://loadout-api.csfloat.com/v1/user/${context.steamId}/loadouts`,
+    },
+    {
+      name: "trade_detail",
+      skipUnless: () => context.firstTradeId,
+      route: () => `/trades/${context.firstTradeId}`,
+    },
+    {
+      name: "trade_buyer_details",
+      skipUnless: () => context.firstTradeId,
+      route: () => `/trades/${context.firstTradeId}/buyer-details`,
+    },
+    {
+      name: "offer_detail",
+      skipUnless: () => context.firstOfferId,
+      route: () => `/offers/${context.firstOfferId}`,
+    },
+    {
+      name: "offer_history",
+      skipUnless: () => context.firstOfferId,
+      route: () => `/offers/${context.firstOfferId}/history`,
+    },
+  ];
+
+  const lowRiskPostSpecs = config.includeTokenHelpers ? [
+    { name: "recommender_token", method: "POST", route: "/me/recommender-token", body: {} },
+    { name: "notary_token", method: "POST", route: "/me/notary-token", body: {} },
+    { name: "gs_inspect_token", method: "POST", route: "/me/gs-inspect-token", body: {} },
+  ] : [];
+
+  for (const spec of [...routeSpecs, ...lowRiskPostSpecs]) {
+    const skipReason = spec.skipUnless && !spec.skipUnless();
+    if (skipReason) {
+      addSkipped(spec.name, "missing safe runtime context for this route");
+      continue;
+    }
+
+    const resolved = {
+      ...spec,
+      route: typeof spec.route === "function" ? spec.route() : spec.route,
+      url: typeof spec.url === "function" ? spec.url() : spec.url,
+    };
+
+    const result = await request(resolved);
+
+    const outputPath = path.join(config.outDir, `${sanitizeName(spec.name)}.json`);
+    if (resolved.parseAs === "text") {
+      fs.writeFileSync(outputPath, String(result.data), "utf8");
+    } else {
+      fs.writeFileSync(outputPath, JSON.stringify(result.data, null, 2));
+    }
+
+    summary.routes[spec.name] = {
+      method: resolved.method ?? "GET",
+      route: resolved.route ?? resolved.url,
+      status: result.status,
+      ok: result.ok,
+      summary: resolved.parseAs === "text"
+        ? { kind: "text", ...parseCsvText(String(result.data)) }
+        : summarize(result.data),
+      paths: resolved.parseAs === "text"
+        ? []
+        : Array.from(collectPaths(result.data, "", 0, config.maxDepth)).sort(),
+    };
+
+    if (spec.name === "recommender_token" && result.ok && result.data?.token) {
+      context.recommenderToken = result.data.token;
+    }
+  }
+
+  const tokenRoutes = [
+    {
+      name: "loadout_favorites",
+      skipUnless: () => context.recommenderToken,
+      auth: false,
+      url: "https://loadout-api.csfloat.com/v1/user/favorites",
+      headers: () => ({ Authorization: `Bearer ${context.recommenderToken}` }),
+    },
+    {
+      name: "loadout_recommend_for_skin",
+      skipUnless: () => context.recommenderToken,
+      auth: false,
+      method: "POST",
+      url: "https://loadout-api.csfloat.com/v1/recommend",
+      headers: () => ({ Authorization: `Bearer ${context.recommenderToken}` }),
+      body: { items: [{ type: "skin", def_index: 7, paint_index: 490 }], count: 3 },
+    },
+  ];
+
+  for (const spec of tokenRoutes) {
+    if (!config.includeTokenHelpers) {
+      addSkipped(spec.name, "token helper coverage disabled");
+      continue;
+    }
+
+    if (!spec.skipUnless()) {
+      addSkipped(spec.name, "missing recommender token");
+      continue;
+    }
+
+    const resolved = {
+      ...spec,
+      headers: typeof spec.headers === "function" ? spec.headers() : spec.headers,
+    };
+
+    const result = await request(resolved);
     fs.writeFileSync(
-      path.join(config.outDir, `${name}.json`),
+      path.join(config.outDir, `${sanitizeName(spec.name)}.json`),
       JSON.stringify(result.data, null, 2),
     );
-    summary.routes[name] = {
-      route,
+    summary.routes[spec.name] = {
+      method: resolved.method ?? "GET",
+      route: resolved.url,
       status: result.status,
       ok: result.ok,
       summary: summarize(result.data),
-      paths: Array.from(collectPaths(result.data)).sort(),
+      paths: Array.from(collectPaths(result.data, "", 0, config.maxDepth)).sort(),
     };
-  }
-
-  if (config.allowLiveMutations) {
-    const create = await request("/buy-orders", {
-      method: "POST",
-      body: JSON.stringify({
-        market_hash_name: "AWP | Dragon Lore (Factory New)",
-        max_price: 1,
-      }),
-    });
-
-    summary.temp_buy_order = {
-      create_status: create.status,
-      create_ok: create.ok,
-      create_summary: summarize(create.data),
-    };
-
-    if (create.ok && create.data?.id) {
-      fs.writeFileSync(
-        path.join(config.outDir, "temp_buy_order_create.json"),
-        JSON.stringify(create.data, null, 2),
-      );
-
-      const afterCreate = await request("/me/buy-orders?limit=10");
-      fs.writeFileSync(
-        path.join(config.outDir, "buy_orders_after_temp_create.json"),
-        JSON.stringify(afterCreate.data, null, 2),
-      );
-      summary.temp_buy_order.after_create_paths = Array.from(
-        collectPaths(afterCreate.data),
-      ).sort();
-
-      const del = await request(`/buy-orders/${create.data.id}`, {
-        method: "DELETE",
-      });
-      summary.temp_buy_order.delete_status = del.status;
-      summary.temp_buy_order.delete_ok = del.ok;
-      summary.temp_buy_order.delete_summary = summarize(del.data);
-    }
   }
 
   fs.writeFileSync(
@@ -246,17 +480,12 @@ async function main() {
     JSON.stringify(summary, null, 2),
   );
 
-  console.log(
-    JSON.stringify(
-      {
-        outDir: config.outDir,
-        routeCount: Object.keys(routes).length,
-        allowLiveMutations: config.allowLiveMutations,
-      },
-      null,
-      2,
-    ),
-  );
+  console.log(JSON.stringify({
+    outDir: config.outDir,
+    routeCount: Object.keys(summary.routes).length,
+    skipped: summary.skipped.length,
+    stats,
+  }, null, 2));
 }
 
 main().catch((error) => {

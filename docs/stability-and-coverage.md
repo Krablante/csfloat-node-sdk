@@ -49,6 +49,10 @@ Some surface is exposed because it is useful and real, but the SDK still treats 
   low-level Steam sync helper
 - `account.syncSteamOffers()`
   low-level Steam sync helper
+- `account.cannotDeliverTrade()` / `disputeTrade()` / `markTradeReceived()` / `rollbackTrade()` / `manualVerifyTrade()` / `verifyTradeRollback()`
+  bundle-confirmed low-level trade lifecycle edges that remain intentionally state-gated and conservative
+- `account.verifyEmail()` / `account.verifySms()`
+  low-level account verification helpers whose delivery/confirmation behavior remains API-controlled
 - `sdk.client.get/post/patch/put/delete`
   low-level transport methods for advanced wrappers
 - `sdk.client.*WithMetadata()`

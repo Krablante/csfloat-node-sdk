@@ -109,6 +109,23 @@ describe("AccountResource", () => {
     });
   });
 
+  it("syncs a new steam offer with optional asset annotations", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.syncSteamNewOffer({
+      offer_id: "123",
+      given_asset_ids: ["1", "2"],
+      received_asset_ids: ["3"],
+    });
+
+    expect(post).toHaveBeenCalledWith("trades/steam-status/new-offer", {
+      offer_id: "123",
+      given_asset_ids: ["1", "2"],
+      received_asset_ids: ["3"],
+    });
+  });
+
   it("syncs steam offers with the low-level payload", async () => {
     const post = vi.fn(async (_path: string, _body: unknown) => null);
     const resource = new AccountResource({ post } as never);
@@ -131,6 +148,33 @@ describe("AccountResource", () => {
     await resource.acceptTrade("950524496987687389");
 
     expect(post).toHaveBeenCalledWith("trades/950524496987687389/accept", {});
+  });
+
+  it("hits the low-level cannot-deliver trade route", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.cannotDeliverTrade("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/cannot-deliver", {});
+  });
+
+  it("hits the low-level dispute trade route", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.disputeTrade("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/dispute", {});
+  });
+
+  it("marks a single trade as received", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.markTradeReceived("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/received", {});
   });
 
   it("accepts a sale through the single-trade alias", async () => {
@@ -169,6 +213,33 @@ describe("AccountResource", () => {
     await resource.cancelSale("950524496987687389");
 
     expect(del).toHaveBeenCalledWith("trades/950524496987687389");
+  });
+
+  it("hits the low-level rollback trade route", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.rollbackTrade("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/rollback", {});
+  });
+
+  it("hits the low-level manual-verification trade route", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.manualVerifyTrade("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/manual-verification", {});
+  });
+
+  it("hits the low-level rollback-verify trade route", async () => {
+    const post = vi.fn(async (_path: string, _body: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.verifyTradeRollback("950524496987687389");
+
+    expect(post).toHaveBeenCalledWith("trades/950524496987687389/rollback-verify", {});
   });
 
   it("creates an offer", async () => {
@@ -587,6 +658,33 @@ describe("AccountResource", () => {
     await resource.getMobileStatus();
 
     expect(get).toHaveBeenCalledWith("me/mobile/status");
+  });
+
+  it("requests email verification with a token", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.verifyEmail("test@example.com", "123456");
+
+    expect(post).toHaveBeenCalledWith("me/verify-email", {
+      email: "test@example.com",
+      token: "123456",
+    });
+  });
+
+  it("requests sms verification with the low-level payload object", async () => {
+    const post = vi.fn(async (_path: string, _body?: unknown) => null);
+    const resource = new AccountResource({ post } as never);
+
+    await resource.verifySms({
+      phone_number: "+12025550123",
+      token: "654321",
+    });
+
+    expect(post).toHaveBeenCalledWith("me/verify-sms", {
+      phone_number: "+12025550123",
+      token: "654321",
+    });
   });
 
   it("requests max withdrawable balance", async () => {
