@@ -1,90 +1,144 @@
-<svg width="1200" height="260" viewBox="0 0 1200 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">csfloat-node-sdk</title>
-  <desc id="desc">Animated dark-gold README hero for csfloat-node-sdk.</desc>
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="260" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#090603"/>
-      <stop offset="0.55" stop-color="#120b03"/>
-      <stop offset="1" stop-color="#050403"/>
-    </linearGradient>
-    <radialGradient id="goldGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(950 120) rotate(180) scale(260 180)">
-      <stop stop-color="#D4A64A" stop-opacity="0.28"/>
-      <stop offset="1" stop-color="#D4A64A" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="line" x1="140" y1="0" x2="980" y2="0" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7A5A1A" stop-opacity="0"/>
-      <stop offset="0.15" stop-color="#C6973A" stop-opacity="0.9"/>
-      <stop offset="0.85" stop-color="#C6973A" stop-opacity="0.9"/>
-      <stop offset="1" stop-color="#7A5A1A" stop-opacity="0"/>
-    </linearGradient>
-    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="10"/>
-    </filter>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280">
+    <title>CSFloat Node.js SDK</title>
+    <desc>Minimal, documentation-first hero banner for the CSFloat Node.js and TypeScript SDK.</desc>
+
+    <defs>
+        <radialGradient id="bg-glow" cx="15%" cy="35%" r="75%">
+            <stop offset="0%" stop-color="#1c150e" />
+            <stop offset="100%" stop-color="#0a0908" />
+        </radialGradient>
+
+        <linearGradient id="line-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#e8b960" stop-opacity="0" />
+            <stop offset="25%" stop-color="#e8b960" stop-opacity="0.25" />
+            <stop offset="85%" stop-color="#e8b960" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#e8b960" stop-opacity="0" />
+        </linearGradient>
+
+        <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        
+        <filter id="glow-subtle" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
     <style>
-      .grid { stroke: rgba(205, 160, 62, 0.12); stroke-width: 1; }
-      .scanline { opacity: 0.08; animation: sweep 9s linear infinite; }
-      .frame { stroke: rgba(198, 151, 58, 0.35); stroke-width: 1; fill: none; }
-      .kicker { fill: #D7A94A; font: 600 18px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.28em; text-transform: uppercase; }
-      .main { fill: #FFF5DF; font: 700 84px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: -0.04em; }
-      .sub { fill: #E7D0A0; font: 500 25px/1.4 ui-sans-serif, Inter, Segoe UI, sans-serif; }
-      .meta { fill: #B9954A; font: 500 18px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-      .ghost-a { fill: rgba(255, 96, 138, 0.18); animation: glitchA 4.2s steps(2, end) infinite; }
-      .ghost-b { fill: rgba(107, 201, 255, 0.14); animation: glitchB 4.2s steps(2, end) infinite; }
-      .pulse { animation: pulse 3.6s ease-in-out infinite; }
-      @keyframes pulse {
-        0%, 100% { opacity: 0.88; }
-        50% { opacity: 1; }
-      }
-      @keyframes glitchA {
-        0%, 90%, 100% { transform: translate(0, 0); opacity: 0; }
-        91% { transform: translate(-3px, 1px); opacity: 1; }
-        93% { transform: translate(2px, -1px); opacity: 0.7; }
-        95% { transform: translate(-1px, 0); opacity: 0; }
-      }
-      @keyframes glitchB {
-        0%, 92%, 100% { transform: translate(0, 0); opacity: 0; }
-        93% { transform: translate(3px, -1px); opacity: 0.85; }
-        95% { transform: translate(-2px, 1px); opacity: 0.55; }
-        97% { transform: translate(0, 0); opacity: 0; }
-      }
-      @keyframes sweep {
-        0% { transform: translateY(-170px); }
-        100% { transform: translateY(280px); }
-      }
+        .title {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            fill: #fdfbf7;
+            letter-spacing: -0.02em;
+        }
+        .subtitle {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 22px;
+            font-weight: 400;
+            fill: #c9baa3;
+            letter-spacing: 0.01em;
+        }
+        .link-text {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .link-label { fill: #8a7b66; }
+        .link-arrow { fill: #e8b960; }
+        .link-url { fill: #e8b960; }
+
+        .meta {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            fill: #756754;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        .glow-dot {
+            animation: pulse-opacity 4s ease-in-out infinite;
+        }
+        .glow-dot.delay-1 { animation-delay: 1.5s; }
+        .glow-dot.delay-2 { animation-delay: 3s; }
+
+        .subtle-line {
+            stroke: url(#line-fade);
+            stroke-width: 1.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .outer-border {
+            stroke: #2a2219;
+            stroke-width: 1.5;
+            fill: none;
+            rx: 15;
+        }
     </style>
-  </defs>
 
-  <rect width="1200" height="260" rx="24" fill="url(#bg)"/>
-  <rect x="16" y="16" width="1168" height="228" rx="18" class="frame"/>
-  <rect x="1080" y="34" width="4" height="190" rx="2" fill="#C6973A" opacity="0.35"/>
-  <rect x="80" y="40" width="4" height="160" rx="2" fill="#C6973A" opacity="0.22"/>
+    <rect width="1200" height="280" fill="#0a0908" rx="16" />
+    <rect width="1200" height="280" fill="url(#bg-glow)" rx="16" />
 
-  <g opacity="0.65">
-    <path d="M0 48H1200" class="grid"/>
-    <path d="M0 94H1200" class="grid"/>
-    <path d="M0 140H1200" class="grid"/>
-    <path d="M0 186H1200" class="grid"/>
-    <path d="M0 232H1200" class="grid"/>
-    <path d="M140 0V260" class="grid"/>
-    <path d="M300 0V260" class="grid"/>
-    <path d="M460 0V260" class="grid"/>
-    <path d="M620 0V260" class="grid"/>
-    <path d="M780 0V260" class="grid"/>
-    <path d="M940 0V260" class="grid"/>
-  </g>
-
-  <rect x="0" y="0" width="1200" height="42" fill="url(#line)" class="scanline"/>
-  <circle cx="955" cy="120" r="140" fill="url(#goldGlow)"/>
-  <circle cx="955" cy="120" r="64" fill="#D4A64A" opacity="0.08" filter="url(#blur)"/>
-
-  <g transform="translate(78 82)">
-    <text class="kicker">typed sdk • docs • coverage</text>
-    <g transform="translate(0 54)">
-      <text class="main ghost-a">csfloat-node-sdk</text>
-      <text class="main ghost-b">csfloat-node-sdk</text>
-      <text class="main pulse">csfloat-node-sdk</text>
+    <g id="registration-marks" fill="#4a3f31">
+        <circle cx="40" cy="40" r="1.5" />
+        <circle cx="40" cy="240" r="1.5" />
+        <circle cx="1160" cy="40" r="1.5" />
+        <circle cx="1160" cy="240" r="1.5" />
     </g>
-    <text y="136" class="sub">Live-validated TypeScript SDK for the practical CSFloat surface.</text>
-    <text y="176" class="meta">market • listings • offers • trades • buy orders • docs site</text>
-  </g>
+
+    <g id="node-graph">
+        <path class="subtle-line" d="M 700,80 L 880,80 L 910,110 L 1120,110" />
+        <path class="subtle-line" d="M 740,140 L 880,140 L 910,110" />
+        <path class="subtle-line" d="M 910,110 L 940,140 L 1120,140" />
+        <path class="subtle-line" d="M 780,200 L 960,200 L 990,170 L 1120,170" />
+        <path class="subtle-line" d="M 1030,140 L 1060,170" />
+
+        <path d="M 820,77 v 6 M 1000,107 v 6 M 850,137 v 6 M 900,197 v 6 M 1080,167 v 6 M 1045,152 v 6" stroke="#4a3f31" stroke-width="1.5" fill="none" />
+
+        <circle cx="880" cy="80" r="3.5" fill="#0a0908" stroke="#8a7b66" stroke-width="1.5" />
+        <circle cx="910" cy="110" r="4.5" fill="#0a0908" stroke="#e8b960" stroke-width="1.5" />
+        <circle cx="880" cy="140" r="3.5" fill="#0a0908" stroke="#8a7b66" stroke-width="1.5" />
+        <circle cx="940" cy="140" r="3.5" fill="#0a0908" stroke="#8a7b66" stroke-width="1.5" />
+        <circle cx="960" cy="200" r="3.5" fill="#0a0908" stroke="#8a7b66" stroke-width="1.5" />
+        <circle cx="990" cy="170" r="4.5" fill="#0a0908" stroke="#e8b960" stroke-width="1.5" />
+        <circle cx="1030" cy="140" r="3.5" fill="#0a0908" stroke="#8a7b66" stroke-width="1.5" />
+        <circle cx="1060" cy="170" r="3.5" fill="#0a0908" stroke="#8a7b66" stroke-width="1.5" />
+
+        <circle cx="780" cy="80" r="2.5" fill="#e8b960" class="glow-dot delay-1" filter="url(#glow-subtle)" />
+        <circle cx="910" cy="110" r="2.5" fill="#e8b960" class="glow-dot" filter="url(#glow-strong)" />
+        <circle cx="1090" cy="110" r="2.5" fill="#e8b960" class="glow-dot delay-2" filter="url(#glow-subtle)" />
+        <circle cx="820" cy="140" r="2.5" fill="#e8b960" class="glow-dot delay-1" filter="url(#glow-subtle)" />
+        <circle cx="990" cy="170" r="2.5" fill="#e8b960" class="glow-dot" filter="url(#glow-strong)" />
+        <circle cx="860" cy="200" r="2.5" fill="#e8b960" class="glow-dot delay-2" filter="url(#glow-subtle)" />
+    </g>
+
+    <g transform="translate(80, 0)">
+        <text x="-4" y="115" class="title">CSFloat SDK</text>
+        <text x="0" y="160" class="subtitle">Node.js + TypeScript SDK for the practical CSFloat API</text>
+
+        <text x="0" y="205" class="link-text">
+            <tspan class="link-label">docs</tspan>
+            <tspan class="link-arrow" dx="10">→</tspan>
+            <tspan class="link-url" dx="10">csfloat-node-sdk.vercel.app</tspan>
+        </text>
+
+        <text x="0" y="250" class="meta">market • listings • offers • trades • buy orders • docs</text>
+    </g>
+
+    <rect width="1198.5" height="278.5" x="0.75" y="0.75" class="outer-border" />
 </svg>
