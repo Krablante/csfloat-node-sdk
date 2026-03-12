@@ -202,20 +202,6 @@ describe("ListingsResource", () => {
     });
   });
 
-  it("aliases unlistBulkListings to the same bulk-delist route", async () => {
-    const patch = vi.fn(async (_path: string, _body?: unknown) => ({ message: "contracts delisted" }));
-    const resource = new ListingsResource({
-      ...client,
-      patch,
-    } as never);
-
-    await resource.unlistBulkListings(["a"]);
-
-    expect(patch).toHaveBeenCalledWith("listings/bulk-delist", {
-      contract_ids: ["a"],
-    });
-  });
-
   it("rejects empty bulk delist payloads", async () => {
     const resource = new ListingsResource(client);
 
@@ -410,5 +396,17 @@ describe("ListingsResource", () => {
     expect(post).toHaveBeenCalledWith("listings/945821907352158315/bid", {
       max_price: 9,
     });
+  });
+
+  it("deletes a single listing", async () => {
+    const del = vi.fn(async (_path: string) => null);
+    const resource = new ListingsResource({
+      ...client,
+      delete: del,
+    } as never);
+
+    await resource.deleteListing("950170960026273280");
+
+    expect(del).toHaveBeenCalledWith("listings/950170960026273280");
   });
 });

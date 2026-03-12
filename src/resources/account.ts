@@ -141,10 +141,6 @@ export class AccountResource {
     return this.client.post<CsfloatTrade>(`trades/${tradeId}/accept`, {});
   }
 
-  acceptSale(tradeId: string): Promise<CsfloatTrade> {
-    return this.acceptTrade(tradeId);
-  }
-
   cancelTrades(tradeIds: string[] | AcceptTradesRequest): Promise<CsfloatTradeBatchResponse> {
     const body = Array.isArray(tradeIds)
       ? { trade_ids: tradeIds }
@@ -155,10 +151,6 @@ export class AccountResource {
 
   cancelTrade(tradeId: string): Promise<CsfloatMessageResponse> {
     return this.client.delete<CsfloatMessageResponse>(`trades/${tradeId}`);
-  }
-
-  cancelSale(tradeId: string): Promise<CsfloatMessageResponse> {
-    return this.cancelTrade(tradeId);
   }
 
   /**
@@ -214,10 +206,6 @@ export class AccountResource {
 
   cancelOffer(offerId: string): Promise<CsfloatMessageResponse> {
     return this.client.delete<CsfloatMessageResponse>(`offers/${offerId}`);
-  }
-
-  declineOffer(offerId: string): Promise<CsfloatMessageResponse> {
-    return this.cancelOffer(offerId);
   }
 
   getWatchlist(

@@ -6,6 +6,16 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-03-12
+
+### Removed
+
+1. removed five exact public alias duplicates from the SDK surface: `account.acceptSale()`, `account.cancelSale()`, `account.declineOffer()`, `listings.unlistBulkListings()`, and `listings.unlistListing()`
+
+### Changed
+
+1. standardized the canonical trade/offer/listing naming surface around `acceptTrade()`, `cancelTrade()`, `cancelOffer()`, `deleteBulkListings()`, and `deleteListing()`
+
 ## [0.9.4] - 2026-03-11
 
 ### Added

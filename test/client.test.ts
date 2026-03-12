@@ -28,7 +28,7 @@ describe("CsfloatHttpClient", () => {
       method: "GET",
       headers: expect.objectContaining({
         Authorization: "secret",
-        "User-Agent": "csfloat-node-sdk/0.9.4",
+        "User-Agent": "csfloat-node-sdk/0.10.0",
       }),
     });
   });

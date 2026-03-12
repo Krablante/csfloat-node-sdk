@@ -145,10 +145,6 @@ export class ListingsResource {
     });
   }
 
-  unlistBulkListings(contractIds: string[]): Promise<CsfloatMessageResponse> {
-    return this.deleteBulkListings(contractIds);
-  }
-
   updateListing(listingId: string, request: UpdateListingRequest): Promise<CsfloatListing> {
     return this.client.patch<CsfloatListing>(`listings/${listingId}`, request);
   }
@@ -174,10 +170,6 @@ export class ListingsResource {
 
   deleteListing(listingId: string): Promise<CsfloatListing | null> {
     return this.client.delete<CsfloatListing | null>(`listings/${listingId}`);
-  }
-
-  unlistListing(listingId: string): Promise<CsfloatListing | null> {
-    return this.deleteListing(listingId);
   }
 
   private validateCreateListingRequest(request: CreateListingRequest): void {

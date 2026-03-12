@@ -66,10 +66,8 @@ Key types:
 | `markTradesReceived(tradeIdsOrRequest)` | `Promise<CsfloatTrade[]>` | bulk buyer receipt flow | state-gated by actual Steam offer lifecycle |
 | `markTradeReceived(tradeId)` | `Promise<CsfloatTradeActionResponse>` | single buyer receipt flow | low-level single-trade route |
 | `acceptTrade(tradeId)` | `Promise<CsfloatTrade>` | accept one queued trade | seller-side single trade flow |
-| `acceptSale(tradeId)` | `Promise<CsfloatTrade>` | seller-oriented alias for `acceptTrade()` | convenience alias |
 | `cancelTrades(tradeIdsOrRequest)` | `Promise<CsfloatTradeBatchResponse>` | bulk seller cancel flow | bundle-backed route |
 | `cancelTrade(tradeId)` | `Promise<CsfloatMessageResponse>` | cancel one trade | seller-side single cancel flow |
-| `cancelSale(tradeId)` | `Promise<CsfloatMessageResponse>` | seller-oriented alias for `cancelTrade()` | convenience alias |
 | `cannotDeliverTrade(tradeId)` | `Promise<CsfloatTradeActionResponse>` | seller-side cannot-deliver flow | low-level failure path |
 | `disputeTrade(tradeId)` | `Promise<CsfloatTradeActionResponse>` | open the browser-confirmed dispute route | low-level recovery path |
 | `rollbackTrade(tradeId)` | `Promise<CsfloatTradeActionResponse>` | request rollback handling | low-level recovery path |
@@ -93,7 +91,6 @@ Write payload guide:
 | `getOfferHistory(offerId)` | `Promise<CsfloatOffer[]>` | load the offer thread history | historical offer chain |
 | `counterOffer(offerId, request)` | `Promise<CsfloatOffer>` | seller-side counter offer | request type is `CounterOfferRequest` |
 | `cancelOffer(offerId)` | `Promise<CsfloatMessageResponse>` | cancel an offer thread | close/cancel flow |
-| `declineOffer(offerId)` | `Promise<CsfloatMessageResponse>` | ergonomic alias for cancel/decline close | same route as `cancelOffer()` |
 | `getOffersTimeline(params?)` | `Promise<CsfloatOffersResponse>` | profile timeline-style offer feed | limit-focused snapshot helper |
 
 Key types:
@@ -218,14 +215,12 @@ Listing note:
 | `createBulkListings(requests)` | `Promise<CsfloatListing[]>` | bulk list multiple contracts | requires at least one item |
 | `updateBulkListings(modifications)` | `Promise<CsfloatListing[]>` | bulk edit multiple listings | currently centered on validated bulk modification semantics |
 | `deleteBulkListings(contractIds)` | `Promise<CsfloatMessageResponse>` | bulk delist multiple contracts | requires at least one contract id |
-| `unlistBulkListings(contractIds)` | `Promise<CsfloatMessageResponse>` | alias for bulk delist | convenience alias |
 | `updateListing(listingId, request)` | `Promise<CsfloatListing>` | patch one listing | low-level generic listing patch |
 | `updateListingPrice(listingId, price)` | `Promise<CsfloatListing>` | change listing price | convenience wrapper |
 | `updateListingDescription(listingId, description)` | `Promise<CsfloatListing>` | change listing description | convenience wrapper |
 | `updateListingMaxOfferDiscount(listingId, maxOfferDiscount)` | `Promise<CsfloatListing>` | change max-offer discount on a listing | convenience wrapper |
 | `updateListingPrivate(listingId, isPrivate)` | `Promise<CsfloatListing>` | toggle listing privacy | convenience wrapper |
 | `deleteListing(listingId)` | `Promise<CsfloatListing \| null>` | delist one listing | delete/unlist lifecycle step |
-| `unlistListing(listingId)` | `Promise<CsfloatListing \| null>` | alias for `deleteListing()` | convenience alias |
 
 Important validation notes:
 

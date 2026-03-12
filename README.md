@@ -36,7 +36,7 @@ The project is intentionally conservative about claims. Anything called `impleme
 
 > The goal is simple: be the SDK you reach for first if you want serious CSFloat automation instead of a thin wrapper.
 >
-> Install from npm: [`csfloat-node-sdk@0.9.4`](https://www.npmjs.com/package/csfloat-node-sdk)
+> Install from npm: [`csfloat-node-sdk@0.10.0`](https://www.npmjs.com/package/csfloat-node-sdk)
 
 ## Documentation
 
@@ -104,9 +104,9 @@ This SDK is optimized for:
 
 ## What’s In The Current Generation
 
-- live-confirmed offer flows: create, counter, cancel, decline, history, plus a low-level `acceptOffer()` helper for the browser-observed accept route
-- live-confirmed purchase flows: direct `buyNow`, buy-order create/update/delete, seller-side `acceptSale`
-- state-gated trade lifecycle helpers, including seller-side `acceptSale()`, buyer-side `markTradesReceived()`, and low-level single-trade helpers such as `markTradeReceived()`, `cannotDeliverTrade()`, and `rollbackTrade()`
+- live-confirmed offer flows: create, counter, cancel, history, plus a low-level `acceptOffer()` helper for the browser-observed accept route
+- live-confirmed purchase flows: direct `buyNow`, buy-order create/update/delete, seller-side `acceptTrade`
+- state-gated trade lifecycle helpers, including seller-side `acceptTrade()`, buyer-side `markTradesReceived()`, and low-level single-trade helpers such as `markTradeReceived()`, `cannotDeliverTrade()`, and `rollbackTrade()`
 - low-level trade sync helpers for the browser-observed Steam status routes: `syncSteamNewOffer()` and `syncSteamOffers()`, with optional asset-annotation payloads on the new-offer route
 - low-level account verification helpers for `verifyEmail()` and `verifySms()`
 - live-confirmed buy-order insight flows: inspect-based lookup and similar-order discovery
@@ -114,7 +114,7 @@ This SDK is optimized for:
 - workflow-first helpers via `sdk.workflows` for public feed snapshots, account workspace snapshots, and single-skin buy-order insights
 - live-confirmed support helpers around adjacent account/insight flows such as `meta.getNotary()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, and `account.getSimilarBuyOrders()`
 - live-confirmed auction flow pieces: bid history, max-price `placeBid()`, `deleteAutoBid()` cancellation on cheap auctions, and stable item-route bootstrap reads for `getBuyOrders()` / `getSimilar()` around active auction listings
-- live-confirmed bulk listing controls: `createBulkListings()`, `updateBulkListings()`, and `deleteBulkListings()` / `unlistBulkListings()`
+- live-confirmed bulk listing controls: `createBulkListings()`, `updateBulkListings()`, and `deleteBulkListings()`
 - live-confirmed public/account helpers around app bootstrap, schema media, checker lookup, and payments, including `meta.getApp()`, `meta.getSchemaBrowse()`, `meta.getItemExampleScreenshot()`, `meta.inspectItem()`, and `account.getPendingDeposits()`
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
@@ -149,12 +149,12 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 | Area | Status | Methods |
 |---|---|---|
 | Meta | implemented | `meta.getSchema()`, `meta.getSchemaBrowse()`, `meta.getItemExampleScreenshot()`, `meta.inspectItem()`, `meta.getExchangeRates()`, `meta.getApp()`, `meta.getLocation()`, `meta.getNotary()` |
-| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.cannotDeliverTrade()`, `account.disputeTrade()`, `account.syncSteamNewOffer()`, `account.syncSteamOffers()`, `account.acceptTrades()`, `account.markTradesReceived()`, `account.markTradeReceived()`, `account.acceptTrade()`, `account.acceptSale()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.cancelSale()`, `account.rollbackTrade()`, `account.manualVerifyTrade()`, `account.verifyTradeRollback()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.acceptOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.declineOffer()`, `account.getWatchlist()`, `account.iterateWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.exportTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getBuyOrdersForInspect()`, `account.getSimilarBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, `account.getMaxWithdrawable()`, `account.getPendingDeposits()`, `account.getPendingWithdrawals()`, `account.deletePendingWithdrawal()`, `account.getExtensionStatus()`, `account.getMobileStatus()`, `account.verifyEmail()`, `account.verifySms()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
+| Account | implemented | `account.getMe()`, `account.getTrades()`, `account.getTrade()`, `account.getTradeBuyerDetails()`, `account.cannotDeliverTrade()`, `account.disputeTrade()`, `account.syncSteamNewOffer()`, `account.syncSteamOffers()`, `account.acceptTrades()`, `account.markTradesReceived()`, `account.markTradeReceived()`, `account.acceptTrade()`, `account.cancelTrades()`, `account.cancelTrade()`, `account.rollbackTrade()`, `account.manualVerifyTrade()`, `account.verifyTradeRollback()`, `account.getOffers()`, `account.createOffer()`, `account.getOffer()`, `account.acceptOffer()`, `account.getOfferHistory()`, `account.counterOffer()`, `account.cancelOffer()`, `account.getWatchlist()`, `account.iterateWatchlist()`, `account.getOffersTimeline()`, `account.getNotifications()`, `account.getTransactions()`, `account.exportTransactions()`, `account.getAccountStanding()`, `account.getBuyOrders()`, `account.getBuyOrdersForInspect()`, `account.getSimilarBuyOrders()`, `account.createBuyOrder()`, `account.updateBuyOrder()`, `account.deleteBuyOrder()`, `account.getAutoBids()`, `account.deleteAutoBid()`, `account.createRecommenderToken()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, `account.getMaxWithdrawable()`, `account.getPendingDeposits()`, `account.getPendingWithdrawals()`, `account.deletePendingWithdrawal()`, `account.getExtensionStatus()`, `account.getMobileStatus()`, `account.verifyEmail()`, `account.verifySms()`, `account.updateMe()`, `account.setOffersEnabled()`, `account.setStallPublic()`, `account.setAway()`, `account.setMaxOfferDiscount()`, `account.updateTradeUrl()`, `account.updateBackground()`, `account.updateUsername()`, `account.markNotificationsRead()`, `account.setMobileStatus()` |
 | Inventory | implemented | `inventory.getInventory()` |
 | Public users | implemented | `users.getUser()` |
 | User stall | implemented | `stall.getStall()`, `stall.iterateStall()` |
 | Listings | implemented | `listings.getListings()`, `listings.getPriceList()`, `listings.iterateListings()`, `listings.getListingById()`, `listings.getBids()`, `listings.placeBid()`, `listings.getBuyOrders()`, `listings.getSimilar()`, `listings.buyNow()`, `listings.buyListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()` |
-| Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.createBulkListings()`, `listings.updateBulkListings()`, `listings.deleteBulkListings()`, `listings.unlistBulkListings()`, `listings.updateListing()`, `listings.updateListingPrice()`, `listings.updateListingDescription()`, `listings.updateListingMaxOfferDiscount()`, `listings.updateListingPrivate()`, `listings.deleteListing()`, `listings.unlistListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
+| Listing mutations | implemented | `listings.createListing()`, `listings.createBuyNowListing()`, `listings.createAuctionListing()`, `listings.createBulkListings()`, `listings.updateBulkListings()`, `listings.deleteBulkListings()`, `listings.updateListing()`, `listings.updateListingPrice()`, `listings.updateListingDescription()`, `listings.updateListingMaxOfferDiscount()`, `listings.updateListingPrivate()`, `listings.deleteListing()`, `listings.addToWatchlist()`, `listings.removeFromWatchlist()`, `listings.buyNow()`, `listings.buyListing()` |
 | Loadout API | implemented | `loadout.getLoadouts()`, `loadout.getDiscoverLoadouts()`, `loadout.getSkinLoadouts()`, `loadout.getUserLoadouts()`, `loadout.getLoadout()`, `loadout.getFavoriteLoadouts()`, `loadout.createLoadout()`, `loadout.cloneLoadout()`, `loadout.updateLoadout()`, `loadout.deleteLoadout()`, `loadout.recommend()`, `loadout.recommendForSkin()`, `loadout.recommendStickers()`, `loadout.recommendStickersForSkin()`, `loadout.generateRecommendations()`, `loadout.favoriteLoadout()`, `loadout.unfavoriteLoadout()` |
 | History | implemented | `history.getSales()`, `history.getGraph()` |
 | Workflows | implemented | `workflows.getPublicMarketFeeds()`, `workflows.getAccountWorkspace()`, `workflows.getSingleSkinBuyOrderInsights()` |
@@ -759,9 +759,9 @@ const counter = await sdk.account.counterOffer(offer.id!, {
 
 await sdk.account.cancelOffer(counter.id!);
 
-await sdk.account.declineOffer(offer.id!);
+await sdk.account.cancelOffer(offer.id!);
 
-await sdk.account.acceptSale("950524496987687389");
+await sdk.account.acceptTrade("950524496987687389");
 
 await sdk.listings.buyListing("807440137469430127", 3);
 ```
