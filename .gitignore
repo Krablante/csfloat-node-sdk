@@ -1,6 +1,12 @@
 node_modules/
 dist/
 coverage/
+.cache/
+output/
+artifacts/
+reports/
+screenshots/
+playwright-report/
 *.log
 *.tsbuildinfo
 
@@ -13,9 +19,12 @@ coverage/
 .idea/
 .vscode/
 
+website/.vercel/
+website/out/
+website/public/_pagefind/
+
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
 package-lock.json
