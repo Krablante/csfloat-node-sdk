@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { CsfloatSdkError } from "../src/errors.js";
 import { MetaResource } from "../src/resources/meta.js";
 
 describe("MetaResource", () => {
@@ -96,6 +97,42 @@ describe("MetaResource", () => {
     });
     expect(deriveGet).toHaveBeenCalledWith("", {
       url: "steam://inspect-link",
+    });
+  });
+
+  it("surfaces a clearer error when the historical inspect companion host no longer resolves", async () => {
+    const dnsError = Object.assign(
+      new Error("getaddrinfo ENOTFOUND api.csfloat.com"),
+      {
+        code: "ENOTFOUND",
+        hostname: "api.csfloat.com",
+      },
+    );
+    const fetchError = new TypeError("fetch failed");
+    Object.defineProperty(fetchError, "cause", {
+      value: dnsError,
+      configurable: true,
+    });
+
+    const deriveGet = vi.fn(async () => {
+      throw new CsfloatSdkError("CSFloat API request failed", {
+        kind: "network",
+        retryable: true,
+        details: fetchError,
+        cause: fetchError,
+      });
+    });
+    const derive = vi.fn(() => ({
+      get: deriveGet,
+    }));
+    const resource = new MetaResource({ derive } as never);
+
+    await expect(resource.inspectItem("steam://inspect-link")).rejects.toMatchObject({
+      name: "CsfloatSdkError",
+      kind: "network",
+      retryable: true,
+      message:
+        "CSFloat inspect companion is currently unavailable; the historical api.csfloat.com host no longer resolves",
     });
   });
 });

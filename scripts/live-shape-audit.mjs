@@ -118,6 +118,42 @@ function summarize(value) {
   };
 }
 
+function summarizeThrownError(error, depth = 0) {
+  if (depth > 2 || error === null || error === undefined) {
+    return {
+      kind: typeof error,
+      preview: String(error),
+    };
+  }
+
+  if (error instanceof Error) {
+    return {
+      kind: "error",
+      name: error.name,
+      message: error.message,
+      ...(typeof error.code === "string" ? { code: error.code } : {}),
+      ...(typeof error.errno === "number" ? { errno: error.errno } : {}),
+      ...(typeof error.hostname === "string" ? { hostname: error.hostname } : {}),
+      ...(typeof error.syscall === "string" ? { syscall: error.syscall } : {}),
+      ...("cause" in error && error.cause !== undefined
+        ? { cause: summarizeThrownError(error.cause, depth + 1) }
+        : {}),
+    };
+  }
+
+  if (typeof error === "object") {
+    return {
+      kind: "object",
+      preview: JSON.stringify(error).slice(0, 200),
+    };
+  }
+
+  return {
+    kind: typeof error,
+    preview: String(error).slice(0, 200),
+  };
+}
+
 function sanitizeName(name) {
   return name.replace(/[^a-z0-9._-]+/gi, "_");
 }
@@ -398,30 +434,46 @@ async function main() {
       url: typeof spec.url === "function" ? spec.url() : spec.url,
     };
 
-    const result = await request(resolved);
-
     const outputPath = path.join(config.outDir, `${sanitizeName(spec.name)}.json`);
-    if (resolved.parseAs === "text") {
-      fs.writeFileSync(outputPath, String(result.data), "utf8");
-    } else {
-      fs.writeFileSync(outputPath, JSON.stringify(result.data, null, 2));
-    }
+    try {
+      const result = await request(resolved);
 
-    summary.routes[spec.name] = {
-      method: resolved.method ?? "GET",
-      route: resolved.route ?? resolved.url,
-      status: result.status,
-      ok: result.ok,
-      summary: resolved.parseAs === "text"
-        ? { kind: "text", ...parseCsvText(String(result.data)) }
-        : summarize(result.data),
-      paths: resolved.parseAs === "text"
-        ? []
-        : Array.from(collectPaths(result.data, "", 0, config.maxDepth)).sort(),
-    };
+      if (resolved.parseAs === "text") {
+        fs.writeFileSync(outputPath, String(result.data), "utf8");
+      } else {
+        fs.writeFileSync(outputPath, JSON.stringify(result.data, null, 2));
+      }
 
-    if (spec.name === "recommender_token" && result.ok && result.data?.token) {
-      context.recommenderToken = result.data.token;
+      summary.routes[spec.name] = {
+        method: resolved.method ?? "GET",
+        route: resolved.route ?? resolved.url,
+        status: result.status,
+        ok: result.ok,
+        summary: resolved.parseAs === "text"
+          ? { kind: "text", ...parseCsvText(String(result.data)) }
+          : summarize(result.data),
+        paths: resolved.parseAs === "text"
+          ? []
+          : Array.from(collectPaths(result.data, "", 0, config.maxDepth)).sort(),
+      };
+
+      if (spec.name === "recommender_token" && result.ok && result.data?.token) {
+        context.recommenderToken = result.data.token;
+      }
+    } catch (error) {
+      const summarizedError = summarizeThrownError(error);
+      fs.writeFileSync(
+        outputPath,
+        JSON.stringify({ error: summarizedError }, null, 2),
+      );
+      summary.routes[spec.name] = {
+        method: resolved.method ?? "GET",
+        route: resolved.route ?? resolved.url,
+        status: null,
+        ok: false,
+        summary: summarizedError,
+        paths: [],
+      };
     }
   }
 
@@ -460,19 +512,37 @@ async function main() {
       headers: typeof spec.headers === "function" ? spec.headers() : spec.headers,
     };
 
-    const result = await request(resolved);
-    fs.writeFileSync(
-      path.join(config.outDir, `${sanitizeName(spec.name)}.json`),
-      JSON.stringify(result.data, null, 2),
-    );
-    summary.routes[spec.name] = {
-      method: resolved.method ?? "GET",
-      route: resolved.url,
-      status: result.status,
-      ok: result.ok,
-      summary: summarize(result.data),
-      paths: Array.from(collectPaths(result.data, "", 0, config.maxDepth)).sort(),
-    };
+    const outputPath = path.join(config.outDir, `${sanitizeName(spec.name)}.json`);
+
+    try {
+      const result = await request(resolved);
+      fs.writeFileSync(
+        outputPath,
+        JSON.stringify(result.data, null, 2),
+      );
+      summary.routes[spec.name] = {
+        method: resolved.method ?? "GET",
+        route: resolved.url,
+        status: result.status,
+        ok: result.ok,
+        summary: summarize(result.data),
+        paths: Array.from(collectPaths(result.data, "", 0, config.maxDepth)).sort(),
+      };
+    } catch (error) {
+      const summarizedError = summarizeThrownError(error);
+      fs.writeFileSync(
+        outputPath,
+        JSON.stringify({ error: summarizedError }, null, 2),
+      );
+      summary.routes[spec.name] = {
+        method: resolved.method ?? "GET",
+        route: resolved.url,
+        status: null,
+        ok: false,
+        summary: summarizedError,
+        paths: [],
+      };
+    }
   }
 
   fs.writeFileSync(

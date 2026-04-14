@@ -20,6 +20,8 @@ The coverage matrix uses these words deliberately:
 
 - `implemented`
   available in `csfloat-node-sdk`
+- `degraded`
+  still exposed in `csfloat-node-sdk`, but the current live surface is regressed, stale, or externally unavailable
 - `discovered`
   route existence is confirmed, but it is not yet promoted into the SDK surface
 - `validated`
@@ -53,6 +55,8 @@ Some surface is exposed because it is useful and real, but the SDK still treats 
   bundle-confirmed low-level trade lifecycle edges that remain intentionally state-gated and conservative
 - `account.verifyEmail()` / `account.verifySms()`
   low-level account verification helpers whose delivery/confirmation behavior remains API-controlled
+- `meta.inspectItem()` / `account.getBuyOrdersForInspect()`
+  historical inspect-linked helpers that are still exported, but the 2026-04-14 retest found their backing surfaces degraded
 - `sdk.client.get/post/patch/put/delete`
   low-level transport methods for advanced wrappers
 - `sdk.client.*WithMetadata()`

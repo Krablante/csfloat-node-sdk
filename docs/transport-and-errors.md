@@ -61,9 +61,11 @@ console.log(me.user.username);
 The SDK uses this internally for:
 
 - `meta.inspectItem()`
-  to target the inspect companion base URL and send the required `Origin` header
+  to target the historical inspect companion base URL and send the required `Origin` header
 - `loadout.*`
   to target the loadout companion base URL and swap auth to `Bearer <recommender-token>`
+
+As of the 2026-04-14 live retest, the historical inspect companion host no longer resolves from CLI probes, so `meta.inspectItem()` is currently a degraded helper and now surfaces a clearer SDK network error for that specific failure mode.
 
 You can use the same pattern yourself:
 

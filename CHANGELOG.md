@@ -6,6 +6,13 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+### Changed
+
+1. downgraded the inspect-companion claims in the SDK docs and coverage matrix after the 2026-04-14 live retest showed that the historical `api.csfloat.com` host no longer resolves and the public `/checker` page no longer emitted that route in browser network inspection
+2. downgraded inspect-link buy-order lookup claims in the docs after fresh live listing inspect links started returning `422 invalid signature` from `GET /buy-orders/item`
+3. hardened `meta.inspectItem()` to surface a clearer SDK network error when the historical inspect companion host is unavailable
+4. hardened `audit:shapes` so one dead companion surface now records an error artifact and still produces `_summary.json` for the rest of the live snapshot
+
 ## [0.9.5] - 2026-03-12
 
 ### Removed

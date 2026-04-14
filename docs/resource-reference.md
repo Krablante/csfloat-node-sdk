@@ -25,7 +25,7 @@ For the higher-level map of when to use each surface, see [Resources, Workflows,
 | `getSchemaBrowse(type)` | `Promise<CsfloatSchemaBrowseResponse>` | grouped browse categories such as stickers or keychains | `type` is `CsfloatSchemaBrowseType` |
 | `getItemExampleScreenshot(params)` | `Promise<CsfloatSchemaScreenshotResponse>` | example media lookup for a schema item | use schema helpers to build final image URLs |
 | `getNotary()` | `Promise<CsfloatNotaryMetaResponse>` | current notary-related capability flags | authenticated/helper-adjacent |
-| `inspectItem(inspectLink)` | `Promise<CsfloatInspectResponse>` | inspect-link lookup through the companion surface | the SDK handles the required base URL and `Origin` header |
+| `inspectItem(inspectLink)` | `Promise<CsfloatInspectResponse>` | historical inspect-link lookup through the old companion surface | the SDK still handles the required base URL and `Origin` header, but the April 14, 2026 retest found the old host unresolved |
 
 Key types:
 `CsfloatSchemaResponse`, `CsfloatSchemaBrowseType`, `CsfloatSchemaScreenshotParams`, `CsfloatInspectResponse`
@@ -135,7 +135,7 @@ Key types:
 | Method | Returns | Use It For | Notes |
 |---|---|---|---|
 | `getBuyOrders(params?)` | `Promise<CsfloatBuyOrdersResponse>` | list account buy orders | page/order/limit profile flow |
-| `getBuyOrdersForInspect(inspectLink, limit?)` | `Promise<CsfloatInspectBuyOrdersResponse>` | inspect-link oriented buy-order lookup | wraps `/buy-orders/item`; entries can carry either `expression` or direct `market_hash_name` |
+| `getBuyOrdersForInspect(inspectLink, limit?)` | `Promise<CsfloatInspectBuyOrdersResponse>` | inspect-link oriented buy-order lookup | wraps `/buy-orders/item`; the April 14, 2026 retest returned `422 invalid signature` on fresh listing inspect links, so prefer `getSimilarBuyOrders()` when possible |
 | `getSimilarBuyOrders(request, limit?)` | `Promise<CsfloatSimilarBuyOrdersResponse>` | similar order research | accepts `market_hash_name` or expression-backed request shapes |
 | `createBuyOrder(request)` | `Promise<CsfloatBuyOrder>` | create a market-hash or expression-backed order | request type is `CreateBuyOrderRequest` |
 | `updateBuyOrder(orderId, request)` | `Promise<CsfloatBuyOrder>` | change an existing buy order | currently wraps the validated patch surface |
