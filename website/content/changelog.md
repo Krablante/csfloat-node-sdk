@@ -6,6 +6,8 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.51] - 2026-04-14
+
 ### Changed
 
 1. replaced the primary `meta.inspectItem()` path for current masked/protobuf inspect links with local decoding via the official lightweight `@csfloat/cs2-inspect-serializer` package, while keeping legacy unmasked inspect links on the historical fallback path
