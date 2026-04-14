@@ -100,6 +100,31 @@ describe("MetaResource", () => {
     });
   });
 
+  it("decodes current masked inspect links locally", async () => {
+    const derive = vi.fn();
+    const resource = new MetaResource({ derive } as never);
+
+    const response = await resource.inspectItem(
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%2000180920D8022806300438FF8AE9D90340E302A2011B080010241D000000003D5FF49040454C62173F4D41770F4158D902E3BE243A",
+    );
+
+    expect(derive).not.toHaveBeenCalled();
+    expect(response).toMatchObject({
+      iteminfo: {
+        defindex: 9,
+        paintindex: 344,
+        paintseed: 355,
+        floatvalue: 0.002842277055606246,
+        keychains: [
+          {
+            sticker_id: 36,
+            highlight_reel: 345,
+          },
+        ],
+      },
+    });
+  });
+
   it("surfaces a clearer error when the historical inspect companion host no longer resolves", async () => {
     const dnsError = Object.assign(
       new Error("getaddrinfo ENOTFOUND api.csfloat.com"),
@@ -132,7 +157,7 @@ describe("MetaResource", () => {
       kind: "network",
       retryable: true,
       message:
-        "CSFloat inspect companion is currently unavailable; the historical api.csfloat.com host no longer resolves",
+        "CSFloat inspect companion is currently unavailable; only current masked/protobuf inspect links can still be decoded locally",
     });
   });
 });

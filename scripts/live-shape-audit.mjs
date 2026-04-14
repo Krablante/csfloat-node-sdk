@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { decodeLink } from "@csfloat/cs2-inspect-serializer";
 
 function parseEnvFile(filePath) {
   const raw = fs.readFileSync(filePath, "utf8");
@@ -118,6 +119,33 @@ function summarize(value) {
   };
 }
 
+const MASKED_INSPECT_LINK_PATTERN =
+  /^steam:\/\/run(?:game)?\/730\/\d*\/(?:\+|%20)csgo_econ_action_preview(?: |%20)([0-9A-Fa-f]+)$/i;
+
+function isMaskedInspectLink(value) {
+  return typeof value === "string" && MASKED_INSPECT_LINK_PATTERN.test(decodeURIComponent(value));
+}
+
+function resolveCurrentInspectLink(item) {
+  if (!item || typeof item !== "object") {
+    return null;
+  }
+
+  if (isMaskedInspectLink(item.serialized_inspect)) {
+    return item.serialized_inspect;
+  }
+
+  if (isMaskedInspectLink(item.inspect_link)) {
+    return item.inspect_link;
+  }
+
+  if (typeof item.inspect_link === "string") {
+    return item.inspect_link;
+  }
+
+  return typeof item.serialized_inspect === "string" ? item.serialized_inspect : null;
+}
+
 function summarizeThrownError(error, depth = 0) {
   if (depth > 2 || error === null || error === undefined) {
     return {
@@ -164,6 +192,23 @@ function parseCsvText(text) {
     lineCount: lines.length,
     header: lines[0] ?? "",
     preview: lines.slice(0, 5),
+  };
+}
+
+function buildLocalInspectSnapshot(inspectLink) {
+  const decoded = decodeLink(inspectLink);
+  return {
+    iteminfo: {
+      defindex: decoded.defindex,
+      paintindex: decoded.paintindex,
+      rarity: decoded.rarity,
+      quality: decoded.quality,
+      paintseed: decoded.paintseed,
+      floatvalue: decoded.paintwear,
+      stickers: decoded.stickers,
+      keychains: decoded.keychains,
+      variations: decoded.variations,
+    },
   };
 }
 
@@ -269,15 +314,17 @@ async function main() {
     context.firstListing = context.listings[0] ?? null;
     context.firstListingId = context.firstListing?.id ? String(context.firstListing.id) : null;
     const inspectCandidate = context.listings.find(
-      (listing) =>
-        typeof listing?.item?.inspect_link === "string" &&
-        /preview%20S\d+A\d+D\d+/i.test(listing.item.inspect_link),
+      (listing) => isMaskedInspectLink(resolveCurrentInspectLink(listing?.item)),
     ) ?? context.listings.find(
-      (listing) => typeof listing?.item?.inspect_link === "string",
+      (listing) => typeof resolveCurrentInspectLink(listing?.item) === "string",
     ) ?? null;
 
     context.firstInspectLink =
-      inspectCandidate?.item?.inspect_link ?? null;
+      resolveCurrentInspectLink(inspectCandidate?.item);
+    context.firstInspectMarketHashName =
+      inspectCandidate?.item?.market_hash_name ?? null;
+    context.firstInspectSig =
+      inspectCandidate?.item?.gs_sig ?? null;
   }
 
   const auctionPreview = await request({ route: "/listings?limit=5&type=auction" });
@@ -366,8 +413,12 @@ async function main() {
     },
     {
       name: "inspect_buy_orders",
-      skipUnless: () => context.firstInspectLink,
-      route: () => `/buy-orders/item?url=${encodeURIComponent(context.firstInspectLink)}&limit=3`,
+      skipUnless: () =>
+        context.firstInspectLink &&
+        context.firstInspectMarketHashName &&
+        context.firstInspectSig,
+      route: () =>
+        `/buy-orders/item?url=${encodeURIComponent(context.firstInspectLink)}&market_hash_name=${encodeURIComponent(context.firstInspectMarketHashName)}&sig=${encodeURIComponent(context.firstInspectSig)}&limit=3`,
     },
     {
       name: "similar_buy_orders_market_hash",
@@ -378,9 +429,8 @@ async function main() {
     {
       name: "inspect_item",
       skipUnless: () => context.firstInspectLink,
-      url: () => `https://api.csfloat.com/?url=${encodeURIComponent(context.firstInspectLink)}`,
-      auth: false,
-      headers: { Origin: "https://csfloat.com" },
+      local: () => buildLocalInspectSnapshot(context.firstInspectLink),
+      localLabel: "local:masked-inspect-decode",
     },
     {
       name: "loadout_public_discover",
@@ -432,11 +482,18 @@ async function main() {
       ...spec,
       route: typeof spec.route === "function" ? spec.route() : spec.route,
       url: typeof spec.url === "function" ? spec.url() : spec.url,
+      local: typeof spec.local === "function" ? spec.local : spec.local,
     };
 
     const outputPath = path.join(config.outDir, `${sanitizeName(spec.name)}.json`);
     try {
-      const result = await request(resolved);
+      const result = resolved.local
+        ? {
+            status: 200,
+            ok: true,
+            data: await resolved.local(),
+          }
+        : await request(resolved);
 
       if (resolved.parseAs === "text") {
         fs.writeFileSync(outputPath, String(result.data), "utf8");
@@ -445,8 +502,8 @@ async function main() {
       }
 
       summary.routes[spec.name] = {
-        method: resolved.method ?? "GET",
-        route: resolved.route ?? resolved.url,
+        method: resolved.local ? "LOCAL" : (resolved.method ?? "GET"),
+        route: resolved.route ?? resolved.url ?? resolved.localLabel ?? "local",
         status: result.status,
         ok: result.ok,
         summary: resolved.parseAs === "text"
@@ -467,8 +524,8 @@ async function main() {
         JSON.stringify({ error: summarizedError }, null, 2),
       );
       summary.routes[spec.name] = {
-        method: resolved.method ?? "GET",
-        route: resolved.route ?? resolved.url,
+        method: resolved.local ? "LOCAL" : (resolved.method ?? "GET"),
+        route: resolved.route ?? resolved.url ?? resolved.localLabel ?? "local",
         status: null,
         ok: false,
         summary: summarizedError,

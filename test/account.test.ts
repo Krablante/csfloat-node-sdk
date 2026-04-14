@@ -449,6 +449,27 @@ describe("AccountResource", () => {
     });
   });
 
+  it("requests buy orders for an inspect link with market hash name and signature", async () => {
+    const get = vi.fn(async (_path: string, _params?: unknown) => null);
+    const resource = new AccountResource({ get } as never);
+
+    await resource.getBuyOrdersForInspect(
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%2000180920D8022806300438FF8AE9D90340E302A2011B080010241D000000003D5FF49040454C62173F4D41770F4158D902E3BE243A",
+      {
+        market_hash_name: "AWP | Dragon Lore (Factory New)",
+        sig: "26b679ea5e97b71d1da9",
+        limit: 5,
+      },
+    );
+
+    expect(get).toHaveBeenCalledWith("buy-orders/item", {
+      url: "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%2000180920D8022806300438FF8AE9D90340E302A2011B080010241D000000003D5FF49040454C62173F4D41770F4158D902E3BE243A",
+      market_hash_name: "AWP | Dragon Lore (Factory New)",
+      sig: "26b679ea5e97b71d1da9",
+      limit: 5,
+    });
+  });
+
   it("requests similar buy orders", async () => {
     const post = vi.fn(async (_path: string, _body?: unknown) => null);
     const resource = new AccountResource({ post } as never);

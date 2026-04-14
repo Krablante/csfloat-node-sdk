@@ -32,7 +32,7 @@ Which part of the SDK should I use for this task?
 | iterate a cursor-based watchlist or stall | `sdk.account.iterateWatchlist()` / `sdk.stall.iterateStall()` |
 | place or research buy orders | `sdk.account.*BuyOrder*` plus buy-order builders |
 | mutate listings | `sdk.listings.create*`, `update*`, `delete*` |
-| inspect a single item link through the historical companion surface | `sdk.meta.inspectItem()` |
+| inspect a single current masked item link | `sdk.meta.inspectItem()` |
 | work with schema or screenshot media | `sdk.meta.getSchema()` plus schema helpers |
 | browse or mutate loadouts | `sdk.loadout.*` plus recommender token flow |
 | inspect raw headers or rate limits | `sdk.client.getWithMetadata()` and friends |
@@ -45,16 +45,17 @@ The SDK spans three related but different surfaces:
    `https://csfloat.com/api/v1`
 2. loadout companion API
    `https://loadout-api.csfloat.com/v1`
-3. historical inspect companion lookup
-   `https://api.csfloat.com/?url=<inspectLink>`
+3. local masked inspect-link decoding plus legacy companion fallback
+   local decode first, then historical `https://api.csfloat.com/?url=<inspectLink>` only for legacy shapes
 
 What this means in practice:
 
 - `sdk.meta`, `sdk.listings`, `sdk.users`, `sdk.stall`, `sdk.history`, and most of `sdk.account` talk to the main API
 - `sdk.loadout` talks to the loadout companion surface
-- `sdk.meta.inspectItem()` still targets the old inspect companion surface with the headers that route used to expect
+- `sdk.meta.inspectItem()` now decodes the current masked inspect-link format locally and only falls back to the old companion surface for legacy links
+- inspect-linked buy-order lookups should now prefer `listing.item.serialized_inspect ?? listing.item.inspect_link` together with `listing.item.market_hash_name` and `listing.item.gs_sig`
 
-As of the 2026-04-14 retest, live CLI probes found `api.csfloat.com` unresolved and browser inspection of `/checker` no longer emitted that route for fresh sticker or skin inspect links, so treat `sdk.meta.inspectItem()` as a degraded historical helper rather than a fresh live-backed default.
+As of the 2026-04-14 retest, live CLI probes found `api.csfloat.com` unresolved, while browser inspection plus bundle review showed `/checker` decoding masked inspect links locally. Treat `sdk.meta.inspectItem()` as locally live for current masked links, but still degraded for older unmasked inspect-link shapes that depended on the retired companion host.
 
 ## Authentication Model
 

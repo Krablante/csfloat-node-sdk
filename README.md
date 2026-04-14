@@ -109,13 +109,13 @@ This SDK is optimized for:
 - state-gated trade lifecycle helpers, including seller-side `acceptTrade()`, buyer-side `markTradesReceived()`, and low-level single-trade helpers such as `markTradeReceived()`, `cannotDeliverTrade()`, and `rollbackTrade()`
 - low-level trade sync helpers for the browser-observed Steam status routes: `syncSteamNewOffer()` and `syncSteamOffers()`, with optional asset-annotation payloads on the new-offer route
 - low-level account verification helpers for `verifyEmail()` and `verifySms()`
-- live-confirmed buy-order insight flows: similar-order discovery, plus a low-level inspect-based lookup helper that currently returns `422 invalid signature` on fresh live inspect links
+- live-confirmed buy-order insight flows: similar-order discovery, plus the current inspect-based lookup helper when called with `market_hash_name` and `sig`
 - live-confirmed buy-order expression workflows via `account.createBuyOrder({ expression, ... })`, `account.getSimilarBuyOrders({ expression }, ...)`, and composable builder helpers
 - workflow-first helpers via `sdk.workflows` for public feed snapshots, account workspace snapshots, and single-skin buy-order insights
 - live-confirmed support helpers around adjacent account/insight flows such as `meta.getNotary()`, `account.createNotaryToken()`, `account.createGsInspectToken()`, and `account.getSimilarBuyOrders()`
 - live-confirmed auction flow pieces: bid history, max-price `placeBid()`, `deleteAutoBid()` cancellation on cheap auctions, and stable item-route bootstrap reads for `getBuyOrders()` / `getSimilar()` around active auction listings
 - live-confirmed bulk listing controls: `createBulkListings()`, `updateBulkListings()`, and `deleteBulkListings()`
-- live-confirmed public/account helpers around app bootstrap, schema media, and payments, plus a historical `meta.inspectItem()` companion helper whose old external host is currently unavailable
+- live-confirmed public/account helpers around app bootstrap, schema media, and payments, plus local masked inspect-link decoding through `meta.inspectItem()`
 - public market helpers: `price-list`, wear presets, range builders, category helpers
 - browser-auth discoveries promoted into SDK surface where they proved stable, including `createRecommenderToken()`
 - opt-in low-level response metadata via `client.getWithMetadata()` / `postWithMetadata()` / `patchWithMetadata()` / `putWithMetadata()` / `deleteWithMetadata()` for callers that need rate-limit visibility without changing existing method signatures
@@ -164,8 +164,8 @@ See [API_COVERAGE.md](./API_COVERAGE.md) for the endpoint-by-endpoint support ma
 
 As of the 2026-04-14 live retest:
 
-- `meta.inspectItem()` is still exported, but it depends on the historical `https://api.csfloat.com` companion host, which no longer resolves from live CLI probes; the public `/checker` page also no longer emitted that route during browser inspection
-- `account.getBuyOrdersForInspect()` is still exported, but fresh live listing inspect links currently return `422 invalid signature` from `GET /buy-orders/item`; prefer `account.getSimilarBuyOrders()` when you already have a `market_hash_name` or expression
+- `meta.inspectItem()` now decodes the current masked/protobuf inspect links locally, but legacy unmasked inspect links still fall back to the historical `https://api.csfloat.com` companion host, which no longer resolves from live CLI probes
+- `account.getBuyOrdersForInspect()` now needs the live query contract `{ market_hash_name, sig }` in addition to the inspect `url`; when you start from `getListings()` or `getListingById()`, prefer `listing.item.serialized_inspect ?? listing.item.inspect_link`, then pass `listing.item.market_hash_name` plus `listing.item.gs_sig`
 
 ## Installation
 

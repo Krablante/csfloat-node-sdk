@@ -61,11 +61,11 @@ console.log(me.user.username);
 The SDK uses this internally for:
 
 - `meta.inspectItem()`
-  to target the historical inspect companion base URL and send the required `Origin` header
+  to fall back to the historical inspect companion base URL only for legacy inspect-link shapes that are not locally decodable
 - `loadout.*`
   to target the loadout companion base URL and swap auth to `Bearer <recommender-token>`
 
-As of the 2026-04-14 live retest, the historical inspect companion host no longer resolves from CLI probes, so `meta.inspectItem()` is currently a degraded helper and now surfaces a clearer SDK network error for that specific failure mode.
+As of the 2026-04-14 live retest, current masked/protobuf inspect links no longer need that companion surface because they decode locally, but the historical companion host still does not resolve from CLI probes. That means `meta.inspectItem()` is live again for masked links and still degraded for legacy unmasked links.
 
 You can use the same pattern yourself:
 

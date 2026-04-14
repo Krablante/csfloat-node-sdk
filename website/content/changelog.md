@@ -8,10 +8,10 @@ The format is based on Keep a Changelog.
 
 ### Changed
 
-1. downgraded the inspect-companion claims in the SDK docs and coverage matrix after the 2026-04-14 live retest showed that the historical `api.csfloat.com` host no longer resolves and the public `/checker` page no longer emitted that route in browser network inspection
-2. downgraded inspect-link buy-order lookup claims in the docs after fresh live listing inspect links started returning `422 invalid signature` from `GET /buy-orders/item`
-3. hardened `meta.inspectItem()` to surface a clearer SDK network error when the historical inspect companion host is unavailable
-4. hardened `audit:shapes` so one dead companion surface now records an error artifact and still produces `_summary.json` for the rest of the live snapshot
+1. replaced the primary `meta.inspectItem()` path for current masked/protobuf inspect links with local decoding via the official lightweight `@csfloat/cs2-inspect-serializer` package, while keeping legacy unmasked inspect links on the historical fallback path
+2. widened `account.getBuyOrdersForInspect()` to match the current live `/buy-orders/item` contract, which now expects `market_hash_name` and `sig` alongside the inspect `url`
+3. refreshed the live audit scripts and coverage notes so inspect buy-order probes now reuse `listing.item.serialized_inspect ?? listing.item.inspect_link` together with `listing.item.market_hash_name` plus `listing.item.gs_sig`, and masked inspect-link checks no longer depend on the dead `api.csfloat.com` host
+4. updated the SDK docs and docs-site content to reflect the current split: masked inspect links decode locally, legacy inspect-companion fallback remains degraded, and inspect buy-order lookup is live again when called with the full listing-derived query contract
 
 ## [0.9.5] - 2026-03-12
 

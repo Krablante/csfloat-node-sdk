@@ -97,6 +97,33 @@ function resolveRouteUrl(baseUrl, route) {
   return /^https?:\/\//.test(route) ? route : `${baseUrl}${route}`;
 }
 
+const MASKED_INSPECT_LINK_PATTERN =
+  /^steam:\/\/run(?:game)?\/730\/\d*\/(?:\+|%20)csgo_econ_action_preview(?: |%20)([0-9A-Fa-f]+)$/i;
+
+function isMaskedInspectLink(value) {
+  return typeof value === "string" && MASKED_INSPECT_LINK_PATTERN.test(decodeURIComponent(value));
+}
+
+function resolveCurrentInspectLink(item) {
+  if (!item || typeof item !== "object") {
+    return null;
+  }
+
+  if (isMaskedInspectLink(item.serialized_inspect)) {
+    return item.serialized_inspect;
+  }
+
+  if (isMaskedInspectLink(item.inspect_link)) {
+    return item.inspect_link;
+  }
+
+  if (typeof item.inspect_link === "string") {
+    return item.inspect_link;
+  }
+
+  return typeof item.serialized_inspect === "string" ? item.serialized_inspect : null;
+}
+
 async function main() {
   const config = getConfig();
   let lastRequestAt = 0;
@@ -264,13 +291,24 @@ async function main() {
       ? null
       : encodeURIComponent(JSON.stringify([{ i: firstKeychainIndex }]));
 
-  const listings = await request("GET", "/listings?limit=1&type=buy_now");
-  const firstListing = listings.ok && listings.data?.data?.[0] ? listings.data.data[0] : null;
+  const listings = await request("GET", "/listings?limit=10&type=buy_now");
+  const listingRows =
+    listings.ok && Array.isArray(listings.data?.data) ? listings.data.data : [];
+  const firstListing = listingRows[0] ?? null;
+  const inspectListing =
+    listingRows.find((listing) => isMaskedInspectLink(resolveCurrentInspectLink(listing?.item))) ||
+    listingRows.find((listing) => typeof resolveCurrentInspectLink(listing?.item) === "string") ||
+    null;
   const listingId = firstListing ? String(firstListing.id) : null;
-  const marketHashName = firstListing?.item?.market_hash_name || null;
+  const marketHashName =
+    inspectListing?.item?.market_hash_name ||
+    firstListing?.item?.market_hash_name ||
+    null;
+  const inspectSig = inspectListing?.item?.gs_sig || firstListing?.item?.gs_sig || null;
   const inspectLink =
-    firstTrade?.contract?.item?.inspect_link ||
-    firstListing?.item?.inspect_link ||
+    resolveCurrentInspectLink(inspectListing?.item) ||
+    resolveCurrentInspectLink(firstTrade?.contract?.item) ||
+    resolveCurrentInspectLink(firstListing?.item) ||
     null;
   const loadouts =
     steamId === null
@@ -327,7 +365,12 @@ async function main() {
       ? [["GET", `/me/notifications/timeline?cursor=${encodeURIComponent(notificationsCursor)}`]]
       : []),
     ["GET", "/me/buy-orders?page=0&limit=1&order=desc"],
-    ...(inspectLink ? [["GET", `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&limit=3`]] : []),
+    ...(inspectLink && marketHashName && inspectSig
+      ? [[
+        "GET",
+        `/buy-orders/item?url=${encodeURIComponent(inspectLink)}&market_hash_name=${encodeURIComponent(marketHashName)}&sig=${encodeURIComponent(inspectSig)}&limit=3`,
+      ]]
+      : []),
     ["GET", "/me/auto-bids"],
     ["GET", "/me/mobile/status"],
     ["GET", "/me/payments/pending-deposits"],

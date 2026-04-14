@@ -827,6 +827,12 @@ export interface CsfloatInspectBuyOrder {
 
 export type CsfloatInspectBuyOrdersResponse = CsfloatInspectBuyOrder[];
 
+export interface CsfloatInspectBuyOrdersParams {
+  limit?: number;
+  market_hash_name?: string;
+  sig?: string;
+}
+
 export interface CsfloatSimilarBuyOrder {
   market_hash_name?: string;
   qty?: number;

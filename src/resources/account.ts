@@ -11,6 +11,7 @@ import type {
   CsfloatBuyOrdersResponse,
   CsfloatExtensionStatusResponse,
   CsfloatGsInspectTokenResponse,
+  CsfloatInspectBuyOrdersParams,
   CsfloatInspectBuyOrdersResponse,
   CsfloatListing,
   CsfloatListingsResponse,
@@ -257,13 +258,37 @@ export class AccountResource {
 
   getBuyOrdersForInspect(
     inspectLink: string,
-    limit = 3,
+    limit?: number,
+  ): Promise<CsfloatInspectBuyOrdersResponse>;
+  getBuyOrdersForInspect(
+    inspectLink: string,
+    params: CsfloatInspectBuyOrdersParams,
+  ): Promise<CsfloatInspectBuyOrdersResponse>;
+  getBuyOrdersForInspect(
+    inspectLink: string,
+    limitOrParams: number | CsfloatInspectBuyOrdersParams = 3,
+    extraParams: Omit<CsfloatInspectBuyOrdersParams, "limit"> = {},
   ): Promise<CsfloatInspectBuyOrdersResponse> {
+    const params = typeof limitOrParams === "number"
+      ? {
+          limit: limitOrParams,
+          ...extraParams,
+        }
+      : {
+          limit: limitOrParams.limit ?? 3,
+          ...(limitOrParams.market_hash_name
+            ? { market_hash_name: limitOrParams.market_hash_name }
+            : {}),
+          ...(limitOrParams.sig ? { sig: limitOrParams.sig } : {}),
+        };
+
     return this.client.get<CsfloatInspectBuyOrdersResponse>(
       "buy-orders/item",
       {
         url: inspectLink,
-        limit,
+        ...(params.market_hash_name ? { market_hash_name: params.market_hash_name } : {}),
+        ...(params.sig ? { sig: params.sig } : {}),
+        limit: params.limit,
       },
     );
   }

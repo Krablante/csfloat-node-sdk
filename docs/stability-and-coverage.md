@@ -56,7 +56,7 @@ Some surface is exposed because it is useful and real, but the SDK still treats 
 - `account.verifyEmail()` / `account.verifySms()`
   low-level account verification helpers whose delivery/confirmation behavior remains API-controlled
 - `meta.inspectItem()` / `account.getBuyOrdersForInspect()`
-  historical inspect-linked helpers that are still exported, but the 2026-04-14 retest found their backing surfaces degraded
+  inspect-linked helpers that still need current runtime context: `meta.inspectItem()` is locally live for masked links but degraded for legacy unmasked links, and `account.getBuyOrdersForInspect()` now expects the current listing-derived trio `serialized_inspect ?? inspect_link`, `market_hash_name`, and `gs_sig`
 - `sdk.client.get/post/patch/put/delete`
   low-level transport methods for advanced wrappers
 - `sdk.client.*WithMetadata()`
