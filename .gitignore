@@ -14,6 +14,7 @@ playwright-report/
 .env.*
 !.env.example
 .local/
+AGENTS.md
 
 .DS_Store
 .idea/
