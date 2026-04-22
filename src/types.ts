@@ -577,7 +577,7 @@ export interface CsfloatSchemaPaint {
   max: number;
   min: number;
   rarity: number;
-  collection: string;
+  collections: string[];
   image: string;
   souvenir?: boolean;
   stattrak?: boolean;
