@@ -58,7 +58,7 @@ const schema: CsfloatSchemaResponse = {
           max: 0.7,
           min: 0.1,
           rarity: 4,
-          collection: "set_phoenix",
+          collections: ["set_phoenix"],
           image: "redline.png",
           normal_prices: [1, 2],
           normal_volume: [3, 4],

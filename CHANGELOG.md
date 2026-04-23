@@ -6,6 +6,12 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.9.52] - 2026-04-23
+
+### Fixed
+
+1. corrected `CsfloatSchemaPaint` typing to match the current live `/schema` paint payload, where paints expose `collections: string[]` instead of a singular `collection` field
+
 ## [0.9.51] - 2026-04-14
 
 ### Changed
